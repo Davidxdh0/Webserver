@@ -1,24 +1,26 @@
-#include "Config.hpp"
+#include "../include/Config.h"
 #include <iostream>
 
 Config::Config(void)
 {
 	std::cout << "Config created with an empty construcor" << std::endl;
-
-	return;
 }
 
 Config::~Config(void)
 {
 	std::cout << "Config deconstructed" << std::endl;
-	return;
 }
 
 Config::Config(const Config &other)
 {
 	std::cout << "Config created by copy" << std::endl;
 	*this = other;
-	return;
+}
+
+Config::Config(int port)
+{
+    std::cout << "Config created with port" << std::endl;
+    this->port = port;
 }
 
 Config &Config::operator=(const Config &other)
@@ -27,6 +29,7 @@ Config &Config::operator=(const Config &other)
 
 	if (this != &other)
 	{
+        port = other.port;
 	}
 
 	return (*this);

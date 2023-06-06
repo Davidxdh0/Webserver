@@ -18,11 +18,15 @@ class Config
 	public:
 		Config(void);
 		Config(const Config& other);
+        Config(int port);
 		~Config(void);
 
 		Config &operator=(const Config& other);
 
-		// ------------------- Config member functions ------------------------
+		// ------------------- Config getters ------------------------
+
+        int getPort(void) const { return this->port; };
+        // ------------------- Config member functions ------------------------
 
 		void setWithFile(const char *fileLocation);
 
@@ -49,7 +53,7 @@ class Config
 		// Servers
 
 		// Misc configs
-		uint32_t		port;
+		int		port;
 		std::string		server_name;
 		std::string		error_page; // can be multiple so best make map
 		std::string		client_max_body_size; // can be formatted in different ways

@@ -10,11 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "webserv.hpp"
-#include <iostream>
+#include "Config.h"
+#include "ServerControl.h"
+#include <vector>
+#include "utils.h"
 
-int	main(void)
+using namespace std;
+
+int main()
 {
-	std::cout << "test" << std::endl;
-	return (0);
+    vector<Config>  configs;
+    Config          config1(8080);
+    Config          config2(8081);
+
+    configs.push_back(config1);
+    configs.push_back(config2);
+
+    log("Starting server control" + to_string(configs[1].getPort()));
+    ServerControl   serverControl(configs);
+    return 0;
 }
