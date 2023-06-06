@@ -5,109 +5,57 @@
 #                                                      +:+                     #
 #    By: rubennijhuis <rubennijhuis@student.coda      +#+                      #
 #                                                    +#+                       #
-#    Created: 2022/04/24 20:14:42 by rubennijhui   #+#    #+#                  #
-#    Updated: 2022/06/28 13:30:35 by rubennijhui   ########   odam.nl          #
+#    Created: 2022/02/02 20:54:00 by rubennijhui   #+#    #+#                  #
+#    Updated: 2023/06/06 13:24:30 by rubennijhui   ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
-#=====================================#
-#========= General variables =========#
-#=====================================#
+#======= General =======#
+CC			=	g++
 
-NAME := bin/example
-ASSETS_DIR := assets
-BIN_DIR := bin
-INCLUDE_DIR := include
-LIBS_DIR := libs
-OBJS_DIR := objs
-SRC_DIR := src
-TEST_DIR := test
+SRC_DIR		=	src
+OBJS_DIR	=	objs
+BIN_DIR		=	bin
+INCLUDE_DIR	=	include
+EXEC_NAME	=	Webserv
+NAME		=	$(BIN_DIR)/$(EXEC_NAME)
+OUTPUT		=	$(BIN_DIR)/$(EXEC_NAME)
 
-#=====================================#
-#=============== Input ===============#
-#=====================================#
+#======== SRCS =========#
 
-LIBS := $(LIBS_DIR)/LibFT/libft.a \
-		$(LIBS_DIR)/Get-Next-Line/get-next-line.a \
+INC			=	-I $(INCLUDE_DIR)
 
-LIBS_HEADERS := -I $(INCLUDE_DIR) \
-				-I $(LIBS_DIR)/LibFT/include/ \
-				-I $(LIBS_DIR)/Get-Next-Line/include/ \
+SRCS		=	main.cpp
 
-INC := $(LIBS_HEADERS)
+OBJS		=	$(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 
-SRCS := main.c \
-		test.c \
+#== Compilation stuff ==#
 
-OBJS = $(addprefix $(OBJS_DIR)/,$(SRCS:.c=.o))
+CFLAGS		=	-Wall -Wextra -Werror -std=c++98 $(INC)
 
-#=====================================#
-#========= Command arguments =========#
-#=====================================#
+#======= Rules =========#
 
-CC = gcc
-CFLAGS = -Wall -Werror -Wextra -g $(INC)
-NO_DEAD_CODE := -O1 -Os -fdata-sections -ffunction-sections -Wl, -dead_strip
-
-#=====================================#
-#=============== Rules ===============#
-#=====================================#
-
-objs/%.o:src/%.c
+objs/%.o:src/%.cpp
 	@mkdir -p $(dir $@)
 	@$(CC) -c $(CFLAGS) -o $@ $^
 	@echo "🔨 Compiling: $^"
 	
 all: $(NAME)
 
-$(NAME):$(OBJS) $(LIBS)
-	@$(CC) $(OBJS) $(LDFLAGS) $(LIBS) $(MLX) $(NO_DEAD_CODE) -o $(NAME)
-	@echo "✅ Built $(NAME)"
+run: $(NAME)
+	./$(OUTPUT)
+
+$(NAME):$(OBJS)
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(OBJS) -o $(OUTPUT)
+	@echo "Finished creating: $@"
 
 clean:
 	@rm -rf $(OBJS_DIR)
 
 fclean: clean
-	@make fclean -C $(LIBS_DIR)/LibFT
-	@rm -f $(NAME)
+	@rm -rf $(NAME)
 
 re: fclean all
 
-#=====================================#
-#=========== Special Rules ===========#
-#=====================================#
-
-submodules:
-	@git submodule update --init --recursive
-	@cd $(LIBS_DIR)/LibFt/ && git pull origin main
-	@cd $(LIBS_DIR)/Get-Next-Line/ && git pull origin main
-	
-run: $(NAME)
-	@./$(NAME) $(INPUT_FILE)
-
-test:
-	@make run -C $(TEST_DIR)/
-
-norm:
-	@echo "\033[92m========= $(NAME) norm ========\033[0m"
-	@-norminette $(INCLUDE_DIR)
-	@-norminette $(SRC_DIR)
-	@echo "\033[92m========= $(NAME) norm ========\033[0m"
-	@echo
-	@make norm -C $(LIBS_DIR)/LibFT
-
-#=====================================#
-#========== Lib compilation ==========#
-#=====================================#
-
-$(LIBS_DIR)/LibFT/libft.a:
-	@make -C $(LIBS_DIR)/LibFT
-
-$(LIBS_DIR)/Get-Next-Line/get-next-line.a:
-	@make -C $(LIBS_DIR)/Get-Next-Line
-
-#=====================================#
-#================ Misc ===============#
-#=====================================#
-
-.PHONY: all re run clean fclean test
+.PHONY: run all clean fclean re

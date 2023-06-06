@@ -1,22 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   main.cpp                                           :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2022/06/28 13:31:12 by rubennijhui   ########   odam.nl         */
+/*   Updated: 2023/06/06 13:22:53 by rubennijhui   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "example.h"
-#include "libft.h"
-#include "get_next_line.h"
+#include "webserv.hpp"
+#include <iostream>
 
 int	main(void)
 {
-	tell_me_a_joke();
-	ft_putendl_fd("Standup comedy isn't easy", 1);
+	std::cout << "test" << std::endl;
 	return (0);
 }
