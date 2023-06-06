@@ -2,6 +2,7 @@
 # define CONFIG_HPP
 
 #include <fstream>
+#include <string>
 
 /**
  * @class
@@ -48,6 +49,19 @@ class Config
 		// Servers
 
 		// Misc configs
+		uint32_t		port;
+		std::string		server_name;
+		std::string		error_page; // can be multiple so best make map
+		std::string		client_max_body_size; // can be formatted in different ways
+
+		// Location		*location; // Can be multiple make vector or map
+			// name
+			// root
+			// index
+			// allow_methods
+			// autoindex
+			// upload store
+			// location handling
 
 };
 
