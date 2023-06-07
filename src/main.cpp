@@ -26,7 +26,6 @@ int main()
     configs.push_back(config1);
     configs.push_back(config2);
 
-    log("Starting server control" + to_string(configs[1].getPort()));
     ServerControl   serverControl(configs);
     return 0;
 }

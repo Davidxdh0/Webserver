@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <string>
+#include <sys/event.h>
 
 
 class Server
@@ -17,21 +18,25 @@ class Server
 public:
     Server(std::string ip_address, int port);
     ~Server();
-    void startListen();
+    void startListen(int kqueue_fd);
+    void acceptConnection(int kqueu_fd);
+    int getSocket() const { return _socket; }
 
 private:
-    std::string m_ip_address;
-    int m_port;
-    int m_socket;
-    int m_new_socket;
-    struct sockaddr_in m_socketAddress;
-    unsigned int m_socketAddress_len;
-    std::string m_serverMessage;
-    int startServer();
-    void closeServer();
-    void acceptConnection(int &new_socket);
+    std::string _ip_address;
+    int _port;
+    int _socket;
+    int _new_socket;
+    struct sockaddr_in _socketAddress;
+    unsigned int _socketAddress_len;
+    std::string _serverMessage;
+
+
+    int         startServer();
+    void        closeServer();
     std::string buildResponse();
-    void sendResponse();
+    void        sendResponse();
+    void        queuClient(int kqueu_fd);
 };
 
 #endif //WEBSERV_DEV_SERVER_H

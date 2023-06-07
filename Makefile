@@ -35,7 +35,7 @@ OBJS		=	$(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 
 #== Compilation stuff ==#
 
-CFLAGS		=	-Wall -Wextra -Werror -std=c++98 $(INC)
+CFLAGS		=	-Wall -Wextra -Werror -std=c++98 -g $(INC)
 
 #======= Rules =========#
 

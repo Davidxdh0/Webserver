@@ -8,6 +8,7 @@
 #include "Server.h"
 #include "Config.h"
 #include <vector>
+#include <sys/event.h>
 
 using namespace std;
 
@@ -19,8 +20,10 @@ public:
     ~ServerControl();
 
 private:
-    int             kqueue_fd;
-    vector<Server>  servers;
+    int             _kq_fd;
+    vector<Server>  _servers;
+    struct kevent   _events;
 
+    int            checkIdentIsServer(int ident);
 };
 #endif //WEBSERV_DEV_SERVERCONTROL_H
