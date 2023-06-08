@@ -1,8 +1,11 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
+#include "Server.hpp"
+
 #include <fstream>
 #include <string>
+#include <vector>
 
 /**
  * @class
@@ -17,6 +20,7 @@ class Config
 {
 	public:
 		Config(void);
+		Config(const char* fileLocation);
 		Config(const Config& other);
 		~Config(void);
 
@@ -28,40 +32,31 @@ class Config
 
 		// ------------------ ConfigException functions -----------------------
 
-		class FileNotFoundException : public std::exception
+		class FileNotRetrievedException : public std::exception
 		{
 		public:
-			virtual const char *except() const throw();
+			virtual const char *what() const throw();
 		};
 
 		class FileIncorrectFormatException : public std::exception
 		{
 		public:
-			virtual const char *except() const throw();
+			virtual const char *what() const throw();
 		};
 
 
 	private:
 		// File
-		std::ifstream	_configFile;
-		std::string		_fileLocation;
+		std::ifstream		_configFile;
+		std::string			_fileLocation;
 
-		// Servers
+		std::vector<Server> _servers;
 
 		// Misc configs
-		uint32_t		port;
-		std::string		server_name;
-		std::string		error_page; // can be multiple so best make map
-		std::string		client_max_body_size; // can be formatted in different ways
-
-		// Location		*location; // Can be multiple make vector or map
-			// name
-			// root
-			// index
-			// allow_methods
-			// autoindex
-			// upload store
-			// location handling
+		// uint32_t		port;
+		// std::string		server_name;
+		// std::string		error_page; // can be multiple so best make map
+		// std::string		client_max_body_size; // can be formatted in different ways
 
 };
 
