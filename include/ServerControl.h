@@ -21,9 +21,9 @@ public:
 
 private:
     int             _kq_fd;
-    vector<Server>  _servers;
+    vector<ServerBlock>  _servers;
     struct kevent   _events;
 
-    int            checkIdentIsServer(int ident);
+    ServerBlock*            checkIdentIsServer(int ident);
 };
 #endif //WEBSERV_DEV_SERVERCONTROL_H

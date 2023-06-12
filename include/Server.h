@@ -5,20 +5,20 @@
 #ifndef WEBSERV_DEV_SERVER_H
 #define WEBSERV_DEV_SERVER_H
 
-#include <stdio.h>
+#include <cstdio>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <sys/event.h>
 
 
-class Server
+class ServerBlock
 {
 public:
-    Server(std::string ip_address, int port);
-    ~Server();
-    void startListen(int kqueue_fd);
+    ServerBlock(const std::string& ip_address, int port);
+    ~ServerBlock();
+    void startListen(int kqueuFd) const;
     void acceptConnection(int kqueu_fd);
     int getSocket() const { return _socket; }
 
@@ -32,11 +32,11 @@ private:
     std::string _serverMessage;
 
 
-    int         startServer();
-    void        closeServer();
-    std::string buildResponse();
+    int         createSocket();
+    void        closeServer() const;
+    static std::string buildResponse();
     void        sendResponse();
-    void        queuClient(int kqueu_fd);
+    void        queuClient(int kqueu_fd) const;
 };
 
 #endif //WEBSERV_DEV_SERVER_H

@@ -7,13 +7,13 @@
 #include "../include/ServerControl.h"
 #include "../include/utils.h"
 
-ServerControl::ServerControl() : _kq_fd(kqueue()), _servers()
+ServerControl::ServerControl() : _kq_fd(kqueue()), _servers(), _events()
 {
     if (_kq_fd == -1)
         exitWithError("Failed to create kqueue");
 }
 
-ServerControl::ServerControl(vector<Config> configs) : _kq_fd(kqueue()), _servers()
+ServerControl::ServerControl(vector<Config> configs) : _kq_fd(kqueue()), _servers(), _events()
 {
     size_t size = configs.size();
     if (_kq_fd == -1)
@@ -21,25 +21,27 @@ ServerControl::ServerControl(vector<Config> configs) : _kq_fd(kqueue()), _server
     for (size_t i = 0; i < size; i++)
     {
         log("Starting server on port: " + to_string(i));
-        Server  tmp("0.0.0.0", configs[i].getPort());
+        ServerBlock  tmp("0.0.0.0", configs[i].getPort());
         tmp.startListen(_kq_fd);
         _servers.push_back(tmp);
     }
 
+    struct timespec timeout = {};
     while (1){
-        kevent(_kq_fd, NULL, 0, &_events, 1, NULL);
-        if (checkIdentIsServer(_events.ident))
+        kevent(_kq_fd, nullptr, 0, &_events, 2, &timeout);
+        ServerBlock *tmp = checkIdentIsServer(_events.ident);
+        if (tmp != nullptr)
         {
-            Server *tmp = static_cast<Server*>(_events.udata);
             tmp->acceptConnection(_kq_fd);
         }
         else if (_events.filter == EVFILT_READ){
-            char buffer[1024];
-            read(_events.ident, &buffer, sizeof(buffer));
+            char buffer[24];
+            buffer[recv(_events.ident, &buffer, sizeof(buffer), 0)] = '\0';
             std::cout << buffer << std::endl;
         }
         else if (_events.filter == EVFILT_WRITE){
             write(_events.ident, "Hello World", 11);
+            close(_events.ident);
         }
     }
 }
@@ -49,12 +51,12 @@ ServerControl::~ServerControl()
     close(_kq_fd);
 }
 
-int ServerControl::checkIdentIsServer(int ident)
+ServerBlock* ServerControl::checkIdentIsServer(int ident)
 {
     for (size_t i = 0; i < _servers.size(); i++)
     {
         if (_servers[i].getSocket() == ident)
-            return 1;
+            return &_servers[i];
     }
-    return 0;
+    return nullptr;
 }

@@ -53,7 +53,7 @@ class Config
 		// Servers
 
 		// Misc configs
-		int		port;
+		int		        port;
 		std::string		server_name;
 		std::string		error_page; // can be multiple so best make map
 		std::string		client_max_body_size; // can be formatted in different ways

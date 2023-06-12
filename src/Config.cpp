@@ -1,17 +1,17 @@
 #include "../include/Config.h"
 #include <iostream>
 
-Config::Config(void)
+Config::Config() : port()
 {
 	std::cout << "Config created with an empty construcor" << std::endl;
 }
 
-Config::~Config(void)
+Config::~Config()
 {
 	std::cout << "Config deconstructed" << std::endl;
 }
 
-Config::Config(const Config &other)
+Config::Config(const Config &other) : port()
 {
 	std::cout << "Config created by copy" << std::endl;
 	*this = other;
