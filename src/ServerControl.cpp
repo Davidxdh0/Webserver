@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "../include/ServerControl.h"
 #include "../include/utils.h"
+#include "Client.h"
 
 ServerControl::ServerControl() : _kq_fd(kqueue()), _servers(), _events()
 {
@@ -29,25 +30,21 @@ ServerControl::ServerControl(vector<Config> configs) : _kq_fd(kqueue()), _server
 
     struct timespec timeout = {};
     while (1){
-        kevent(_kq_fd, nullptr, 0, &_events, 2, &timeout);
+        EV_SET(&_events, 0, 0, 0, 0, 0, 0);
+        kevent(_kq_fd, nullptr, 0, &_events, 1, &timeout);
         ServerBlock *tmp = checkIdentIsServer(_events.ident);
         if (tmp != nullptr)
         {
             tmp->acceptConnection(_kq_fd);
         }
         else if (_events.filter == EVFILT_READ){
-            char buffer[24];
-            buffer[recv(_events.ident, &buffer, sizeof(buffer), 0)] = '\0';
-            std::cout << buffer << std::endl;
+            Client* client = static_cast<Client*>(_events.udata);
+            client->handleRequest();
         }
         else if (_events.filter == EVFILT_WRITE){
-            std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your ServerBlock :) </p></body></html>";
-            std::ostringstream ss;
-            ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
-               << htmlFile;
-
-            write(_events.ident, ss.str().c_str(), ss.str().size());
-            close(_events.ident);
+            Client* client = static_cast<Client*>(_events.udata);
+            client->sendResponse();
+            delete client;
         }
     }
 }

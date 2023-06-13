@@ -10,8 +10,14 @@ add_executable(Webserv_dev
         include/ServerBlock.h
         include/ServerControl.h
         include/utils.h
+        include/Client.h
+        include/Request.h
+        include/Response.h
         src/Config.cpp
         src/main.cpp
         src/ServerBlock.cpp
         src/ServerControl.cpp
+        src/Client.cpp
+        src/Request.cpp
+        src/Response.cpp
         src/utils.cpp)

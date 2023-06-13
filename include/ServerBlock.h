@@ -36,7 +36,7 @@ private:
     void        closeServer() const;
     static std::string buildResponse();
     void        sendResponse();
-    void        queuClient(int kqueu_fd) const;
+    void        createClient(int kqueu_fd, int client_socket) const;
 };
 
 #endif //WEBSERV_DEV_SERVER_H

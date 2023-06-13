@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <sys/fcntl.h>
 #include "../include/utils.h"
+#include "Client.h"
 
 ServerBlock::ServerBlock(const std::string& ip_address, int port) :
 _ip_address(ip_address), _port(port), _socket(), _new_socket(),
@@ -73,25 +74,28 @@ void ServerBlock::startListen(int kqueuFd) const
 
 void ServerBlock::acceptConnection(int kqueu_fd)
 {
-    _new_socket = accept(_socket, (sockaddr *)&_socketAddress, &_socketAddress_len);
-    if (_new_socket < 0)
+    int client_socket = accept(_socket, (sockaddr *)&_socketAddress, &_socketAddress_len);
+
+    if (client_socket < 0)
     {
         std::ostringstream ss;
         ss << "ServerBlock failed to accept incoming connection from ADDRESS: " << inet_ntoa(_socketAddress.sin_addr) << "; PORT: " << ntohs(_socketAddress.sin_port);
         exitWithError(ss.str());
     }
-    if (fcntl(_new_socket, F_SETFL, O_NONBLOCK) < 0)
+    if (fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0)
     {
         exitWithError("Cannot set socket to non-blocking");
     }
-    queuClient(kqueu_fd);
+    createClient(kqueu_fd, client_socket);
 }
 
-void ServerBlock::queuClient(int kqueu_fd) const
+void ServerBlock::createClient(int kqueu_fd, int client_socket) const
 {
+    Client* client = new Client(client_socket);
     struct kevent event[2];
-    EV_SET(&event[0], _new_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-    EV_SET(&event[1], _new_socket, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+
+    EV_SET(&event[0], client_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, client);
+    EV_SET(&event[1], client_socket, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, client);
     kevent(kqueu_fd, event, 2, nullptr, 0, nullptr);
     log("------ Client event registered in kqueu ------\n\n");
 }
