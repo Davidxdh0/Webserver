@@ -3,6 +3,7 @@
 //
 
 #include <sys/event.h>
+#include <sstream>
 #include <unistd.h>
 #include "../include/ServerControl.h"
 #include "../include/utils.h"
@@ -40,7 +41,12 @@ ServerControl::ServerControl(vector<Config> configs) : _kq_fd(kqueue()), _server
             std::cout << buffer << std::endl;
         }
         else if (_events.filter == EVFILT_WRITE){
-            write(_events.ident, "Hello World", 11);
+            std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your ServerBlock :) </p></body></html>";
+            std::ostringstream ss;
+            ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
+               << htmlFile;
+
+            write(_events.ident, ss.str().c_str(), ss.str().size());
             close(_events.ident);
         }
     }

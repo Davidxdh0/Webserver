@@ -2,7 +2,7 @@
 // Created by Alle Janse on 6/6/23.
 //
 
-#include "Server.h"
+#include "ServerBlock.h"
 
 #include <iostream>
 #include <sstream>
@@ -10,9 +10,9 @@
 #include <sys/fcntl.h>
 #include "../include/utils.h"
 
-ServerBlock::ServerBlock(const std::string& ip_address, int port) : _ip_address(ip_address), _port(port), _socket(), _new_socket(),
-                                                                    _socketAddress(), _socketAddress_len(sizeof(_socketAddress)),
-                                                                    _serverMessage(buildResponse())
+ServerBlock::ServerBlock(const std::string& ip_address, int port) :
+_ip_address(ip_address), _port(port), _socket(), _new_socket(),
+_socketAddress(), _socketAddress_len(sizeof(_socketAddress)), _serverMessage(buildResponse())
 {
     _socketAddress.sin_family = AF_INET;
     _socketAddress.sin_port = htons(_port);
@@ -25,7 +25,6 @@ ServerBlock::ServerBlock(const std::string& ip_address, int port) : _ip_address(
 }
 
 ServerBlock::~ServerBlock() {
-    close(_socket);
 }
 
 int ServerBlock::createSocket() {
@@ -51,7 +50,6 @@ int ServerBlock::createSocket() {
 void ServerBlock::closeServer() const
 {
     close(_socket);
-    close(_new_socket);
     exit(0);
 }
 

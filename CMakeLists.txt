@@ -5,9 +5,9 @@ set(CMAKE_CXX_STANDARD 98)
 
 include_directories(include)
 
-add_executable(Webserv_dev2_copy
+add_executable(Webserv_dev
         include/Config.h
-        include/Server.h
+        include/ServerBlock.h
         include/ServerControl.h
         include/utils.h
         src/Config.cpp
