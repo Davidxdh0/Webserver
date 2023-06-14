@@ -7,6 +7,7 @@
 
 #include "Request.h"
 #include "Response.h"
+#include "utils.h"
 #include <sys/event.h>
 
 class Client {
@@ -17,16 +18,17 @@ public:
 
     void                handleRequest();
     void                sendResponse();
+    int                 getState() { return _state; };
 
 private:
 
     Request             _request;
     Response            _response;
     int                 _socket;
-    struct kevent       _evSet;
+    clientState         _state;
+    std::stringstream   _requestRaw;
 
-    int                 readRequest(std::stringstream &ss);
-
+    int                 readRequest();
 };
 
 

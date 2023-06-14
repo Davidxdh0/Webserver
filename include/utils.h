@@ -7,6 +7,18 @@
 
 #include <iostream>
 
+typedef enum e_clientState {
+    READING,
+    RESPONDING,
+    DISCONNECT
+} 			clientState;
+
+typedef enum e_requestMethod {
+    GET,
+    POST,
+    DELETE
+} 			requestMethod;
+
 void log(const std::string &message);
 void exitWithError(const std::string &errorMessage);
 

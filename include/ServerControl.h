@@ -20,10 +20,10 @@ public:
     ~ServerControl();
 
 private:
-    int             _kq_fd;
-    vector<ServerBlock>  _servers;
-    struct kevent   _events;
+    int                 _kq_fd;
+    vector<ServerBlock> _servers;
 
-    ServerBlock*            checkIdentIsServer(int ident);
+    ServerBlock*    checkIdentIsServer(int ident);
+    void            webservLoop();
 };
 #endif //WEBSERV_DEV_SERVERCONTROL_H

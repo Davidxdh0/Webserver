@@ -102,9 +102,9 @@ void ServerBlock::createClient(int kqueu_fd, int client_socket) const
 
 std::string ServerBlock::buildResponse()
 {
-    std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your ServerBlock :) </p></body></html>";
+    std::string htmlFile = "<!DOCTYPE public><public lang=\"en\"><body><h1> HOME </h1><p> Hello from your ServerBlock :) </p></body></public>";
     std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
+    ss << "HTTP/1.1 200 OK\nContent-Type: text/public\nContent-Length: " << htmlFile.size() << "\n\n"
        << htmlFile;
 
     return ss.str();

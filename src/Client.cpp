@@ -10,7 +10,7 @@
 
 Client::Client() : _request(), _response() {}
 
-Client::Client(int socket) : _request(), _response(), _socket(socket) {
+Client::Client(int socket) : _request(), _response(), _socket(socket), _state(READING) {
 
 }
 
@@ -19,13 +19,14 @@ Client::~Client() {
 }
 
 void Client::handleRequest() {
-    std::stringstream ss;
-
-    readRequest(ss);
-    std::cout << ss.str() << std::endl;
+    readRequest();
+    if (_state != RESPONDING) {
+        return;
+    }
+    _request.parseRequest(_requestRaw);
 }
 
-int Client::readRequest(std::stringstream &ss) {
+int Client::readRequest() {
     char buffer[24];
     int bytes_read;
 
@@ -34,18 +35,22 @@ int Client::readRequest(std::stringstream &ss) {
         exitWithError("Error reading from socket");
     }
     buffer[bytes_read] = '\0';
-    ss << buffer;
-    if (bytes_read == sizeof buffer - 1) {
-        readRequest(ss);
+    _requestRaw << buffer;
+    if (bytes_read < sizeof buffer - 1) {
+        _state = RESPONDING;
     }
     return 1;
 }
 
 void Client::sendResponse() {
-    std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your ServerBlock :) </p></body></html>";
-    std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
-       << htmlFile;
+    _response.setVersion(_request.getVersion());
+    _response.setStatusCode("200");
+    _response.setStatusMessage("OK");
+    _response.setHeaders("Content-Type: text/html");
+    _response.loadBody("/Users/ajanse/Webserv_dev/public/index.html");
 
-    write(_socket, ss.str().c_str(), ss.str().size());
+    std::string res;
+    res = _response.getResponse();
+
+    write(_socket, res.c_str(), res.size());
 }
