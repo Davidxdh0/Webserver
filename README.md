@@ -11,6 +11,8 @@ kQue
 [TCP in depth](https://dev.to/tamerlang/tcp-in-depth-3g83)
 #### Kernel Queue
 [Kernel Queue: The Complete Guide On The Most Essential Technology For High-Performance I/O](https://habr.com/en/articles/600123/)
+#### HTTP 1.1 Standard
+[HTTP 1.1 RFC2616](https://tools.ietf.org/html/rfc2616)
 #### freeBSD Man Pages
 [Socket()](https://man.freebsd.org/cgi/man.cgi?query=socket&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html)
 
