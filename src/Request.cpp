@@ -3,6 +3,7 @@
 //
 
 #include "Request.h"
+#include "iostream"
 
 Request::Request() {}
 
@@ -15,10 +16,9 @@ void Request::parseRequest(std::stringstream &requestRaw) {
     std::string line;
 
 
-    requestRaw >> _method >> _uri;
-    getline(requestRaw, _version, '\r');
+    requestRaw >> _method >> _uri >> _version;
+    getline(requestRaw, line, '\r');
     while (line != "\n") {
-
         getline(requestRaw, line, '\r');
         if (line.empty())
             break;
@@ -29,6 +29,9 @@ void Request::parseRequest(std::stringstream &requestRaw) {
             _headers[key] = value;
         }
     }
+    std::cout << "Method: " << _method << std::endl;
+    std::cout << "Uri: " << _uri << std::endl;
+    std::cout << "Version: " << _version << std::endl;
 }
 
 Request::~Request() {}

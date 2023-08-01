@@ -17,7 +17,8 @@ public:
     ~Client();
 
     void                handleRequest();
-    void                sendResponse();
+    void                setResponse();
+    void                writeResponse();
     int                 getState() { return _state; };
 
 private:
@@ -27,6 +28,7 @@ private:
     int                 _socket;
     clientState         _state;
     std::stringstream   _requestRaw;
+    std::string         _root;
 
     int                 readRequest();
 };

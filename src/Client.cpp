@@ -10,7 +10,7 @@
 
 Client::Client() : _request(), _response() {}
 
-Client::Client(int socket) : _request(), _response(), _socket(socket), _state(READING) {
+Client::Client(int socket) : _request(), _response(), _socket(socket), _state(READING), _root("/Users/ajanse/Webserv_dev/public") {
 
 }
 
@@ -24,11 +24,12 @@ void Client::handleRequest() {
         return;
     }
     _request.parseRequest(_requestRaw);
+    this->setResponse();
 }
 
 int Client::readRequest() {
     char buffer[24];
-    int bytes_read;
+    size_t bytes_read;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
     if (bytes_read == -1) {
@@ -42,15 +43,15 @@ int Client::readRequest() {
     return 1;
 }
 
-void Client::sendResponse() {
-    _response.setVersion(_request.getVersion());
+void Client::setResponse() {
+    _response.setVersion("HTTP/1.1");
     _response.setStatusCode("200");
-    _response.setStatusMessage("OK");
+    //_response.setStatusMessage("OK");
     _response.setHeaders("Content-Type: text/html");
-    _response.loadBody("/Users/ajanse/Webserv_dev/public/index.html");
+    _response.loadBody(_root + _request.getUri());
+    _response.setResponseString();
+}
 
-    std::string res;
-    res = _response.getResponse();
-
-    write(_socket, res.c_str(), res.size());
+void Client::writeResponse() {
+    write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
 }

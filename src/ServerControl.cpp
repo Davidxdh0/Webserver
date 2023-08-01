@@ -62,7 +62,7 @@ void   ServerControl::webservLoop() {
             if (events->filter == EVFILT_READ && client->getState() == READING) {
                 client->handleRequest();
             } else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
-                client->sendResponse();
+                client->writeResponse();
                 delete client;
             }
         }

@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include <sstream>
 
 class Response {
 
@@ -19,7 +20,8 @@ public:
     void            setStatusMessage(const std::string &statusMessage);
     void            setHeaders(const std::string &headers);
     void            loadBody(const std::string &path);
-    std::string     getResponse();
+    void            setResponseString();
+    std::string     getResponseString() { return _responseString; };
 
 private:
 
@@ -28,6 +30,7 @@ private:
     std::string     _statusMessage;
     std::string     _headers;
     std::string     _body;
+    std::string     _responseString;
 };
 
 

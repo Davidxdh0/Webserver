@@ -29,18 +29,19 @@ void Response::setHeaders(const std::string &headers) {
 
 void Response::loadBody(const std::string &path) {
     std::ifstream file(path.c_str());
+    std::stringstream buffer;
 
+    std::cout << "Loading body from: " << path << std::endl;
     if (!file.is_open())
         exitWithError("Could not open file: " + path);
-    std::stringstream buffer;
     buffer << file.rdbuf();
     _body = buffer.str();
     file.close();
 }
 
-std::string Response::getResponse() {
+void Response::setResponseString() {
     std::ostringstream ss;
 
-    ss << _version << " " << _statusCode << " " << _statusMessage << "\r\n" << _headers << "\r\n\r\n" << _body;
-    return ss.str();
+    ss << _version << " " << _statusCode /*<< " " << _statusMessage*/ << "\r\n" << _headers << "\r\n\r\n" << _body;
+    _responseString = ss.str();
 }
