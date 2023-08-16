@@ -7,6 +7,7 @@
 
 #include "Request.h"
 #include "Response.h"
+#include "Path.h"
 #include "utils.h"
 #include <sys/event.h>
 
@@ -25,10 +26,11 @@ private:
 
     Request             _request;
     Response            _response;
+    Path                _path;
     int                 _socket;
     clientState         _state;
     std::stringstream   _requestRaw;
-    std::string         _root;
+
 
     int                 readRequest();
 };

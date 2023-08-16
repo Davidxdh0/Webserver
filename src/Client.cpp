@@ -8,11 +8,9 @@
 #include "Client.h"
 #include "utils.h"
 
-Client::Client() : _request(), _response() {}
+Client::Client() : _request(), _response(), _socket(), _state(READING) {}
 
-Client::Client(int socket) : _request(), _response(), _socket(socket), _state(READING), _root("/Users/ajanse/Webserv_dev/public") {
-
-}
+Client::Client(int socket) : _request(), _response(), _socket(socket), _state(READING) {}
 
 Client::~Client() {
     close(_socket);
@@ -24,6 +22,7 @@ void Client::handleRequest() {
         return;
     }
     _request.parseRequest(_requestRaw);
+    _path = Path("/Users/ajanse/Webserv_dev/public", _request.getUri());
     this->setResponse();
 }
 
@@ -47,8 +46,18 @@ void Client::setResponse() {
     _response.setVersion("HTTP/1.1");
     _response.setStatusCode("200");
     //_response.setStatusMessage("OK");
-    _response.setHeaders("Content-Type: text/html");
-    _response.loadBody(_root + _request.getUri());
+    if (_path.getExtension() == "css") {
+        _response.setHeaders("Content-Type: text/css");
+    } else if (_path.getExtension() == "gif") {
+        _response.setHeaders("Content-Type: image/gif");
+    } else {
+        _response.setHeaders("Content-Type: text/html");
+    }
+    if (_path.getExtension() == "php") {
+        _response.loadCgi(_path);
+    } else {
+        _response.loadBody(_path);
+    }
     _response.setResponseString();
 }
 

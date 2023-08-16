@@ -8,6 +8,7 @@
 
 #include <string>
 #include <sstream>
+#include "Path.h"
 
 class Response {
 
@@ -19,12 +20,14 @@ public:
     void            setStatusCode(const std::string &statusCode);
     void            setStatusMessage(const std::string &statusMessage);
     void            setHeaders(const std::string &headers);
-    void            loadBody(const std::string &path);
+    void            loadBody(const Path& path);
+    void            loadCgi(const Path& path);
     void            setResponseString();
     std::string     getResponseString() { return _responseString; };
 
 private:
 
+    Path            _path;
     std::string     _version;
     std::string     _statusCode;
     std::string     _statusMessage;
