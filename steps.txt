@@ -1,0 +1,75 @@
+Sure, I'll provide a brief explanation of each of the functions and 
+concepts you've mentioned in the context of creating a web server in C++:
+
+    htons / htonl:
+        htons: Host to Network Short (16-bit) conversion.
+        htonl: Host to Network Long (32-bit) conversion.
+        Convert values from host byte order to network byte order to ensure proper 
+		data exchange between different systems.
+
+    ntohs / ntohl:
+        ntohs: Network to Host Short conversion.
+        ntohl: Network to Host Long conversion.
+        Convert values from network byte order to host byte order after receiving data from the network.
+
+    select / poll / epoll / kqueue:
+        These are mechanisms for handling I/O multiplexing, allowing efficient management of multiple sockets.
+        They enable your server to monitor multiple sockets for events like data availability, connection readiness, etc.
+
+    socket:
+        Create a communication endpoint, a socket, through which your server can send and receive data over a network.
+
+    accept / listen:
+        listen: Set the socket in a listening state to accept incoming connections.
+        accept: Accept a connection from a client, creating a new socket specifically for that connection.
+
+    send / recv:
+        send: Transmit data from your server to a client over a socket.
+        recv: Receive data from a client over a socket.
+
+    bind / connect:
+        bind: Associate a socket with a specific address and port, typically used for servers.
+        connect: Establish a connection to a remote server using a specific address and port, 
+		typically used for clients.
+
+    getaddrinfo / freeaddrinfo:
+        getaddrinfo: Get address information for a given hostname and service name, 
+		useful for resolving network addresses in a protocol-independent manner.
+        freeaddrinfo: Free memory allocated by getaddrinfo.
+
+    setsockopt / getsockname / getprotobyname:
+        setsockopt: Set options on a socket, such as configuring its behavior.
+        getsockname: Retrieve the local address and port associated with a socket.
+        getprotobyname: Retrieve protocol information by name.
+
+    getsockopt:
+        Similar to setsockopt, it allows you to retrieve socket options and their values.
+
+    fcntl:
+        Control file descriptors. It can be used to change the properties of a socket or file, 
+		like making it non-blocking.
+
+    close:
+        Close a socket or a file descriptor when you're done using it.
+
+    read / write:
+        Low-level functions to read and write data from and to sockets or files.
+
+    waitpid:
+        Wait for a child process to change state, typically used in process management.
+
+    kill / signal:
+        Send a signal to a process, useful for process control and termination.
+
+    access:
+        Check if a file exists and if the process has permission to access it.
+
+    stat:
+        Get information about a file, such as its size, permissions, and timestamps.
+
+    opendir / readdir / closedir:
+        These functions allow you to work with directories, open them, read their contents, and close them.
+
+These functions are essential building blocks for creating a web server in C++. 
+They enable you to establish network connections, manage sockets, read and write data, 
+and handle various aspects of file and process management

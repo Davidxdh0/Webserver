@@ -17,7 +17,7 @@ Location::~Location(void)
 
 Location::Location(std::string config)
 {
-    std::cout << "Location created with a config string construcor" << std::endl;
+    std::cout << "Location, " << config << ", created with a config string construcor" << std::endl;
     return;
 }
 

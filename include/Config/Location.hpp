@@ -29,7 +29,7 @@ class Location
 		std::string					_root;
 		std::string					_index;
 		std::vector<std::string>	_methods;
-		bool						_autoindex;
+		// bool						_autoindex;
 		std::string					_upload_store;
 		std::vector<Location>		_locations;
 };
