@@ -1,0 +1,75 @@
+Functions and information:
+
+int socketfd = socket(AF_INET, SOCK_STREAM, 0);
+	https://www.geeksforgeeks.org/socket-programming-cc/
+	https://man.freebsd.org/cgi/man.cgi?query=socket&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html
+
+int setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE,  const void *optval, socklen_t optlen);
+	https://www.geeksforgeeks.org/socket-programming-cc/
+	https://man.freebsd.org/cgi/man.cgi?query=setsockopt&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html
+	*** way more options, for us to use?
+
+int bind(socketfd, const struct sockaddr *addr, socklen_t addrlen);
+	https://www.geeksforgeeks.org/socket-programming-cc/
+	https://man.freebsd.org/cgi/man.cgi?query=bind&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html
+
+struct sockaddr_in
+	0 - AF_INET: Specifies the iPv4 address family.
+	1 - https://stackoverflow.com/questions/5444197/converting-host-to-ip-by-sockaddr-in-gethostname-etc
+	3 - The port number must be specified in direct binary form in the sin_port member of the structure. 
+		Therefore, it is necessary to convert the value to this data type.
+	https://www.gta.ufrj.br/ensino/eel878/sockets/sockaddr_inman.html
+
+
+listen(socketfd, 10)
+	https://www.geeksforgeeks.org/socket-programming-cc/
+	https://man.freebsd.org/cgi/man.cgi?query=listen&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html
+	https://stackoverflow.com/questions/13241519/sockets-in-c-errors
+
+accept(socketfd, (struct sockaddr *)&clientAddress, &addrlen);
+	https://www.geeksforgeeks.org/socket-programming-cc/
+
+EV_SET(&event, _socket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, nullptr);
+
+kqueue()
+
+kevent(kqueuFd, &event, 1, nullptr, 0, nullptr);
+
+log(ss.str());
+
+fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0
+
+createClient(kqueu_fd, client_socket);
+
+struct kevent event = {};
+
+EV_SET(&event, _socket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, nullptr);
+
+kevent(kqueuFd, &event, 1, nullptr, 0, nullptr);
+
+log("------ ServerBlock event registered in kqueu ------\n\n");
+
+EV_SET(events, 0, 0, 0, 0, 0, 0);
+        kevent(_kq_fd, nullptr, 0, events, 1, &timeout);
+		
+ServerBlock *tmp = checkIdentIsServer(events->ident);
+
+
+
+if (tmp != nullptr) {
+    tmp->acceptConnection(_kq_fd);
+    }
+else {
+	Client *client = static_cast<Client *>(events->udata);
+	if (events->filter == EVFILT_READ && client->getState() == READING) {
+		client->handleRequest();
+	} else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
+		client->writeResponse();
+		delete client;
+	}
+}
+
+nginx
+list directories
+	https://docs.nginx.com/nginx/admin-guide/web-server/web-server/
+	https://www.oreilly.com/library/view/nginx-http-server/9781788623551/052b1381-d911-46df-8bd2-1bebf70f44b8.xhtml

@@ -22,13 +22,13 @@ void Client::handleRequest() {
         return;
     }
     _request.parseRequest(_requestRaw);
-    _path = Path("/Users/ajanse/Webserv_dev/public", _request.getUri());
+    _path = Path("/Users/dyeboa/Documents/Webserv/public", _request.getUri());
     this->setResponse();
 }
 
 int Client::readRequest() {
     char buffer[24];
-    size_t bytes_read;
+    int bytes_read;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
     if (bytes_read == -1) {
@@ -36,7 +36,7 @@ int Client::readRequest() {
     }
     buffer[bytes_read] = '\0';
     _requestRaw << buffer;
-    if (bytes_read < sizeof buffer - 1) {
+    if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {
         _state = RESPONDING;
     }
     return 1;
@@ -45,7 +45,7 @@ int Client::readRequest() {
 void Client::setResponse() {
     _response.setVersion("HTTP/1.1");
     _response.setStatusCode("200");
-    //_response.setStatusMessage("OK");
+    _response.setStatusMessage("OK");
     if (_path.getExtension() == "css") {
         _response.setHeaders("Content-Type: text/css");
     } else if (_path.getExtension() == "gif") {

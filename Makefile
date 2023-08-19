@@ -6,7 +6,7 @@
 #    By: rubennijhuis <rubennijhuis@student.coda      +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/02 20:54:00 by rubennijhui   #+#    #+#                  #
-#    Updated: 2023/06/08 13:53:52 by rubennijhui   ########   odam.nl          #
+#    Updated: 2023/08/19 17:01:17 by dyeboa        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,10 +26,14 @@ OUTPUT		=	$(BIN_DIR)/$(EXEC_NAME)
 INC			=	-I $(INCLUDE_DIR)
 
 SRCS		=	main.cpp \
-				\
-				Config/Config.cpp \
-				Config/Server.cpp \
-				Config/Location.cpp \
+				Config.cpp \
+				ServerControl.cpp \
+				Client.cpp \
+				Request.cpp \
+				Response.cpp \
+				ServerBlock.cpp \
+				utils.cpp \
+				Path.cpp
 
 OBJS		=	$(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 
