@@ -1,4 +1,5 @@
 #include "../include/Config.h"
+#include "Config/Config.hpp"
 #include <iostream>
 
 Config::Config() : port()
@@ -6,7 +7,21 @@ Config::Config() : port()
 	std::cout << "Config created with an empty construcor" << std::endl;
 }
 
-Config::~Config()
+Config::~Config(){}
+
+Config::Config(const char *fileLocation)
+{
+	try
+	{
+		this->setWithFile(fileLocation);
+	}
+	catch (Config::FileNotRetrievedException &e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+}
+
+Config::~Config(void)
 {
 	std::cout << "Config deconstructed" << std::endl;
 }
@@ -48,25 +63,25 @@ void Config::setWithFile(const char *fileLocation)
 
 	if (!this->_configFile.is_open())
 	{
-		throw Config::FileNotFoundException();
+		throw Config::FileNotRetrievedException();
 	}
 
 	if (this->_configFile.fail())
 	{
-		throw Config::FileNotFoundException();
+		throw Config::FileNotRetrievedException();
 	}
 
 	this->_fileLocation = fileLocation;
 }
 
-// ---------------------- BureaucratException Functions ------------------------
+// ---------------------- Config Exception Functions ------------------------
 
-const char *Config::FileNotFoundException::except() const throw()
+const char *Config::FileNotRetrievedException::what() const throw()
 {
 	return ("Error finding or opening the file");
 }
 
-const char *Config::FileIncorrectFormatException::except() const throw()
+const char *Config::FileIncorrectFormatException::what() const throw()
 {
 	return ("Error parsing the file");
 };
