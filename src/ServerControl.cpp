@@ -22,7 +22,7 @@ ServerControl::ServerControl(vector<Config> configs) : _kq_fd(kqueue()), _server
         exitWithError("Failed to create kqueue");
     for (size_t i = 0; i < size; i++)
     {
-        log("Starting server on port: " + to_string(i));
+        log("Starting server on port: " + to_string(configs[i].getPort()));
         ServerBlock  tmp("0.0.0.0", configs[i].getPort());
         tmp.startListen(_kq_fd);
         _servers.push_back(tmp);

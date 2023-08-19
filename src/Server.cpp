@@ -1,4 +1,4 @@
-#include "Config/Server.hpp"
+#include "Server.hpp"
 #include <iostream>
 
 Server::Server(void)

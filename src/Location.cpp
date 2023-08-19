@@ -1,4 +1,4 @@
-#include "Config/Location.hpp"
+#include "Location.hpp"
 
 #include <string>
 #include <iostream>
