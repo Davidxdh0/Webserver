@@ -25,6 +25,8 @@ private:
     std::string                     _cgi_path;
     std::string                     _cgi_extension;
     std::string                     _upload_path;
+    std::map<int, std::string>      _error_pages; // 404, 500, 501, 502, 503, 504
+    int                             _client_max_body_size;
     std::map<std::string, Settings> _locations;
 
 };

@@ -1,0 +1,4 @@
+- Directory listing
+- File upload
+- Correctly write to socket client->writeresponse()
+- Set POST data in the env off cgi
