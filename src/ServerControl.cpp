@@ -53,17 +53,18 @@ void   ServerControl::webservLoop() {
     while (1){
         EV_SET(events, 0, 0, 0, 0, 0, 0);
         kevent(_kq_fd, nullptr, 0, events, 1, &timeout);
-        ServerBlock *tmp = checkIdentIsServer(events->ident);
-        if (tmp != nullptr) {
-            tmp->acceptConnection(_kq_fd);
-        }
-        else {
-            Client *client = static_cast<Client *>(events->udata);
-            if (events->filter == EVFILT_READ && client->getState() == READING) {
-                client->handleRequest();
-            } else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
-                client->writeResponse();
-                delete client;
+        if (events->ident != 0) {
+            ServerBlock *tmp = checkIdentIsServer(events->ident);
+            if (tmp != nullptr) {
+                tmp->acceptConnection(_kq_fd);
+            } else {
+                Client *client = static_cast<Client *>(events->udata);
+                if (events->filter == EVFILT_READ && client->getState() == READING) {
+                    client->handleRequest();
+                } else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
+                    client->writeResponse();
+                    delete client;
+                }
             }
         }
     }

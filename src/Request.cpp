@@ -25,13 +25,18 @@ void Request::parseRequest(std::stringstream &requestRaw) {
         std::string::size_type pos = line.find(": ");
         if (pos != std::string::npos) {
             std::string key = line.substr(1, pos);
-            std::string value = line.substr(pos + 2);
-            _headers[key] = value;
+            if (key == "Host:")
+            {
+                _hostname = line.substr(pos + 2);
+            }
+//            std::string value = line.substr(pos + 2);
+//           _headers[key] = value;
         }
     }
     std::cout << "Method: " << _method << std::endl;
     std::cout << "Uri: " << _uri << std::endl;
     std::cout << "Version: " << _version << std::endl;
+    std::cout << "Hostname: " << _hostname << std::endl;
 }
 
 Request::~Request() {}

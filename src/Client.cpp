@@ -10,19 +10,19 @@
 
 Client::Client() : _request(), _response(), _socket(), _state(READING) {}
 
-Client::Client(int socket) : _request(), _response(), _socket(socket), _state(READING) {}
+Client::Client(int socket, int port) : _request(), _response(), _socket(socket), _state(READING), _port(port) {}
 
 Client::~Client() {
     close(_socket);
 }
 
 void Client::handleRequest() {
-    readRequest();
+    this->readRequest();
     if (_state != RESPONDING) {
         return;
     }
     _request.parseRequest(_requestRaw);
-    _path = Path("/Users/ajanse/Webserv_dev/public", _request.getUri());
+    this->configure();
     this->setResponse();
 }
 
@@ -63,4 +63,12 @@ void Client::setResponse() {
 
 void Client::writeResponse() {
     write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
+}
+
+void Client::configure() {
+    std::string    root = ROOT;
+    std::string    index = INDEX;
+
+    _path = Path(root, _request.getUri());
+
 }

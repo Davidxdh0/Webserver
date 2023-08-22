@@ -14,12 +14,13 @@
 class Client {
 public:
     Client();
-    Client(int socket);
+    Client(int socket, int port);
     ~Client();
 
     void                handleRequest();
     void                setResponse();
     void                writeResponse();
+    void                configure();
     int                 getState() { return _state; };
 
 private:
@@ -28,6 +29,7 @@ private:
     Response            _response;
     Path                _path;
     int                 _socket;
+    int                 _port;
     clientState         _state;
     std::stringstream   _requestRaw;
 

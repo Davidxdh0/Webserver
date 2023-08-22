@@ -19,6 +19,11 @@ typedef enum e_requestMethod {
     DELETE
 } 			requestMethod;
 
+#define ROOT "/Users/ajanse/Webserv_dev/public";
+#define INDEX "index.html";
+
+
+
 void log(const std::string &message);
 void exitWithError(const std::string &errorMessage);
 

@@ -91,7 +91,7 @@ void ServerBlock::acceptConnection(int kqueu_fd)
 
 void ServerBlock::createClient(int kqueu_fd, int client_socket) const
 {
-    Client* client = new Client(client_socket);
+    Client* client = new Client(client_socket, this->_port);
     struct kevent event[2];
 
     EV_SET(&event[0], client_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, client);
