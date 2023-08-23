@@ -188,13 +188,13 @@ void	Response::upload(char *file){
 	if (stat(file, &file_info) == 0) {
 		off_t size = file_info.st_size;
 		std::string filepath = std::string("/Users/dyeboa/Documents/Webserv/public/upload/filetoupload") + ".txt";
-		std::ofstream file(filepath);
+		std::ofstream uploadfile(filepath);
 		size_t packetsize = 4096;
 		size_t dataSent = 0;
-		while (dataSent < size){
-			size_t remaining = _response.getResponseString().size() - dataSent;
+		while (dataSent < static_cast<size_t>(size)){
+			size_t remaining = static_cast<size_t>(size) - dataSent;
 			size_t currentpacket = std::min(remaining, packetsize);
-			file << file + dataSent;
+			uploadfile <<  file + currentpacket;
 			dataSent += 4096;
 		}
 	}
@@ -203,17 +203,18 @@ void	Response::upload(char *file){
 	}
 }
 
-std::cout << "size = " << _response.getResponseString().size() << std::endl;
-	if (_response.getResponseString().size() > 64000){
-		const char* data = _response.getResponseString().c_str();
-		size_t packetsize = 4096;
-		size_t dataSent = 0;
-		while (dataSent < _response.getResponseString().size()){
-			size_t remaining = _response.getResponseString().size() - dataSent;
-			size_t currentpacket = std::min(remaining, packetsize);
-			write(_socket, data + dataSent, currentpacket);
-			dataSent += 4096;
-		}
-	}
-	else
-    	write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
+// 	std::cout << "size = " << _response.getResponseString().size() << std::endl;
+// 	if (_response.getResponseString().size() > 64000){
+// 		const char* data = _response.getResponseString().c_str();
+// 		size_t packetsize = 4096;
+// 		size_t dataSent = 0;
+// 		while (dataSent < _response.getResponseString().size()){
+// 			size_t remaining = _response.getResponseString().size() - dataSent;
+// 			size_t currentpacket = std::min(remaining, packetsize);
+// 			write(_socket, data + dataSent, currentpacket);
+// 			dataSent += 4096;
+// 		}
+// 	}
+// 	else
+//     	write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
+// }
