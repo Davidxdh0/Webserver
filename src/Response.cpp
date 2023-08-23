@@ -8,6 +8,11 @@
 #include <sstream>
 #include <unistd.h>
 #include <cstdio>
+#include <dirent.h>
+#include <iostream>
+#include <string>
+#include <sys/stat.h>
+#include <ctime>
 
 Response::Response() {}
 
@@ -73,11 +78,142 @@ void Response::loadCgi(const Path& path) {
         this->setHeaders("Content-Length: " + std::to_string(_body.length()) + "\r\n");
         fclose(temp);
     }
+
 }
 
 void Response::setResponseString() {
     std::ostringstream ss;
-
+	std::cout << "\n";
+	showDir();
+	createIndex();
+	std::cout << "\n" << std::endl;
     ss << _version << " " << _statusCode /*<< " " << _statusMessage*/ << "\r\n" << _headers << "\r\n\r\n" << _body;
     _responseString = ss.str();
 }
+
+void	Response::showDir(){
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir("/Users/dyeboa/Documents/Webserv/public")) == NULL){
+		std::cout << "Error: Can't open showDir" << std::endl;
+	}
+	while ((ent = readdir (dir)) != NULL) {
+    	std::cout << "Directory: " << ent->d_name << std::endl;
+  	}
+  	closedir (dir);
+}
+
+/*
+Creates an index.html if it can't find an index.html in the desired folder.
+
+todo: 	add checks for autoindex 
+		set the correct path.
+		Error catching
+
+how to test:
+	std::cout << "\n";
+	showDir();
+	createIndex();
+	std::cout << "\n" << std::endl;
+*/
+void	Response::createIndex(){
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir("/Users/dyeboa/Documents/Webserv/public/error")) == NULL){
+		std::cout << "Error: Can't open showDir" << std::endl;
+	}
+	while ((ent = readdir (dir)) != NULL) {
+		if (!strcmp("index.html", ent->d_name)){
+    		std::cout << "Directory: index.html found ->" << ent->d_name << std::endl;
+			return ;
+		}
+  	}
+	closedir(dir);
+	std::ofstream file("/Users/dyeboa/Documents/Webserv/public/error/index1.html");
+	file << "<!DOCTYPE html>\n"
+			"<html>\n"
+			"<head>\n"
+			"<title>Index of /</title>\n"
+			"<style>\n"
+			"table {\n"
+			"border-collapse: collapse;\n"
+			"width: 100%;\n"
+			"}\n"
+			"th, td {\n"
+			"text-align: left;\n"
+			"padding: 8px;\n"
+			"}\n"
+			"</style>\n"
+			"</head>\n"
+			"<body>\n"
+			"<h1>Index of PATH</h1>\n<table>\n"
+			"<tr>\n"
+            "<th>Name</th>\n"
+            "<th>Date</th>\n"
+            "<th>Size</th>\n"
+        	"</tr>\n";
+	if ((dir = opendir("/Users/dyeboa/Documents/Webserv/public")) == NULL){
+		std::cout << "Error: Can't open showDir" << std::endl;
+	}
+	while ((ent = readdir (dir)) != NULL) {	
+		struct stat file_info;
+		std::string filepath = std::string("/Users/dyeboa/Documents/Webserv/public") + "/" + ent->d_name;
+		std::cout << "Filepath = " << filepath << std::endl;
+		file << "<tr>\n";
+		if (stat(filepath.c_str(), &file_info) == 0) {
+			time_t modified = file_info.st_mtime;
+			char time[100];
+			std::strftime(time, sizeof(time), "%Y-%m-%d %H:%M:%S", std::localtime(&modified));
+			off_t filesize = file_info.st_size;
+			file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
+			file << "<td>" << time << "</td>\n";
+			file << "<td>" << filesize << "</td>\n";
+		}
+		else{
+			file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
+			file << "<td>" << "Date not found" << "</td>\n";
+			file << "<td>" << "Filesize not found" << "</td>\n";
+		}
+		file << "</tr>\n";
+	}
+	closedir(dir);
+	file << "</table>\n</body>\n"
+			"</html>\n";
+	file.close();
+}
+
+void	Response::upload(char *file){
+	struct stat file_info;
+
+	if (stat(file, &file_info) == 0) {
+		off_t size = file_info.st_size;
+		std::string filepath = std::string("/Users/dyeboa/Documents/Webserv/public/upload/filetoupload") + ".txt";
+		std::ofstream file(filepath);
+		size_t packetsize = 4096;
+		size_t dataSent = 0;
+		while (dataSent < size){
+			size_t remaining = _response.getResponseString().size() - dataSent;
+			size_t currentpacket = std::min(remaining, packetsize);
+			file << file + dataSent;
+			dataSent += 4096;
+		}
+	}
+	else {
+		std::cout << "Uploading goes wrong" << std::endl;
+	}
+}
+
+std::cout << "size = " << _response.getResponseString().size() << std::endl;
+	if (_response.getResponseString().size() > 64000){
+		const char* data = _response.getResponseString().c_str();
+		size_t packetsize = 4096;
+		size_t dataSent = 0;
+		while (dataSent < _response.getResponseString().size()){
+			size_t remaining = _response.getResponseString().size() - dataSent;
+			size_t currentpacket = std::min(remaining, packetsize);
+			write(_socket, data + dataSent, currentpacket);
+			dataSent += 4096;
+		}
+	}
+	else
+    	write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());

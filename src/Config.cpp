@@ -1,7 +1,7 @@
 #include "../include/Config.h"
 // #include "Config.hpp"
 #include <iostream>
-#include <ifstream>
+#include <fstream>
 
 Config::Config() : port()
 {
@@ -76,40 +76,26 @@ void Config::setWithFile(const char *fileLocation)
 }
 
 
-
-void	Config::openConfig(ifstream& config_file, int argc, char *argv[]){
-	try {
-		if (argc == 2){
-			if (!config_file.open(argv[1]))
-				throw std::exception("Error: Can't open configfile.")
-		}
-		else{
-			if (!config_file.open(this->_configFile))
-				throw std::exception("Error: Can't open configfile.")
-		}
-	}
-}
-
-void	createConfig(ifstream& config_file){
+// void	createConfig(){
 	
-	map<std::string, map<std::string, int> > _mapConfig;
-	string	line;
-	int i = 0;
-	while (getline(config_file, line) && i < 6){
-		//get first 6 line from config - defaultConfig
-		// hoe gaan andere configfiles?
-	}
-	while (getline(config_file, line)){
-		//get for each location variables - int = enum
-	}
-}
+// 	map<std::string, map<std::string, int> > _mapConfig;
+// 	string	line;
+// 	int i = 0;
+// 	while (getline(config_file, line) && i < 6){
+// 		//get first 6 line from config - defaultConfig
+// 		// hoe gaan andere configfiles?
+// 	}
+// 	while (getline(config_file, line)){
+// 		//get for each location variables - int = enum
+// 	}
+// 	;
+// }
 
-void	Config::initialiseConfig(int argc, char *argv[]){
-	ifstream	config_file;
-	
-	openConfig(config_file, argc, argv);
-	createConfig(config_file);
-}
+// void	Config::initialiseConfig(int argc, char *argv[]){
+
+// 	// setWithFile(const char *fileLocation);
+// 	// createConfig(config_file);
+// }
 // ---------------------- Config Exception Functions ------------------------
 
 const char *Config::FileNotRetrievedException::what() const throw()

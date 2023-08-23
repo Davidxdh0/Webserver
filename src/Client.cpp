@@ -61,6 +61,21 @@ void Client::setResponse() {
     _response.setResponseString();
 }
 
+// to check size of response - 
+// std::cout << "size = " << _response.getResponseString().size() << std::endl;
 void Client::writeResponse() {
-    write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
+	std::cout << "size = " << _response.getResponseString().size() << std::endl;
+	if (_response.getResponseString().size() > 64000){
+		const char* data = _response.getResponseString().c_str();
+		size_t packetsize = 4096;
+		size_t dataSent = 0;
+		while (dataSent < _response.getResponseString().size()){
+			size_t remaining = _response.getResponseString().size() - dataSent;
+			size_t currentpacket = std::min(remaining, packetsize);
+			write(_socket, data + dataSent, currentpacket);
+			dataSent += 4096;
+		}
+	}
+	else
+    	write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
 }

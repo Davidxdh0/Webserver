@@ -69,7 +69,16 @@ else {
 	}
 }
 
+config file
+	https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts
+	https://www.solo.io/topics/nginx/nginx-configuration/
+
 nginx
 list directories
 	https://docs.nginx.com/nginx/admin-guide/web-server/web-server/
 	https://www.oreilly.com/library/view/nginx-http-server/9781788623551/052b1381-d911-46df-8bd2-1bebf70f44b8.xhtml
+	https://askubuntu.com/questions/979587/nginx-loads-index-html-automatically-without-being-instructed-to
+	https://trac.nginx.org/nginx/browser/nginx/src/http/modules/ngx_http_autoindex_module.c#L630
+	https://serverfault.com/questions/326810/replicating-userdir-apache-functionality-in-nginx
+	stat:
+		time_t    st_mtime   Time of last data modification. 

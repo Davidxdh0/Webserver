@@ -24,7 +24,9 @@ public:
     void            loadCgi(const Path& path);
     void            setResponseString();
     std::string     getResponseString() { return _responseString; };
-
+	void			showDir(void);
+	void			createIndex(void);
+	void			upload(char *file);
 private:
 
     Path            _path;

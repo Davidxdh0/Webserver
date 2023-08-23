@@ -87,13 +87,13 @@ class Config
 		std::string		index;
 		std::vector<std::string*> location;
 		// Location		*location; // Can be multiple make vector or map
-			root
-			name
-			index
-			allow_methods
-			autoindex
-			upload store
-			location handling
+			// root
+			// name
+			// index
+			// allow_methods
+			// autoindex
+			// upload store
+			// location handling
 		// uint32_t		port;
 		// std::string		error_page; // can be multiple so best make map
 
