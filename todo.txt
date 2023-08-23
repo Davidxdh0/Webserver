@@ -1,4 +1,5 @@
-- Directory listing
+
 - File upload
-- Correctly write to socket client->writeresponse()
+- Correctly write to socket client->writeresponse() -> write nu chunks van 64k bytes
 - Set POST data in the env off cgi
+- Directory listing -> werkt, maar moet checks maken voor: autoindex on/off, path waar ie is, en naar error page als er geen index.html is.
