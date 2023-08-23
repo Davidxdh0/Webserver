@@ -26,7 +26,7 @@ public:
     std::string     getResponseString() { return _responseString; };
 	void			showDir(void);
 	void			createIndex(void);
-	void			upload(char *file);
+	void			upload(std::stringstream &requestRaw);
 private:
 
     Path            _path;

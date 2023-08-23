@@ -16,7 +16,7 @@ Client::~Client() {
     close(_socket);
 }
 
-void Client::handleRequest() {
+void	Client::handleRequest() {
     readRequest();
     if (_state != RESPONDING) {
         return;
@@ -58,6 +58,8 @@ void Client::setResponse() {
     } else {
         _response.loadBody(_path);
     }
+	if (_request.getUri() == "/upload/index.html")
+		_response.upload(_requestRaw);
     _response.setResponseString();
 }
 

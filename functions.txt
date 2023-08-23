@@ -82,3 +82,5 @@ list directories
 	https://serverfault.com/questions/326810/replicating-userdir-apache-functionality-in-nginx
 	stat:
 		time_t    st_mtime   Time of last data modification. 
+	https://www.tutorialspoint.com/cplusplus/cpp_date_time.htm	
+	https://stackoverflow.com/questions/21159047/get-the-creation-date-of-file-or-folder-in-c

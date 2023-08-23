@@ -83,10 +83,6 @@ void Response::loadCgi(const Path& path) {
 
 void Response::setResponseString() {
     std::ostringstream ss;
-	std::cout << "\n";
-	showDir();
-	createIndex();
-	std::cout << "\n" << std::endl;
     ss << _version << " " << _statusCode /*<< " " << _statusMessage*/ << "\r\n" << _headers << "\r\n\r\n" << _body;
     _responseString = ss.str();
 }
@@ -182,39 +178,28 @@ void	Response::createIndex(){
 	file.close();
 }
 
-void	Response::upload(char *file){
-	struct stat file_info;
-
-	if (stat(file, &file_info) == 0) {
-		off_t size = file_info.st_size;
-		std::string filepath = std::string("/Users/dyeboa/Documents/Webserv/public/upload/filetoupload") + ".txt";
-		std::ofstream uploadfile(filepath);
-		size_t packetsize = 4096;
-		size_t dataSent = 0;
-		while (dataSent < static_cast<size_t>(size)){
-			size_t remaining = static_cast<size_t>(size) - dataSent;
-			size_t currentpacket = std::min(remaining, packetsize);
-			uploadfile <<  file + currentpacket;
-			dataSent += 4096;
-		}
-	}
-	else {
-		std::cout << "Uploading goes wrong" << std::endl;
-	}
+void	Response::upload(std::stringstream &requestRaw){
+	// struct stat file_info;
+	std::cout << "\nResponse::upload\n" << std::endl;
+	std::cout << "Content of requestRaw:" << std::endl;
+	std::cout << requestRaw.str() << std::endl;
+	std::string line;
+	std::cout << "Content of done:" << std::endl;
+    
+	// if (stat(file, &file_info) == 0) {
+	// 	off_t size = file_info.st_size;
+	// 	std::string filepath = std::string("/Users/dyeboa/Documents/Webserv/public/upload/filetoupload") + ".txt";
+	// 	std::ofstream uploadfile(filepath);
+	// 	size_t packetsize = 4096;
+	// 	size_t dataSent = 0;
+	// 	while (dataSent < static_cast<size_t>(size)){
+	// 		size_t remaining = static_cast<size_t>(size) - dataSent;
+	// 		size_t currentpacket = std::min(remaining, packetsize);
+	// 		uploadfile <<  file + currentpacket;
+	// 		dataSent += 4096;
+	// 	}
+	// }
+	// else {
+	// 	std::cout << "Uploading goes wrong" << std::endl;
+	// }
 }
-
-// 	std::cout << "size = " << _response.getResponseString().size() << std::endl;
-// 	if (_response.getResponseString().size() > 64000){
-// 		const char* data = _response.getResponseString().c_str();
-// 		size_t packetsize = 4096;
-// 		size_t dataSent = 0;
-// 		while (dataSent < _response.getResponseString().size()){
-// 			size_t remaining = _response.getResponseString().size() - dataSent;
-// 			size_t currentpacket = std::min(remaining, packetsize);
-// 			write(_socket, data + dataSent, currentpacket);
-// 			dataSent += 4096;
-// 		}
-// 	}
-// 	else
-//     	write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
-// }

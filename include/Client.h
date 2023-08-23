@@ -21,7 +21,7 @@ public:
     void                setResponse();
     void                writeResponse();
     int                 getState() { return _state; };
-
+	
 private:
 
     Request             _request;

@@ -12,9 +12,7 @@ Request::Request(const Request &src) {
 }
 
 void Request::parseRequest(std::stringstream &requestRaw) {
-
     std::string line;
-
 
     requestRaw >> _method >> _uri >> _version;
     getline(requestRaw, line, '\r');
