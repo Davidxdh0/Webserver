@@ -13,8 +13,6 @@ Config::Config(const char *fileLocation)
 	try
 	{
 		this->setWithFile(fileLocation);
-
-
 	}
 	catch (Config::FileNotRetrievedException &e)
 	{

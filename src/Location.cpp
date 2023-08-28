@@ -34,7 +34,7 @@ Location& Location::operator=(const Location& other)
 
     if (this != &other)
     {
-        
+        *this = other;
     }
 
     return (*this);

@@ -6,7 +6,7 @@
 #    By: rubennijhuis <rubennijhuis@student.coda      +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/02 20:54:00 by rubennijhui   #+#    #+#                  #
-#    Updated: 2023/08/19 18:18:58 by dyeboa        ########   odam.nl          #
+#    Updated: 2023/08/28 21:06:39 by dyeboa        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,9 @@ SRCS		=	main.cpp \
 				Response.cpp \
 				ServerBlock.cpp \
 				utils.cpp \
-				Path.cpp
+				Path.cpp \
+				upload.cpp \
+				ListDirectories.cpp
 
 OBJS		=	$(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 

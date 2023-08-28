@@ -84,3 +84,13 @@ list directories
 		time_t    st_mtime   Time of last data modification. 
 	https://www.tutorialspoint.com/cplusplus/cpp_date_time.htm	
 	https://stackoverflow.com/questions/21159047/get-the-creation-date-of-file-or-folder-in-c
+
+http post
+	https://javaplant-tistory-com.translate.goog/18?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=nl
+
+isdirectory
+	https://stackoverflow.com/questions/1542763/what-is-the-correct-way-to-use-the-stat-function-to-test-if-a-dirent-is-a-dire
+	https://stackoverflow.com/questions/146924/how-can-i-tell-if-a-given-path-is-a-directory-or-a-file-c-c
+
+cgicgi
+	https://www.tutorialspoint.com/cplusplus/cpp_web_programming.htm

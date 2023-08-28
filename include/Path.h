@@ -16,6 +16,7 @@ public:
     Path(const Path &src);
     ~Path();
 
+	void   			setFullPath(std::string newPath) { _full_path = newPath; };
     std::string     getFullPath() const { return _full_path; };
     std::string     getExtension() { return _extension; };
     std::string     getFilename() { return _filename; };

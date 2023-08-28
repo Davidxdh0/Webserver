@@ -1,0 +1,9 @@
+- configfile parsen
+- File upload
+- File deletion - DELETE method check
+- Redirect na file deletion & sommige error pages?
+- handle response - niet altijd statuscode 200.
+- CGI
+- Set POST data in the env off cgi
+- Directory listing -> checks maken voor: autoindex on/off, 
+	path waar ie is, en naar error page als er geen index.html is.

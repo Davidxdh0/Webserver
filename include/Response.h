@@ -24,11 +24,16 @@ public:
     void            loadCgi(const Path& path);
     void            setResponseString();
     std::string     getResponseString() { return _responseString; };
+
+	bool 			RequestDirectory(void);
+	std::string		deletePage();
 	void			showDir(void);
 	void			createIndex(void);
+	bool 			isDirectory(void);
+	bool			findFile(std::string file, std::string path);
 	void			upload(std::stringstream &requestRaw);
-private:
 
+private:
     Path            _path;
     std::string     _version;
     std::string     _statusCode;

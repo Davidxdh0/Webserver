@@ -58,15 +58,17 @@ void Client::setResponse() {
     } else {
         _response.loadBody(_path);
     }
-	if (_request.getUri() == "/upload/index.html")
+	if (_request.getUri() == "/upload/upload.php")
 		_response.upload(_requestRaw);
+	if (_request.getUri() == "/delete_file?filename=index.html")
+		_response.deletePage();
     _response.setResponseString();
 }
 
 // to check size of response - 
 // std::cout << "size = " << _response.getResponseString().size() << std::endl;
 void Client::writeResponse() {
-	std::cout << "size = " << _response.getResponseString().size() << std::endl;
+	std::cout << "WriteResponseSize = " << _response.getResponseString().size() << std::endl;
 	if (_response.getResponseString().size() > 64000){
 		const char* data = _response.getResponseString().c_str();
 		size_t packetsize = 4096;
