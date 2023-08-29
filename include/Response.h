@@ -9,6 +9,8 @@
 #include <string>
 #include <sstream>
 #include "Path.h"
+#include "Request.h"
+
 
 class Response {
 
@@ -20,18 +22,24 @@ public:
     void            setStatusCode(const std::string &statusCode);
     void            setStatusMessage(const std::string &statusMessage);
     void            setHeaders(const std::string &headers);
+	std::string		getStatusCode(void);
+	std::string		getStatusMessage(void);
+	
     void            loadBody(const Path& path);
     void            loadCgi(const Path& path);
     void            setResponseString();
     std::string     getResponseString() { return _responseString; };
 
 	bool 			RequestDirectory(void);
-	std::string		deletePage();
+	void			directoryListing(std::string dirpath);
+	void			deletePage(std::string path);
 	void			showDir(void);
 	void			createIndex(void);
-	bool 			isDirectory(void);
+	bool 			isDirectory(std::string path);
 	bool			findFile(std::string file, std::string path);
 	void			upload(std::stringstream &requestRaw);
+	void 			setErrorPage(Path &obj);
+	bool			checkMethod(std::string &str);
 
 private:
     Path            _path;

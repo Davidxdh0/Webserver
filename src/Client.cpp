@@ -16,6 +16,10 @@ Client::~Client() {
     close(_socket);
 }
 
+const Request&	Client::getRequest()const{return _request;}
+const Response&	Client::getResponse()const{return _response;}
+const Path&		Client::getPath()const{return _path;}
+
 void	Client::handleRequest() {
     readRequest();
     if (_state != RESPONDING) {
@@ -59,15 +63,21 @@ void Client::setResponse() {
     }
 	if (_request.getUri() == "/upload/upload.php")
 		_response.upload(_requestRaw);
-	if (_request.getUri() == "/delete_file?filename=index.html")
-		_response.deletePage();
+	if (_request.getMethod() == "DELETE")
+		_response.deletePage(_path.getFullPath());
+	if ( _response.isDirectory(_path.getFullPath())){
+		_response.directoryListing(_path.getFullPath());
+	}
+	if (_response.getStatusCode() != "200"){
+		_response.setErrorPage(_path);
+	}
     _response.setResponseString();
 }
 
 // to check size of response - 
 // std::cout << "size = " << _response.getResponseString().size() << std::endl;
+// std::cout << "WriteResponseSize = " << _response.getResponseString().size() << std::endl;
 void Client::writeResponse() {
-	// std::cout << "WriteResponseSize = " << _response.getResponseString().size() << std::endl;
 	if (_response.getResponseString().size() > 64000){
 		const char* data = _response.getResponseString().c_str();
 		size_t packetsize = 4096;
@@ -76,10 +86,10 @@ void Client::writeResponse() {
 			size_t remaining = _response.getResponseString().size() - dataSent;
 			size_t currentpacket = std::min(remaining, packetsize);
 			write(_socket, data + dataSent, currentpacket);
-			//check kque
 			dataSent += 4096;
 		}
 	}
 	else
     	write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
 }
+

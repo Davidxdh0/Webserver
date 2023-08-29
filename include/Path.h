@@ -14,6 +14,7 @@ public:
     Path();
     Path(const std::string& root, const std::string& uri);
     Path(const Path &src);
+	Path& operator=(const Path& other);
     ~Path();
 
 	void   			setFullPath(std::string newPath) { _full_path = newPath; };

@@ -1,5 +1,10 @@
 Functions and information:
 
+Main:
+https://42seoul-gitbook-io.translate.goog/webserv/or-cgi?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=nl&_x_tr_hist=true
+
+
+
 int socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	https://www.geeksforgeeks.org/socket-programming-cc/
 	https://man.freebsd.org/cgi/man.cgi?query=socket&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html
@@ -75,6 +80,7 @@ config file
 
 nginx
 list directories
+	https://nginx.org/en/docs/http/ngx_http_index_module.html
 	https://docs.nginx.com/nginx/admin-guide/web-server/web-server/
 	https://www.oreilly.com/library/view/nginx-http-server/9781788623551/052b1381-d911-46df-8bd2-1bebf70f44b8.xhtml
 	https://askubuntu.com/questions/979587/nginx-loads-index-html-automatically-without-being-instructed-to
@@ -101,4 +107,18 @@ form
 delete
 	https://reqbin.com/Article/HttpDelete
 	https://reqbin.com/req/cvy4trgb/delete-request-example
+	https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
+!!!files!!!
+	https://gehrcke.de/2011/06/reading-files-in-c-using-ifstream-dealing-correctly-with-badbit-failbit-eofbit-and-perror/
+	https://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exists-using-standard-c-c11-14-17-c
+	https://stackoverflow.com/questions/40163270/what-is-s-isreg-and-what-does-it-do
+	https://www.parashift.com/c++-faq-lite/iostream-vs-stdio.html
+	https://stackoverflow.com/questions/10301288/is-my-fstream-bad-or-not-good
+
+status Codes
+	403 https://serverfault.com/questions/748561/nginx-doesnt-have-permission-to-access-files-with-the-same-ownership
+
+redirect
+	https://blog.hubspot.com/website/html-redirect
+	https://www.redirect-checker.org/

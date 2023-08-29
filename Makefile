@@ -6,7 +6,7 @@
 #    By: rubennijhuis <rubennijhuis@student.coda      +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/02 20:54:00 by rubennijhui   #+#    #+#                  #
-#    Updated: 2023/08/28 21:06:39 by dyeboa        ########   odam.nl          #
+#    Updated: 2023/08/29 23:48:30 by dyeboa        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,8 +36,9 @@ SRCS		=	main.cpp \
 				ServerBlock.cpp \
 				utils.cpp \
 				Path.cpp \
-				upload.cpp \
-				ListDirectories.cpp
+				FileHandling.cpp \
+				ListDirectories.cpp \
+				Delete.cpp
 
 OBJS		=	$(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 
@@ -68,6 +69,6 @@ clean:
 fclean: clean
 	@rm -rf $(NAME)
 
-re: fclean all
+re: fclean all ./$(OUTPUT) $(ASSET)
 
 .PHONY: run all clean fclean re

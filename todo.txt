@@ -3,9 +3,7 @@ Ruben
 
 David
 - Directory listing 
-	- autoindex on/off, 
-	- error page als er geen index.html is.
-	- stringstream naar _body
+	- autoindex on/off - config location
 - File upload - config Location
 - File deletion - DELETE method check - directory 
 
@@ -20,3 +18,7 @@ Alle
 - parse response
 - handle response
 	- Error pages op statuscode
+
+eval:
+Try a redirected URL.
+Try a wrong URL on the server.

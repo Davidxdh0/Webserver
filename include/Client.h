@@ -21,6 +21,9 @@ public:
     void                setResponse();
     void                writeResponse();
     int                 getState() { return _state; };
+	const Request		&getRequest() const;
+	const Response		&getResponse() const;
+	const Path			&getPath() const;
 	
 private:
 

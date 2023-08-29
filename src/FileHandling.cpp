@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-
+#include <fstream> 
 /*
 isUpload()
 checkMethods accepted
@@ -34,12 +34,11 @@ bool	isUpload()
 }
 
 //change to config variables later
-bool	checkMethods()
+bool	Response::checkMethod(std::string &str)
 {	
-	std::string method = "POST";
 	std::string array[3] = {"GET", "POST", "DELETE"};
 	for (size_t i = 0; i < 3; i++){
-		if (method == array[i])
+		if (str == array[i])
 			return true;
 	}
 	return false;
@@ -49,16 +48,23 @@ bool	checkMethods()
 
 // }
 
-// bool	fileOpen(){
-
+// bool	Response::fileOpen(std::string filepath){
+// 	std::fstream file;
+//   	file.open(filepath, std::fstream::in);
+// 	if (FILE *file = fopen(filepath.c_str(), "r")) {
+//         fclose(file);
+//         return true;
+//     } else {
+//         return false;
+//     }   
 // }
 
 int uploadFile(){
 
 	if (!isUpload())
 		return 0;
-	if (!checkMethods())
-		return 0;
+	// if (!checkMethod())
+	// 	return 0;
 	// if (!fileExist())
 	// 	return 0;
 	// if (!fileOpen())
