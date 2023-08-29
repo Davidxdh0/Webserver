@@ -243,9 +243,10 @@
             </table>
         </div>
     </div>
-	<form action="/upload" method="post">
-		<input type="file" id="myFile" name="filename">
-		<input type="submit">
+	<form method="post" enctype="multipart/form-data">
+		<label for="file">File</label>
+		<input id="file" name="file" type="file" />
+		<button>Upload</button>
 	</form>
 </body>
 </html>

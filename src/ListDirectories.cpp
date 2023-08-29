@@ -89,7 +89,8 @@ void	Response::createIndex(){
 			file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
 			file << "<td>" << time << "</td>\n";
 			file << "<td>" << filesize << "</td>\n";
-			file << "<td><a href=\"/delete_file?filename=/upload/" << ent->d_name << "\">Click to delete: " << ent->d_name << "</a></td>\n";
+			file << "<td><a href= " << remove(ent->d_name) << ">"  << ent->d_name << "\">Click to delete: " << ent->d_name << "</a></td>\n";
+			// file << "<td><a href=\"/delete_file?filename=/upload/" << ent->d_name << "\">Click to delete: " << ent->d_name << "</a></td>\n";
 		}
 		else{
 			file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
@@ -148,6 +149,8 @@ bool Response::RequestDirectory(void)
 
 std::string	Response::deletePage()
 {
+	// if (method == delete )
+
 	// int pos = _path.getFilename().find("delete_file?filename=");
 	// std::string name = _path.getFilename().substr(pos);
 	// std::cout << name << std::endl;

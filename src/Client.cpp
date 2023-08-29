@@ -45,7 +45,6 @@ int Client::readRequest() {
 void Client::setResponse() {
     _response.setVersion("HTTP/1.1");
     _response.setStatusCode("200");
-    _response.setStatusMessage("OK");
     if (_path.getExtension() == "css") {
         _response.setHeaders("Content-Type: text/css");
     } else if (_path.getExtension() == "gif") {
@@ -68,7 +67,7 @@ void Client::setResponse() {
 // to check size of response - 
 // std::cout << "size = " << _response.getResponseString().size() << std::endl;
 void Client::writeResponse() {
-	std::cout << "WriteResponseSize = " << _response.getResponseString().size() << std::endl;
+	// std::cout << "WriteResponseSize = " << _response.getResponseString().size() << std::endl;
 	if (_response.getResponseString().size() > 64000){
 		const char* data = _response.getResponseString().c_str();
 		size_t packetsize = 4096;
@@ -77,6 +76,7 @@ void Client::writeResponse() {
 			size_t remaining = _response.getResponseString().size() - dataSent;
 			size_t currentpacket = std::min(remaining, packetsize);
 			write(_socket, data + dataSent, currentpacket);
+			//check kque
 			dataSent += 4096;
 		}
 	}

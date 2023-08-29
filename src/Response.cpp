@@ -83,6 +83,7 @@ void Response::loadCgi(const Path& path) {
 
 void Response::setResponseString() {
     std::ostringstream ss;
+	// createIndex();
     ss << _version << " " << _statusCode /*<< " " << _statusMessage*/ << "\r\n" << _headers << "\r\n\r\n" << _body;
     _responseString = ss.str();
 }

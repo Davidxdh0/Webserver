@@ -94,3 +94,11 @@ isdirectory
 
 cgicgi
 	https://www.tutorialspoint.com/cplusplus/cpp_web_programming.htm
+
+form
+	https://www.freecodecamp.org/news/upload-files-with-html/
+
+delete
+	https://reqbin.com/Article/HttpDelete
+	https://reqbin.com/req/cvy4trgb/delete-request-example
+
