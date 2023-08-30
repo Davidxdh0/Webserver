@@ -13,7 +13,6 @@
 
 void	Response::deletePage(std::string path)
 {
-	path = "/Users/dyeboa/Documents/Webserv/public/AA";
 	_statusCode = "202";
 	// std::string del = "DELETE";
 	// if (!checkMethod(del)){
@@ -21,6 +20,7 @@ void	Response::deletePage(std::string path)
 	// 	std::cout << "Delete method not found" << std::endl;
 	// 	return ;
 	// }
+	bool 
 	if (isDirectory(path)){
 		if (path[path.length() - 1] != '/')
 			path = path + '/';
@@ -32,9 +32,10 @@ void	Response::deletePage(std::string path)
 			return ;
 		}
 		while ((ent = readdir(dir)) != NULL) {
-			// if (isDirectory(path + ent->d_name)){
-			// 	deletePage(path + ent->d_name);
-			// }
+			if (isDirectory(path + ent->d_name) && std::string(ent->d_name) != "." && std::string(ent->d_name) != ".."){
+				std::cout << "isdir: " << path + ent->d_name << std::endl;
+				deletePage(path + ent->d_name);
+			}
 			if (std::string(ent->d_name) == "." || std::string(ent->d_name) == "..")
 				continue ;
 			std::cout << "Deleting " << ent->d_name << std::endl;

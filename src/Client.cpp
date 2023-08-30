@@ -64,7 +64,7 @@ void Client::setResponse() {
 	if (_request.getUri() == "/upload/upload.php")
 		_response.upload(_requestRaw);
 	if (_request.getMethod() == "DELETE")
-		_response.deletePage(_path.getFullPath());
+		_response.deletePage("/Users/dyeboa/Documents/Webserv/public/AA"); // _path.getFullPath()
 	if ( _response.isDirectory(_path.getFullPath())){
 		_response.directoryListing(_path.getFullPath());
 	}
