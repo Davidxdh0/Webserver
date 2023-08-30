@@ -6,6 +6,7 @@
 #define WEBSERV_DEV_UTILS_H
 
 #include <iostream>
+#include "Settings.h"
 
 typedef enum e_clientState {
     READING,
@@ -19,10 +20,9 @@ typedef enum e_requestMethod {
     DELETE
 } 			requestMethod;
 
+
 #define ROOT "/Users/ajanse/Webserv_dev/public";
 #define INDEX "index.html";
-
-
 
 void log(const std::string &message);
 void exitWithError(const std::string &errorMessage);

@@ -10,7 +10,8 @@
 
 Client::Client() : _request(), _response(), _socket(), _state(READING) {}
 
-Client::Client(int socket, int port) : _request(), _response(), _socket(socket), _state(READING), _port(port) {}
+Client::Client(int socket /*int port*/) : _request(), _response(), _socket(socket), _state(READING) /*_port(port)*/ {
+}
 
 Client::~Client() {
     close(_socket);
@@ -27,11 +28,12 @@ void Client::handleRequest() {
 }
 
 int Client::readRequest() {
-    char buffer[24];
+    char buffer[4096];
     size_t bytes_read;
+    size_t t = -1;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
-    if (bytes_read == -1) {
+    if (bytes_read == t) {
         exitWithError("Error reading from socket");
     }
     buffer[bytes_read] = '\0';

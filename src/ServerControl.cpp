@@ -5,9 +5,10 @@
 #include <sys/event.h>
 #include <sstream>
 #include <unistd.h>
-#include "../include/ServerControl.h"
-#include "../include/utils.h"
+#include "ServerControl.h"
+#include "utils.h"
 #include "Client.h"
+#include "Server.h"
 
 ServerControl::ServerControl() : _kq_fd(kqueue()), _servers()
 {
@@ -15,15 +16,14 @@ ServerControl::ServerControl() : _kq_fd(kqueue()), _servers()
         exitWithError("Failed to create kqueue");
 }
 
-ServerControl::ServerControl(vector<Config> configs) : _kq_fd(kqueue()), _servers()
+ServerControl::ServerControl(Config*  port_configs) : _kq_fd(kqueue()), _servers()
 {
-    size_t size = configs.size();
     if (_kq_fd == -1)
         exitWithError("Failed to create kqueue");
-    for (size_t i = 0; i < size; i++)
+    for (size_t i = 0; port_configs[i].getPort() != 0; i++)
     {
-        log("Starting server on port: " + to_string(i));
-        ServerBlock  tmp("0.0.0.0", configs[i].getPort());
+        Server  tmp("0.0.0.0", port_configs[i]);
+        log("Starting server on port: " + to_string(port_configs[i].getPort()));
         tmp.startListen(_kq_fd);
         _servers.push_back(tmp);
     }
@@ -36,7 +36,7 @@ ServerControl::~ServerControl()
     close(_kq_fd);
 }
 
-ServerBlock* ServerControl::checkIdentIsServer(int ident)
+Server* ServerControl::checkIdentIsServer(int ident)
 {
     for (size_t i = 0; i < _servers.size(); i++)
     {
@@ -54,7 +54,7 @@ void   ServerControl::webservLoop() {
         EV_SET(events, 0, 0, 0, 0, 0, 0);
         kevent(_kq_fd, nullptr, 0, events, 1, &timeout);
         if (events->ident != 0) {
-            ServerBlock *tmp = checkIdentIsServer(events->ident);
+            Server *tmp = checkIdentIsServer(events->ident);
             if (tmp != nullptr) {
                 tmp->acceptConnection(_kq_fd);
             } else {

@@ -11,13 +11,16 @@
 #include <cstdlib>
 #include <string>
 #include <sys/event.h>
+#include "Config.h"
 
 
-class ServerBlock
+class Server
 {
 public:
-    ServerBlock(const std::string& ip_address, int port);
-    ~ServerBlock();
+    Server(const std::string& ip_address, Config& conf);
+    ~Server();
+
+
     void startListen(int kqueuFd) const;
     void acceptConnection(int kqueu_fd);
     int getSocket() const { return _socket; }
@@ -26,16 +29,12 @@ private:
     std::string         _ip_address;
     int                 _port;
     int                 _socket;
-    int                 _new_socket;
     struct sockaddr_in  _socketAddress;
     unsigned int        _socketAddress_len;
-    std::string         _serverMessage;
-
+    Settings*           _virtualhosts;
 
     int         createSocket();
     void        closeServer() const;
-    static std::string buildResponse();
-    void        sendResponse();
     void        createClient(int kqueu_fd, int client_socket) const;
 };
 

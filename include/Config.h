@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <string>
+#include "Settings.h"
 
 /**
  * @class
@@ -13,19 +14,22 @@
  * for the webserv program. Using this class you can read and set the
  * configurations
  */
-class Config
-{
+class Config {
 	public:
-		Config(void);
+		Config();
 		Config(const Config& other);
         Config(int port);
-		~Config(void);
+		~Config();
 
 		Config &operator=(const Config& other);
 
+        // ------------------- Config setters ------------------------
+        void    setPort(int port) { this->_port = port; };
+        void    setHosts(Settings* hosts) { this->_hosts = hosts; };
 		// ------------------- Config getters ------------------------
 
-        int getPort(void) const { return this->port; };
+        int getPort() const { return this->_port; };
+        Settings* getHosts() const { return this->_hosts; };
         // ------------------- Config member functions ------------------------
 
 		void setWithFile(const char *fileLocation);
@@ -46,27 +50,9 @@ class Config
 
 
 	private:
-		// File
-		std::ifstream	_configFile;
-		std::string		_fileLocation;
 
-		// Servers
-
-		// Misc configs
-		int		        port;
-		std::string		server_name;
-		std::string		error_page; // can be multiple so best make map
-		std::string		client_max_body_size; // can be formatted in different ways
-
-		// Location		*location; // Can be multiple make vector or map
-			// name
-			// root
-			// index
-			// allow_methods
-			// autoindex
-			// upload store
-			// location handling
-
+		int		        _port;
+        Settings*       _hosts;
 };
 
 #endif

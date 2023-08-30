@@ -14,7 +14,7 @@
 class Client {
 public:
     Client();
-    Client(int socket, int port);
+    Client(int socket /*int port*/);
     ~Client();
 
     void                handleRequest();
@@ -29,7 +29,7 @@ private:
     Response            _response;
     Path                _path;
     int                 _socket;
-    int                 _port;
+//    int                 _port;
     clientState         _state;
     std::stringstream   _requestRaw;
 

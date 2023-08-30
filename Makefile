@@ -26,10 +26,15 @@ OUTPUT		=	$(BIN_DIR)/$(EXEC_NAME)
 INC			=	-I $(INCLUDE_DIR)
 
 SRCS		=	main.cpp \
-				\
-				Config/Config.cpp \
-				Config/Server.cpp \
-				Config/Location.cpp \
+				Config.cpp \
+				Client.cpp \
+				Server.cpp \
+				Path.cpp \
+				ServerControl.cpp\
+				utils.cpp \
+				Request.cpp \
+				Response.cpp \
+				Settings.cpp \
 
 OBJS		=	$(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 
