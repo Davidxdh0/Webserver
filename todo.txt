@@ -2,11 +2,13 @@ Ruben
 - configfile parsen
 
 David
-- Directory listing 
-	- autoindex on/off - config location
+todo:
+- errorCodes neerzetten https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+- fileOpen algemene functie
 - File upload alles config Location
+
+- Directory listing - autoindex on/off - config location
 - File deletion - DELETE method 
-- errorCodes https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
 Alle
 - CGI 

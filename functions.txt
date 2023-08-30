@@ -109,7 +109,8 @@ delete
 	https://reqbin.com/req/cvy4trgb/delete-request-example
 	https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
-!!!files!!!
+files
+	https://www.geeksforgeeks.org/access-command-in-linux-with-examples/
 	https://gehrcke.de/2011/06/reading-files-in-c-using-ifstream-dealing-correctly-with-badbit-failbit-eofbit-and-perror/
 	https://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exists-using-standard-c-c11-14-17-c
 	https://stackoverflow.com/questions/40163270/what-is-s-isreg-and-what-does-it-do

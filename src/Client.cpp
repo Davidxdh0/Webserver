@@ -15,10 +15,10 @@ Client::Client(int socket) : _request(), _response(), _socket(socket), _state(RE
 Client::~Client() {
     close(_socket);
 }
-
-const Request&	Client::getRequest()const{return _request;}
-const Response&	Client::getResponse()const{return _response;}
-const Path&		Client::getPath()const{return _path;}
+std::stringstream&	Client::getRequestRaw(){return _requestRaw;}
+const Request&		Client::getRequest()const{return _request;}
+const Response&		Client::getResponse()const{return _response;}
+const Path&			Client::getPath()const{return _path;}
 
 void	Client::handleRequest() {
     readRequest();
@@ -50,11 +50,11 @@ void Client::setResponse() {
     _response.setVersion("HTTP/1.1");
     _response.setStatusCode("200");
     if (_path.getExtension() == "css") {
-        _response.setHeaders("Content-Type: text/css");
+        _response.setContentType("Content-Type: text/css");
     } else if (_path.getExtension() == "gif") {
-        _response.setHeaders("Content-Type: image/gif");
+        _response.setContentType("Content-Type: image/gif");
     } else {
-        _response.setHeaders("Content-Type: text/html");
+        _response.setContentType("Content-Type: text/html");
     }
     if (_path.getExtension() == "php") {
         _response.loadCgi(_path);
@@ -62,7 +62,7 @@ void Client::setResponse() {
         _response.loadBody(_path);
     }
 	if (_request.getUri() == "/upload/upload.php")
-		_response.upload(_requestRaw);
+		;//_response.upload(_requestRaw);
 	if (_request.getMethod() == "DELETE")
 		_response.deletePage("/Users/dyeboa/Documents/Webserv/public/AA"); // _path.getFullPath()
 	if ( _response.isDirectory(_path.getFullPath())){

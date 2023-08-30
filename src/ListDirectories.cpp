@@ -44,7 +44,7 @@ void	Response::directoryListing(std::string dirpath){
 		std::stringstream buffer;
 		buffer << t.rdbuf();
 		_body = buffer.str();
-		this->setHeaders("Content-Length: " + std::to_string(_body.length()) + "\r\n");
+		setContentLength();
 		return ;
 	}
 	std::stringstream file;

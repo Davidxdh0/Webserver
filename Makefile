@@ -6,7 +6,7 @@
 #    By: rubennijhuis <rubennijhuis@student.coda      +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/02 20:54:00 by rubennijhui   #+#    #+#                  #
-#    Updated: 2023/08/29 23:48:30 by dyeboa        ########   odam.nl          #
+#    Updated: 2023/08/30 18:09:01 by dyeboa        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,8 +37,7 @@ SRCS		=	main.cpp \
 				utils.cpp \
 				Path.cpp \
 				FileHandling.cpp \
-				ListDirectories.cpp \
-				Delete.cpp
+				ListDirectories.cpp 
 
 OBJS		=	$(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 

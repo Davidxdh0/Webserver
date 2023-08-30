@@ -1,7 +1,6 @@
 //
 // Created by Alle Janse on 6/13/23.
 //
-
 #include "Response.h"
 #include "Client.h" 
 #include "utils.h"
@@ -22,12 +21,16 @@ Response::Response() {}
 Response::~Response() {}
 
 void	Response::setVersion(const std::string &version) {_version = version;}
+void    Response::setBody(const std::string &body) { _body = body;}
 void	Response::setStatusCode(const std::string &statusCode) {_statusCode = statusCode;}
 void	Response::setStatusMessage(const std::string &statusMessage) {_statusMessage = statusMessage;}
 void	Response::setHeaders(const std::string &headers) {_headers = headers;}
+void    Response::setContentLength(){_contentLength = std::string("Content-Length: " + std::to_string(_body.length()));}
+void    Response::setContentType(const std::string &type){_contentType = type;}
 
 std::string	Response::getStatusCode(void) {return _statusCode;}
 std::string	Response::getStatusMessage(void) {return _statusMessage;}
+std::string	Response::getBody(){return _body;}
 
 void Response::loadBody(const Path& path) {
     std::ifstream file(path.c_str());
@@ -69,7 +72,7 @@ void Response::loadCgi(const Path& path) {
             _body += buffer;
             std::cout << "Read: " << _body << std::endl;
         }
-        this->setHeaders("Content-Length: " + std::to_string(_body.length()) + "\r\n");
+        setContentLength();
         fclose(temp);
     }
 }
@@ -104,30 +107,42 @@ void Response::setErrorPage(Path &obj){
 	}
 }
 
+// std::cout << _responseString << std::endl;
+//std::cout << "statuscode: " << _statusCode << "\n" << _contentType << "\r\n" << _contentLength << std::endl;
 void Response::setResponseString() {
     std::ostringstream ss;
-	// std::cout << "Body: " << _body << std::endl;
-	// std::cout << "statuscode: " << _statusCode << "\nHeaders: " <<_headers << std::endl;
-	this->setHeaders("Content-Length: " + std::to_string(_body.length() + 1) + "\r\n");
-    ss << _version << " " << _statusCode << " " << "OK" << "\r\n" << "Content-Type: text/html\r\n" <<_headers << "\r\n\r\n" << _body;
+	setContentLength();
+	errorCodeMessage();
+	setErrorCodeMessage(_statusCode);
+    ss << _version << " " << _statusCode << " " << _statusMessage << "\r\n" << _contentType << _contentLength << "\r\n\r\n" << _body;
     _responseString = ss.str();
-	// std::cout << _responseString << std::endl;
 }
 
-// void Response::errorCode() {
-// 	std::vector<std::pair<int, std::string> >	error;
-// 	error.push_back(std::make_pair(204, "204"));
-// 	error.push_back(std::make_pair(307, "307"));
-// 	error.push_back(std::make_pair(400, "400"));
-// 	error.push_back(std::make_pair(401, "401"));
-// 	error.push_back(std::make_pair(403, "403"));
-// 	error.push_back(std::make_pair(404, "404"));
-// 	error.push_back(std::make_pair(405, "405"));
-// 	error.push_back(std::make_pair(408, "408"));
-// 	error.push_back(std::make_pair(413, "413"));
-// 	error.push_back(std::make_pair(414, "414"));
-// 	error.push_back(std::make_pair(500, "500"));
-// 	error.push_back(std::make_pair(503, "503"));
-// 	error.push_back(std::make_pair(504, "504"));
-// 	error.push_back(std::make_pair(505, "505"));
-// }
+void Response::setErrorCodeMessage(std::string code){
+	for (size_t i = 0; i < _errorMessage.size(); i++) {
+		if (_errorMessage[i].first == code) {
+			_statusMessage = _errorMessage[i].second;
+			return ;
+		}
+	}
+	std::cout << "not found statusmessage" << std::endl;
+}
+
+//https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+void Response::errorCodeMessage() {
+	_errorMessage.push_back(std::make_pair("200", "OK"));
+	_errorMessage.push_back(std::make_pair("204", "No Content"));
+	_errorMessage.push_back(std::make_pair("307", "Temporary Redirect"));
+	_errorMessage.push_back(std::make_pair("400", "Bad Request"));
+	_errorMessage.push_back(std::make_pair("401", "Unauthorized"));
+	_errorMessage.push_back(std::make_pair("403", "Forbidden"));
+	_errorMessage.push_back(std::make_pair("404", "Not Found"));
+	_errorMessage.push_back(std::make_pair("405", "Method Not Allowed"));
+	_errorMessage.push_back(std::make_pair("408", "Request Timeout"));
+	_errorMessage.push_back(std::make_pair("413", "Payload Too Large"));
+	_errorMessage.push_back(std::make_pair("414", "URI Too Long"));
+	_errorMessage.push_back(std::make_pair("500", "Internal Server Error"));
+	_errorMessage.push_back(std::make_pair("503", "Service Unavailable"));
+	_errorMessage.push_back(std::make_pair("504", "Gateway Timeout"));
+	_errorMessage.push_back(std::make_pair("505", "HTTP Version Not Supported"));
+}

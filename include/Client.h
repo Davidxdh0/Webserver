@@ -21,10 +21,11 @@ public:
     void                setResponse();
     void                writeResponse();
     int                 getState() { return _state; };
+	std::stringstream   &getRequestRaw();
 	const Request		&getRequest() const;
 	const Response		&getResponse() const;
 	const Path			&getPath() const;
-	
+	static Client		&getInstance() {static Client instance; return instance;}
 private:
 
     Request             _request;
@@ -33,6 +34,7 @@ private:
     int                 _socket;
     clientState         _state;
     std::stringstream   _requestRaw;
+
 
 
     int                 readRequest();

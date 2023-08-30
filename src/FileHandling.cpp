@@ -1,13 +1,34 @@
 #include "Response.h"
-#include "Path.h"
-#include <iostream>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <fstream> 
+
+#include "iostream"
+
+bool Response::hasAccess(std::string filepath, std::fstream &filestr){
+
+	if (access (filepath.c_str(), F_OK) != 0){
+		setStatusCode("404");
+		return 0; // doesnt exist
+	}
+	if (filestr.is_open()){
+		setStatusCode("403");
+		return 0; //already open
+	}
+	filestr.open(filepath);
+	if (!filestr.is_open()){
+		setStatusCode("404");
+		return 0;; //not opened
+	}
+	if (access (filepath.c_str(), R_OK) != 0){
+		setStatusCode("403");
+		return 0; // no read access
+	}
+	char ch;
+    if (!(filestr >> ch)){
+		setStatusCode("404");
+		return 0;//emptyfile
+	}
+	return 1;
+}
+
 /*
 isUpload()
 checkMethods accepted
@@ -22,7 +43,9 @@ anders fout.
 */
 
 //change config file.
-bool	isUpload()
+
+
+bool	Response::isUpload()
 {
 	std::string path = "/Users/dyeboa/Documents/Webserv/public/upload";
     if (path.find("upload") != std::string::npos) {
@@ -44,22 +67,9 @@ bool	Response::checkMethod(std::string &str)
 	return false;
 }
 
-// bool	fileExist(){
 
-// }
 
-// bool	Response::fileOpen(std::string filepath){
-// 	std::fstream file;
-//   	file.open(filepath, std::fstream::in);
-// 	if (FILE *file = fopen(filepath.c_str(), "r")) {
-//         fclose(file);
-//         return true;
-//     } else {
-//         return false;
-//     }   
-// }
-
-int uploadFile(){
+int Response::uploadFile(){
 
 	if (!isUpload())
 		return 0;
@@ -74,13 +84,14 @@ int uploadFile(){
 	return 1;
 }
 
-void	Response::upload(std::stringstream &requestRaw){
+void	Response::upload(){
 	// struct stat file_info;
+
 	std::cout << "\nResponse::upload\n" << std::endl;
 	std::cout << "Content of requestRaw:" << std::endl;
-	requestRaw.str();
+	// getRequestRaw().str();
 	std::string line;
-	std::cout << _body << std::endl;
+	std::cout << getBody() << std::endl;
 	std::cout << "Content of done:" << std::endl;
     
 	// if (stat(file, &file_info) == 0) {
@@ -99,4 +110,61 @@ void	Response::upload(std::stringstream &requestRaw){
 	// else {
 	// 	std::cout << "Uploading goes wrong" << std::endl;
 	// }
+}
+
+void	Response::deletePage(std::string path)
+{
+	setStatusCode("202");
+	// std::string del = "DELETE";
+	// if (!checkMethod(del)){
+	// 	setStatusCode() _statusCode = 405;
+	// 	std::cout << "Delete method not found" << std::endl;
+	// 	return ;
+	// }
+	static int i = 0;
+	if (isDirectory(path)){
+		if (path[path.length() - 1] != '/')
+			path = path + '/';
+		DIR *dir;
+		struct dirent *ent;
+		if ((dir = opendir(path.c_str())) == NULL){
+			setStatusCode("403");
+			return ;
+		}
+		while ((ent = readdir(dir)) != NULL) {
+			if (isDirectory(path + ent->d_name) && std::string(ent->d_name) != "." && std::string(ent->d_name) != ".."){
+				deletePage(path + ent->d_name);
+				i++;
+				continue;
+			}
+			if (std::string(ent->d_name) == "." || std::string(ent->d_name) == ".."){
+				continue ;
+			}
+			if (remove((path + std::string(ent->d_name)).c_str()) != 0){
+				setStatusCode("405");
+			}
+		}
+		closedir(dir);
+	}
+	if (remove(path.c_str()) != 0 ){
+		setStatusCode("405");
+		return ;
+	}
+	i = 0;
+	sleep(2);
+	mkdir("public/AA", 0777);
+	std::ofstream MyFile("public/AA/first.txt");
+	std::ofstream MyFile1("public/AA/second.css");
+	std::ofstream MyFile2("public/AA/third.php");
+	std::ofstream MyFile3("public/AA/fourth");
+	std::ofstream MyFile4("public/AA/fifth.html");
+	
+	std::stringstream p;
+	p << 	"<html>\n"
+			"<body>\n"
+			"<h1>File deleted.</h1>\n"
+			"</body>\n"
+			"</html>\n";
+	setBody(p.str());
+	setStatusCode("200");
 }
