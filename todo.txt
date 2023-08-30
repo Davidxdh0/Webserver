@@ -4,8 +4,9 @@ Ruben
 David
 - Directory listing 
 	- autoindex on/off - config location
-- File upload - config Location
-- File deletion - DELETE method check - directory 
+- File upload alles config Location
+- File deletion - DELETE method 
+- errorCodes https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
 Alle
 - CGI 
@@ -17,7 +18,6 @@ Alle
 	- error codes
 - parse response
 - handle response
-	- Error pages op statuscode
 
 eval:
 Try a redirected URL.

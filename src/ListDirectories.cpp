@@ -32,20 +32,18 @@ todo:
 // std::cout << "_body\n\n" << _body << std::endl;
 // dirpath = "/Users/dyeboa/Documents/Webserv/public" + dirpath;
 // std::cout << "character: " << dirpath[strlen(dirpath.c_str()-1)] << std::endl;
+// std::cout << "directoryListing url: "<< dirpath << std::endl;
 void	Response::directoryListing(std::string dirpath){
 	DIR *dir;
 	struct dirent *ent;
-	std::cout << "directoryListing url: "<< dirpath << std::endl;
 
-	if (dirpath[strlen(dirpath.c_str()) - 1] != '/')
+	if (dirpath[dirpath.length() - 1] != '/')
 		dirpath = dirpath + '/';
-
 	if (findFile("index.html", dirpath)) {
 		std::ifstream t(dirpath + "index.html");
 		std::stringstream buffer;
 		buffer << t.rdbuf();
 		_body = buffer.str();
-	
 		this->setHeaders("Content-Length: " + std::to_string(_body.length()) + "\r\n");
 		return ;
 	}
@@ -74,6 +72,7 @@ void	Response::directoryListing(std::string dirpath){
         	"</tr>\n";
 	if ((dir = opendir(dirpath.c_str())) == NULL){
 		std::cout << "Error: Can't open directory - directoryListing()" << std::endl;
+		_statusCode = "403";
 		return ;
 	}
 	while ((ent = readdir (dir)) != NULL) {	
@@ -81,10 +80,9 @@ void	Response::directoryListing(std::string dirpath){
 		size_t found = filepath.find("public");
 		if (found == std::string::npos)
 			return ;
-		std::string filepathconfig = filepath.substr(found + 7); //string after public/
+		std::string filepathconfig = filepath.substr(found + 7);
 		// std::cout << "Filepath = " << filepath << std::endl;
 		// std::cout << "filepathconfig = " << filepathconfig << std::endl;
-
 		struct stat file_info;
 		file << "<tr>\n";
 		if (stat(filepath.c_str(), &file_info) == 0) {

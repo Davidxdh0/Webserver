@@ -118,6 +118,8 @@ delete
 
 status Codes
 	403 https://serverfault.com/questions/748561/nginx-doesnt-have-permission-to-access-files-with-the-same-ownership
+->	https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+	https://42seoul-gitbook-io.translate.goog/webserv/or-response?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=nl&_x_tr_hist=true
 
 redirect
 	https://blog.hubspot.com/website/html-redirect
