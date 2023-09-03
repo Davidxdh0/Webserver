@@ -67,7 +67,24 @@ bool	Response::checkMethod(std::string &str)
 	return false;
 }
 
+std::string uniqueFileName(std::string path, std::string file)
+{
+	int i = 1;
+	// extensie eraf, i erbij, extensie erbij.
+	std::string filename = path + file;
+	while (access (filename.c_str(), F_OK) != 0)
+	{
+		filename = filename + std::to_string(i);
+		i++;
+	}
+	return filename;
+}
 
+void	UploadFile()
+{
+	//find boundary
+	//write naar
+}
 
 int Response::uploadFile(){
 
@@ -77,10 +94,10 @@ int Response::uploadFile(){
 	// 	return 0;
 	// if (!fileExist())
 	// 	return 0;
-	// if (!fileOpen())
+	// if (!FileSize)
 	// 	return 0;
 	
-	std::cout << "post" <<std::endl;
+	std::cout << "Geupload" <<std::endl;
 	return 1;
 }
 
@@ -94,22 +111,6 @@ void	Response::upload(){
 	std::cout << getBody() << std::endl;
 	std::cout << "Content of done:" << std::endl;
     
-	// if (stat(file, &file_info) == 0) {
-	// 	off_t size = file_info.st_size;
-	// 	std::string filepath = std::string("/Users/dyeboa/Documents/Webserv/public/upload/filetoupload") + ".txt";
-	// 	std::ofstream uploadfile(filepath);
-	// 	size_t packetsize = 4096;
-	// 	size_t dataSent = 0;
-	// 	while (dataSent < static_cast<size_t>(size)){
-	// 		size_t remaining = static_cast<size_t>(size) - dataSent;
-	// 		size_t currentpacket = std::min(remaining, packetsize);
-	// 		uploadfile <<  file + currentpacket;
-	// 		dataSent += 4096;
-	// 	}
-	// }
-	// else {
-	// 	std::cout << "Uploading goes wrong" << std::endl;
-	// }
 }
 
 void	Response::deletePage(std::string path)

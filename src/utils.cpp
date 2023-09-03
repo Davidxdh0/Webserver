@@ -4,14 +4,13 @@
 
 #include <iostream>
 
-using namespace std;
 
-void log(const string &message)
+void log(const std::string &message)
 {
-    cout << message << endl;
+    std::cout << message << std::endl;
 }
 
-void exitWithError(const string &errorMessage)
+void exitWithError(const std::string &errorMessage)
 {
     log("ERROR: " + errorMessage);
     exit(1);

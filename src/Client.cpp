@@ -38,11 +38,14 @@ int Client::readRequest() {
     if (bytes_read == -1) {
         exitWithError("Error reading from socket");
     }
-    buffer[bytes_read] = '\0';
-    _requestRaw << buffer;
-    if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {
-        _state = RESPONDING;
-    }
+	else if (bytes_read == 0)
+	{
+		buffer[bytes_read] = '\0';
+		_requestRaw << buffer;
+		if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {
+			_state = RESPONDING;
+		}
+	}
     return 1;
 }
 
@@ -78,6 +81,7 @@ void Client::setResponse() {
 // std::cout << "size = " << _response.getResponseString().size() << std::endl;
 // std::cout << "WriteResponseSize = " << _response.getResponseString().size() << std::endl;
 void Client::writeResponse() {
+	int i = 1;
 	if (_response.getResponseString().size() > 64000){
 		const char* data = _response.getResponseString().c_str();
 		size_t packetsize = 4096;
@@ -85,11 +89,20 @@ void Client::writeResponse() {
 		while (dataSent < _response.getResponseString().size()){
 			size_t remaining = _response.getResponseString().size() - dataSent;
 			size_t currentpacket = std::min(remaining, packetsize);
-			write(_socket, data + dataSent, currentpacket);
+			i = write(_socket, data + dataSent, currentpacket);
+			if (i == -1)
+				std::cout << "Write function failed" << std::endl;
+			if (i == 0)
+				std::cout << "Wrote chunk" << std::endl;
 			dataSent += 4096;
 		}
 	}
-	else
-    	write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
+	else{
+    	i = write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
+		if (i == -1)
+			std::cout << "Write function failed" << std::endl;
+		if (i == 0)
+			std::cout << "Wrote response" << std::endl;
+	}
 }
 

@@ -3,12 +3,12 @@ Ruben
 
 David
 todo:
-- errorCodes neerzetten https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-- fileOpen algemene functie
-- File upload alles config Location
-
+- errorCodes overal updaten https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+- fileOpen algemene functie - waar definiëren? 
+- File upload config Location
 - Directory listing - autoindex on/off - config location
-- File deletion - DELETE method 
+- File deletion - DELETE method van config file
+- http version check?
 
 Alle
 - CGI 
@@ -16,11 +16,16 @@ Alle
 
 ?
 - parse request
-	- UNKNOWN requests should not result in a crash.
 	- error codes
 - parse response
 - handle response
 
 eval:
-Try a redirected URL.
-Try a wrong URL on the server.
+-Try a redirected URL.
+-Try a wrong URL on the server.
+-Stress tests your server. It must stay available at all cost. (siege - homebrew)
+-Your server must be able to listen to multiple ports 
+-read/recv/write/send and check if the returned value is correctly checked 
+	(checking only -1 or 0 values is not enough, both should be checked).
+	-chi
+UNKNOWN requests should not result in a crash.
