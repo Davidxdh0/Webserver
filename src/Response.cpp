@@ -50,7 +50,8 @@ void Response::loadCgi(const Path& path) {
     const char* exc = "/usr/bin/php";
     std::FILE*  temp = std::tmpfile();
     int         fd_temp = fileno(temp);
-    char*       argv[] = {const_cast<char *>(exc), const_cast<char *>("-f"), const_cast<char *>(path.c_str()), nullptr};
+    std::string flag = "-f";
+    char*       argv[] = {const_cast<char *>(exc), const_cast<char *>(flag.c_str()), const_cast<char *>(path.c_str()), nullptr};
 
     og_StdOut = dup(STDOUT_FILENO);
     pid = fork();

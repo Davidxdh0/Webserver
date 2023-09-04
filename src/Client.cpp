@@ -10,7 +10,8 @@
 
 Client::Client() : _request(), _response(), _socket(), _state(READING) {}
 
-Client::Client(int socket) : _request(), _response(), _socket(socket), _state(READING) {}
+Client::Client(int socket /*int port*/) : _request(), _response(), _socket(socket), _state(READING) /*_port(port)*/ {
+}
 
 Client::~Client() {
     close(_socket);
@@ -20,22 +21,23 @@ const Request&		Client::getRequest()const{return _request;}
 const Response&		Client::getResponse()const{return _response;}
 const Path&			Client::getPath()const{return _path;}
 
-void	Client::handleRequest() {
-    readRequest();
+void Client::handleRequest() {
+    this->readRequest();
     if (_state != RESPONDING) {
         return;
     }
     _request.parseRequest(_requestRaw);
-    _path = Path("/Users/dyeboa/Documents/Webserv/public", _request.getUri());
+    this->configure();
     this->setResponse();
 }
 
 int Client::readRequest() {
-    char buffer[24];
-    int bytes_read;
+    char buffer[4096];
+    size_t bytes_read;
+    size_t t = -1;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
-    if (bytes_read == -1) {
+    if (bytes_read == t) {
         exitWithError("Error reading from socket");
     }
 	else if (bytes_read == 0)
@@ -106,3 +108,10 @@ void Client::writeResponse() {
 	}
 }
 
+void Client::configure() {
+    std::string    root = ROOT;
+    std::string    index = INDEX;
+
+    _path = Path(root, _request.getUri());
+
+}

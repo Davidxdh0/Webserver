@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "Settings.h"
 
 using namespace std;
 /**
@@ -37,17 +38,21 @@ enum E_Types {
 class Config
 {
 	public:
-		Config(void);
+		Config();
 		Config(const char* fileLocation);
 		Config(const Config& other);
         Config(int port);
-		~Config(void);
+		~Config();
 
 		Config &operator=(const Config& other);
 
+        // ------------------- Config setters ------------------------
+        void    setPort(int port) { this->_port = port; };
+        void    setHosts(Settings* hosts) { this->_hosts = hosts; };
 		// ------------------- Config getters ------------------------
 
-        int getPort(void) const { return this->port; };
+        int getPort() const { return this->_port; };
+        Settings* getHosts() const { return this->_hosts; };
         // ------------------- Config member functions ------------------------
 
 		void setWithFile(const char *fileLocation);
@@ -71,33 +76,9 @@ class Config
 
 
 	private:
-		map<std::string, map<std::string, int> > _mapConfig;
-		// File
-		std::ifstream		_configFile;
-		std::string			_fileLocation;
 
-		std::vector<Server> _servers;
-
-		// Misc configs
-		int		        port;
-		std::string		server_name;
-		std::string		error_page; // can be multiple so best make map
-		std::string		client_max_body_size; // can be formatted in different ways
-		std::string		root;
-		std::string		index;
-		std::vector<std::string*> location;
-		// Location		*location; // Can be multiple make vector or map
-			// root
-			// name
-			// index
-			// allow_methods
-			// autoindex
-			// upload store
-			// location handling
-		// uint32_t		port;
-		// std::string		error_page; // can be multiple so best make map
-
-
+		int		        _port;
+        Settings*       _hosts;
 };
 
 #endif

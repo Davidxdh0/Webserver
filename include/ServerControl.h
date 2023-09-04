@@ -5,7 +5,7 @@
 #ifndef WEBSERV_DEV_SERVERCONTROL_H
 #define WEBSERV_DEV_SERVERCONTROL_H
 
-#include "ServerBlock.h"
+#include "Server.h"
 #include "Config.h"
 #include <vector>
 #include <sys/event.h>
@@ -16,14 +16,14 @@ class ServerControl
 {
 public:
     ServerControl();
-    explicit ServerControl(vector<Config> configs);
+    explicit ServerControl(Config* port_configs);
     ~ServerControl();
 
 private:
     int                 _kq_fd;
-    vector<ServerBlock> _servers;
+    vector<Server> _servers;
 
-    ServerBlock*    checkIdentIsServer(int ident);
+    Server*    checkIdentIsServer(int ident);
     void            webservLoop();
 };
 #endif //WEBSERV_DEV_SERVERCONTROL_H

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-Config::Config() : port()
+Config::Config() : _port()
 {
 	std::cout << "Config created with an empty construcor" << std::endl;
 }
@@ -25,7 +25,7 @@ Config::~Config(void)
 	std::cout << "Config deconstructed" << std::endl;
 }
 
-Config::Config(const Config &other) : port()
+Config::Config(const Config &other) : _port()
 {
 	std::cout << "Config created by copy" << std::endl;
 	*this = other;
@@ -34,7 +34,7 @@ Config::Config(const Config &other) : port()
 Config::Config(int port)
 {
     std::cout << "Config created with port" << std::endl;
-    this->port = port;
+    this->_port = port;
 }
 
 Config &Config::operator=(const Config &other)
@@ -43,7 +43,7 @@ Config &Config::operator=(const Config &other)
 
 	if (this != &other)
 	{
-        port = other.port;
+        _port = other._port;
 	}
 
 	return (*this);
@@ -51,27 +51,27 @@ Config &Config::operator=(const Config &other)
 
 // ---------------------- Config member functions ------------------------------
 
-void Config::setWithFile(const char *fileLocation)
-{
-	if (!this->_configFile.is_open())
-	{
-		this->_configFile.close();
-	}
-
-	this->_configFile.open(fileLocation);
-
-	if (!this->_configFile.is_open())
-	{
-		throw Config::FileNotRetrievedException();
-	}
-
-	if (this->_configFile.fail())
-	{
-		throw Config::FileNotRetrievedException();
-	}
-
-	this->_fileLocation = fileLocation;
-}
+//void Config::setWithFile(const char *fileLocation)
+//{
+//	if (!this->_configFile.is_open())
+//	{
+//		this->_configFile.close();
+//	}
+//
+//	this->_configFile.open(fileLocation);
+//
+//	if (!this->_configFile.is_open())
+//	{
+//		throw Config::FileNotFoundException();
+//	}
+//
+//	if (this->_configFile.fail())
+//	{
+//		throw Config::FileNotFoundException();
+//	}
+//
+//	this->_fileLocation = fileLocation;
+//}
 
 
 // void	createConfig(){
