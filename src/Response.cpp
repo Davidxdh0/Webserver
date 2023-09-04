@@ -112,9 +112,9 @@ void Response::setErrorPage(Path &obj){
 //std::cout << "statuscode: " << _statusCode << "\n" << _contentType << "\r\n" << _contentLength << std::endl;
 void Response::setResponseString() {
     std::ostringstream ss;
-	setContentLength();
-	errorCodeMessage();
-	setErrorCodeMessage(_statusCode);
+	// setContentLength();
+	// errorCodeMessage();
+	// setErrorCodeMessage(_statusCode);
     ss << _version << " " << _statusCode << " " << _statusMessage << "\r\n" << _contentType << _contentLength << "\r\n\r\n" << _body;
     _responseString = ss.str();
 }

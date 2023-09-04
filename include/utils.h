@@ -21,7 +21,7 @@ typedef enum e_requestMethod {
 } 			requestMethod;
 
 
-#define ROOT "/Users/ajanse/Webserv_dev/public";
+#define ROOT "/Users/dyeboa/Documents/Webserv/public";
 #define INDEX "index.html";
 
 void log(const std::string &message);
