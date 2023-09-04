@@ -25,7 +25,7 @@ void    Response::setBody(const std::string &body) { _body = body;}
 void	Response::setStatusCode(const std::string &statusCode) {_statusCode = statusCode;}
 void	Response::setStatusMessage(const std::string &statusMessage) {_statusMessage = statusMessage;}
 void	Response::setHeaders(const std::string &headers) {_headers = headers;}
-void    Response::setContentLength(){_contentLength = std::string("Content-Length: " + std::to_string(_body.length()));}
+void    Response::setContentLength(){_contentLength = std::string("Content-Length: " + std::to_string(_body.length() ));}
 void    Response::setContentType(const std::string &type){_contentType = type;}
 
 std::string	Response::getStatusCode(void) {return _statusCode;}
@@ -110,12 +110,16 @@ void Response::setErrorPage(Path &obj){
 
 // std::cout << _responseString << std::endl;
 //std::cout << "statuscode: " << _statusCode << "\n" << _contentType << "\r\n" << _contentLength << std::endl;
+// std::cout << "content: " << std::string("Content-Length: " + std::to_string(_body.length())) << std::endl;
+// std::cout << "content: " << _contentLength << std::endl;
+// std::cout << "Response: " << _statusCode << " statusmessage: " <<  _statusMessage << " content: " << _contentType << " length: " << _contentLength << std::endl;
+// std::cout << _body << std::endl;
 void Response::setResponseString() {
     std::ostringstream ss;
-	// setContentLength();
-	// errorCodeMessage();
-	// setErrorCodeMessage(_statusCode);
-    ss << _version << " " << _statusCode << " " << _statusMessage << "\r\n" << _contentType << _contentLength << "\r\n\r\n" << _body;
+	setContentLength();
+	errorCodeMessage();
+	setErrorCodeMessage(_statusCode);
+    ss << _version << " " << _statusCode << " " << _statusMessage << "\r\n" << _contentType << "\r\n" << _contentLength << "\r\n\r\n" << _body;
     _responseString = ss.str();
 }
 

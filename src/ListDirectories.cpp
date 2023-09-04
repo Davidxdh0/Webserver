@@ -39,6 +39,7 @@ void	Response::directoryListing(std::string dirpath){
 
 	if (dirpath[dirpath.length() - 1] != '/')
 		dirpath = dirpath + '/';
+	std::string temp = dirpath;
 	if (findFile("index.html", dirpath)) {
 		std::ifstream t(dirpath + "index.html");
 		std::stringstream buffer;
@@ -76,13 +77,20 @@ void	Response::directoryListing(std::string dirpath){
 		return ;
 	}
 	while ((ent = readdir (dir)) != NULL) {	
+		if (std::string(ent->d_name) == "." || std::string(ent->d_name) == ".."){
+			int len = dirpath.length();
+			len--;
+			while (dirpath[len] != '/')
+				len--;
+			dirpath = dirpath.substr(0, len);
+		}
+		else
+			dirpath = temp;
 		std::string filepath = dirpath + ent->d_name;
 		size_t found = filepath.find("public");
 		if (found == std::string::npos)
 			return ;
 		std::string filepathconfig = filepath.substr(found + 7);
-		// std::cout << "Filepath = " << filepath << std::endl;
-		// std::cout << "filepathconfig = " << filepathconfig << std::endl;
 		struct stat file_info;
 		file << "<tr>\n";
 		if (stat(filepath.c_str(), &file_info) == 0) {
@@ -96,8 +104,8 @@ void	Response::directoryListing(std::string dirpath){
 		}
 		else{
 			file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
-			file << "<td>" << "Date not found" << "</td>\n";
-			file << "<td>" << "Filesize not found" << "</td>\n";
+			file << "<td>" << "" << "</td>\n";
+			file << "<td>" << "" << "</td>\n";
 		}
 		file << "</tr>\n";
 	}
@@ -105,6 +113,7 @@ void	Response::directoryListing(std::string dirpath){
 	file << "</table>\n</body>\n"
 			"</html>\n";
 	_body = file.str();
+	setContentLength();
 }
 
 //returns 1 if path is directory 

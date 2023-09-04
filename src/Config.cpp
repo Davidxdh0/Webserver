@@ -1,26 +1,12 @@
 #include "../include/Config.h"
-// #include "Config.hpp"
 #include <iostream>
-#include <fstream>
 
 Config::Config() : _port()
 {
 	std::cout << "Config created with an empty construcor" << std::endl;
 }
 
-Config::Config(const char *fileLocation)
-{
-	try
-	{
-		this->setWithFile(fileLocation);
-	}
-	catch (Config::FileNotRetrievedException &e)
-	{
-		std::cerr << e.what() << std::endl;
-	}
-}
-
-Config::~Config(void)
+Config::~Config()
 {
 	std::cout << "Config deconstructed" << std::endl;
 }
@@ -49,29 +35,30 @@ Config &Config::operator=(const Config &other)
 	return (*this);
 }
 
+
 // ---------------------- Config member functions ------------------------------
 
-//void Config::setWithFile(const char *fileLocation)
-//{
-//	if (!this->_configFile.is_open())
-//	{
-//		this->_configFile.close();
-//	}
-//
-//	this->_configFile.open(fileLocation);
-//
-//	if (!this->_configFile.is_open())
-//	{
-//		throw Config::FileNotFoundException();
-//	}
-//
-//	if (this->_configFile.fail())
-//	{
-//		throw Config::FileNotFoundException();
-//	}
-//
-//	this->_fileLocation = fileLocation;
-//}
+// void Config::setWithFile(const char *fileLocation)
+// {
+// 	if (!this->_configFile.is_open())
+// 	{
+// 		this->_configFile.close();
+// 	}
+
+// 	this->_configFile.open(fileLocation);
+
+// 	if (!this->_configFile.is_open())
+// 	{
+// 		throw Config::FileNotFoundException();
+// 	}
+
+// 	if (this->_configFile.fail())
+// 	{
+// 		throw Config::FileNotFoundException();
+// 	}
+
+// 	this->_fileLocation = fileLocation;
+// }
 
 
 // void	createConfig(){

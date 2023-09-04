@@ -33,6 +33,11 @@ int Server::createSocket() {
         exitWithError("Cannot create socket");
         return 1;
     }
+	int reuse = 1;
+    if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) == -1) {
+        exitWithError("Error setting socket options");
+        return 1;
+    }
     if (bind(_socket, (sockaddr *)&_socketAddress, _socketAddress_len) < 0)
     {
         exitWithError("Cannot connect socket to address");

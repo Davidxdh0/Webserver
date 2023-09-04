@@ -12,7 +12,9 @@
 #include <string>
 #include <sys/event.h>
 #include "Config.h"
+#include "Settings.h"
 
+class Config;
 
 class Server
 {

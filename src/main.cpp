@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/04 21:00:39 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/05 01:07:30 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,15 @@ Config* dummy_configs()
     return port_configs;
 }
 
-int main()
+int main(/*int argc, char* argv[]*/)
 {
-//    vector<Config>  configs;
-//    Config          config1(8080);
-//    Config          config2(8081);
-//
-//    configs.push_back(config1);
-//    configs.push_back(config2);
-
     Config*  port_configs;
 
     port_configs = dummy_configs();
+
+	// Config*  port_configs = new Config[3];
+    // Settings* settings = new Settings[2];
+
     ServerControl   serverControl(port_configs);
     return 0;
 }

@@ -36,41 +36,45 @@ void Client::handleRequest() {
 int Client::readRequest() {
     char buffer[4096];
     size_t bytes_read;
-	size_t content_length = 0;
+	// size_t content_length = 0;
     size_t t = -1;
-	// static int p = 100;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
     if (bytes_read == t) {
         exitWithError("Error reading from socket");
     }
-	else if (bytes_read >= 0)
-	{
-		buffer[bytes_read] = '\0';
-		_requestRaw << buffer;
-		std::cout << "1: " <<  buffer << std::endl;
-		std::string temp = buffer;
-		std::string::size_type pos = temp.find("Content-Length: ");
-        if (pos != std::string::npos && content_length >= 0) {
-			std::cout << "Readrequest contentlength > 0: " << content_length << std::endl;
-            std::string key = temp.substr(1, pos);
-			std::stringstream stream(key);
-            stream >> content_length;
-			std::cout << content_length << std::endl;
-		}
-		if (content_length > 0){
-			std::cout << "Readrequest contentlength > 0: " << content_length << std::endl;
-			if (bytes_read <= content_length){
-				// _state = RESPONDING;
-			}
-		}
-		else{
-			std::cout << "Readrequest normaal" << std::endl;
-			if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {
-				_state = RESPONDING;
-			}
-		}
-	}
+ 	buffer[bytes_read] = '\0';
+    _requestRaw << buffer;
+    if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {
+        _state = RESPONDING;
+    }
+	// else if (bytes_read >= 0)
+	// {
+	// 	buffer[bytes_read] = '\0';
+	// 	_requestRaw << buffer;
+	// 	std::cout << "1: " <<  buffer << std::endl;
+	// 	// std::string temp = buffer;
+	// 	// std::string::size_type pos = temp.find("Content-Length: ");
+    //     // if (pos != std::string::npos && content_length >= 0) {
+	// 	// 	std::cout << "Readrequest contentlength > 0: " << content_length << std::endl;
+    //     //     std::string key = temp.substr(1, pos);
+	// 	// 	std::stringstream stream(key);
+    //     //     stream >> content_length;
+	// 	// 	std::cout << content_length << std::endl;
+	// 	// }
+	// 	// if (content_length > 0){
+	// 	// 	std::cout << "Readrequest contentlength > 0: " << content_length << std::endl;
+	// 	// 	if (bytes_read <= content_length){
+	// 	// 		// _state = RESPONDING;
+	// 	// 	}
+	// 	// }
+	// 	// else{
+	// 	// 	std::cout << "Readrequest normaal" << std::endl;
+	// 	if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {
+	// 		_state = RESPONDING;
+	// 	}
+	// 	// }
+	// }
     return 1;
 }
 

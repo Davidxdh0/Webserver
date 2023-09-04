@@ -1,8 +1,7 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
-#include "Server.hpp"
-
+#include "Server.h"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -57,9 +56,9 @@ class Config
 
 		void setWithFile(const char *fileLocation);
 		
-		void	openConfig(ifstream& config_file, int argc, char *argv[]);
-		void	initialiseConfig(int argc, char *argv[]);
-		void	createConfig(ifstream& config_file);
+		// void	openConfig(ifstream& config_file, int argc, char *argv[]);
+		// void	initialiseConfig(int argc, char *argv[]);
+		// void	createConfig(ifstream& config_file);
 		// ------------------ ConfigException functions -----------------------
 
 		class FileNotRetrievedException : public std::exception
