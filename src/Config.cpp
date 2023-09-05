@@ -61,26 +61,7 @@ Config &Config::operator=(const Config &other)
 // }
 
 
-// void	createConfig(){
-	
-// 	map<std::string, map<std::string, int> > _mapConfig;
-// 	string	line;
-// 	int i = 0;
-// 	while (getline(config_file, line) && i < 6){
-// 		//get first 6 line from config - defaultConfig
-// 		// hoe gaan andere configfiles?
-// 	}
-// 	while (getline(config_file, line)){
-// 		//get for each location variables - int = enum
-// 	}
-// 	;
-// }
 
-// void	Config::initialiseConfig(int argc, char *argv[]){
-
-// 	// setWithFile(const char *fileLocation);
-// 	// createConfig(config_file);
-// }
 // ---------------------- Config Exception Functions ------------------------
 
 const char *Config::FileNotRetrievedException::what() const throw()

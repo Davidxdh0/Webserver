@@ -1,50 +1,37 @@
-
 <?php
 $target_dir = "./uploads/";
-$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-$uploadOk = 1;
-$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+$target_file = $target_dir . basename($_FILES["file"]["name"]);
 
-// Check if image file is a actual image or fake image
-if(isset($_POST["submit"])) {
-//   $check = filesize($_FILES["fileToUpload"]["tmp_name"]);
-//   if($check !== false) {
-//     echo "File is an image - " . $check["mime"] . ".";
-//     $uploadOk = 1;
-//   } else {
-    echo "File is not an image.";
-    $uploadOk = 0;
-//   }
-}
+// Check if the form was submitted and if there are no errors in the file upload
+if (isset($_POST["submit"])) {
+    $uploadError = $_FILES["file"]["error"]; // Get the error code
 
-// Check if file already exists
-if (file_exists($target_file)) {
-  echo "Sorry, file already exists.";
-  $uploadOk = 0;
-}
+    if ($uploadError === UPLOAD_ERR_OK) {
+        // File upload was successful
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+            // Write content to the uploaded file
+            $content_to_write = "This is some example content that will be written to the uploaded file.\n";
+            
+            // Open the file for writing (you can choose different modes like "w" for overwrite or "a" for append)
+            $file_handle = fopen($target_file, "a"); // "a" mode appends content
 
-// Check file size
-if ($_FILES["fileToUpload"]["size"] > 500000) {
-  echo "Sorry, your file is too large.";
-  $uploadOk = 0;
-}
-
-// Allow certain file formats
-if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-&& $imageFileType != "gif" ) {
-  echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-  $uploadOk = 0;
-}
-
-// Check if $uploadOk is set to 0 by an error
-if ($uploadOk == 0) {
-  echo "Sorry, your file was not uploaded.";
-// if everything is ok, try to upload file
-} else {
-  if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-    echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
-  } else {
-    echo "Sorry, there was an error uploading your file.";
-  }
+            if ($file_handle !== false) {
+                // Write the content to the file
+                fwrite($file_handle, $content_to_write);
+                
+                // Close the file handle
+                fclose($file_handle);
+                
+                echo "File upload and content writing successful.";
+            } else {
+                echo "Sorry, there was an error opening the file for writing.";
+            }
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    } else {
+        // Print the specific error code
+        echo "Sorry, there was an error in the file upload. Error code: " . $uploadError;
+    }
 }
 ?>

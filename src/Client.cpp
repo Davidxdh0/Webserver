@@ -27,8 +27,10 @@ void Client::handleRequest() {
     if (_state != RESPONDING) {
         return;
     }
-	// std::cout << "Requestraw = " <<_requestRaw.str() << std::endl;
-    _request.parseRequest(_requestRaw);
+	std::cout << "requestraw: " << _requestRaw.str() << std::endl;
+	std::string contenttype;
+    _request.parseRequest(_requestRaw, contenttype);
+	_response.setContentType(contenttype);
     this->configure();
     this->setResponse();
 }
@@ -36,55 +38,91 @@ void Client::handleRequest() {
 int Client::readRequest() {
     char buffer[4096];
     size_t bytes_read;
-	// size_t content_length = 0;
+	static size_t content_length = 0;
     size_t t = -1;
+	static int chunkedrequest = 0;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
-    if (bytes_read == t) {
+    if (bytes_read == t)
         exitWithError("Error reading from socket");
-    }
- 	buffer[bytes_read] = '\0';
-    _requestRaw << buffer;
-    if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {
-        _state = RESPONDING;
-    }
-	// else if (bytes_read >= 0)
-	// {
-	// 	buffer[bytes_read] = '\0';
-	// 	_requestRaw << buffer;
-	// 	std::cout << "1: " <<  buffer << std::endl;
-	// 	// std::string temp = buffer;
-	// 	// std::string::size_type pos = temp.find("Content-Length: ");
-    //     // if (pos != std::string::npos && content_length >= 0) {
-	// 	// 	std::cout << "Readrequest contentlength > 0: " << content_length << std::endl;
-    //     //     std::string key = temp.substr(1, pos);
-	// 	// 	std::stringstream stream(key);
-    //     //     stream >> content_length;
-	// 	// 	std::cout << content_length << std::endl;
-	// 	// }
-	// 	// if (content_length > 0){
-	// 	// 	std::cout << "Readrequest contentlength > 0: " << content_length << std::endl;
-	// 	// 	if (bytes_read <= content_length){
-	// 	// 		// _state = RESPONDING;
-	// 	// 	}
-	// 	// }
-	// 	// else{
-	// 	// 	std::cout << "Readrequest normaal" << std::endl;
-	// 	if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {
-	// 		_state = RESPONDING;
-	// 	}
-	// 	// }
-	// }
+	else if (bytes_read >= 0)
+	{
+		buffer[bytes_read] = '\0';
+		std::string bufferstring = buffer;
+		
+		// if (chunkedrequest == 0){
+		// 	if (bufferstring.find("Transfer-Encoding: chunked") != std::string::npos)
+		// 		chunkedrequest = 1;
+		// }
+		// if (chunkedrequest == 1){
+		// 	std::string body;
+		// 	size_t bodychunked = bufferstring.find("\r\n\r\n");
+		// 	if (bodychunked != std::string::npos)
+		// 		std::string body = bufferstring.substr(bodychunked + 4);
+		// 	else
+		// 		body = bufferstring;
+		// 	std::istringstream iss(body);
+		// 	// std::cout << iss.str() << std::endl;
+		// 	std::string chunksizestr;
+		// 	std::string chunkstring;
+		// 	int chunksize = -1;
+		// 	while(true){
+		// 		if (!std::getline(iss, chunksizestr))
+		// 			break;//exitWithError("Error istringstream getline");
+		// 		std::cout << chunksizestr << std::endl;
+		// 		chunksize = std::stoi(chunksizestr, nullptr, 16);
+		// 		//  std::cout << "Chunksize: " <<chunksize << std::endl;
+		// 		if (chunksize == 0) 
+		// 			chunkedrequest = 0;
+		// 		chunkstring.resize(chunksize);
+		// 		if (!iss.read(&chunkstring[0], chunksize))
+		// 			exitWithError("Error reading istringstream");
+		// 		iss.ignore(2);
+		// 	}
+		// 	if (chunksize == 0)
+		// 		chunkstring += "\r\nEOF";
+		// 	// std::cout << "Chunk Size: " << chunksize << std::endl;
+		// 	// std::cout << "Chunk Data: " << chunkstring << std::endl;
+		// }
+
+		std::string::size_type pos = bufferstring.find("Content-Length: ");
+        if (pos != std::string::npos && content_length >= 0) {
+			std::cout << "Readrequest contentlength > 0: " << content_length << std::endl;
+            std::string key = bufferstring.substr(1, pos);
+			std::stringstream stream(key);
+            stream >> content_length;
+			std::cout << content_length << std::endl;
+		}
+		if (content_length > 0){
+			std::cout << "Readrequest contentlength > 0: " << content_length << std::endl;
+			if (bytes_read <= content_length && chunkedrequest == 0){
+				_state = RESPONDING;
+			}
+		}
+		else{
+			// std::cout << "Readrequest normaal" << std::endl;
+			if (bytes_read < static_cast<int>(sizeof(buffer)) - 1 && chunkedrequest == 0) {
+				_state = RESPONDING;
+			}
+		}
+		buffer[bytes_read] = '\0';
+		_requestRaw << buffer;
+		std::cout << "buffer: " << buffer << std::endl;
+	}
     return 1;
 }
-
+// std::string p = "multipart/form-data; boundary=" //---------------------------"
 void Client::setResponse() {
     _response.setVersion("HTTP/1.1");
     _response.setStatusCode("200");
+	// std::cout << "subs: " << _response.getContentType().substr(0, 20) << std::endl;
     if (_path.getExtension() == "css") {
         _response.setContentType("Content-Type: text/css");
     } else if (_path.getExtension() == "gif") {
         _response.setContentType("Content-Type: image/gif");
+	} else if (_response.getContentType().substr(0, 20) == "multipart/form-data;" && _request.getMethod() == "POST"){
+		std::cout << "Uploading file" << _response.getContentType() << std::endl;
+		_response.uploadFile(_requestRaw, _path.getFullPath());
     } else {
         _response.setContentType("Content-Type: text/html");
     }
@@ -142,3 +180,4 @@ void Client::configure() {
     _path = Path(root, _request.getUri());
 
 }
+

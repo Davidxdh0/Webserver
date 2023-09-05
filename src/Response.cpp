@@ -31,17 +31,24 @@ void    Response::setContentType(const std::string &type){_contentType = type;}
 std::string	Response::getStatusCode(void) {return _statusCode;}
 std::string	Response::getStatusMessage(void) {return _statusMessage;}
 std::string	Response::getBody(){return _body;}
+std::string	Response::getContentType(void) { return _contentType;}
 
 void Response::loadBody(const Path& path) {
-    std::ifstream file(path.c_str());
+    std::fstream file;
     std::stringstream buffer;
 
     std::cout << "Loading body from: " << path << std::endl;
-    if (!file.is_open())
-        exitWithError("Could not open file: " + path);
-    buffer << file.rdbuf();
-    _body = buffer.str();
-    file.close();
+    // if (!file.is_open())
+    //     exitWithError("Could not open file: " + path);
+	if (file.is_open()){
+		setStatusCode("403");
+		std::cout << "hieropenwtf open" << std::endl;
+	}
+	if (hasAccess(path.c_str(), file)){
+		buffer << file.rdbuf();
+		_body = buffer.str();
+    	file.close();
+	}
 }
 
 void Response::loadCgi(const Path& path) {
@@ -83,7 +90,7 @@ void Response::setErrorPage(Path &obj){
 	//root
 	std::string errorpage = "/Users/dyeboa/Documents/Webserv/public/error/" + _statusCode + ".html";
 	std::cout << "errorpage = " << errorpage << std::endl;
-	std::ifstream filestream(errorpage.c_str());
+	std::fstream filestream(errorpage.c_str());
 	std::stringstream temp;
   	if (!filestream.is_open() && _statusCode != "404"){
 		std::cout << "Error: setErrorPage can't open"  << std::endl;
@@ -105,6 +112,7 @@ void Response::setErrorPage(Path &obj){
 		std::cout << "error page to _body"  << std::endl;
 		temp << filestream.rdbuf();
 		_body = temp.str();
+		filestream.close();
 	}
 }
 
@@ -112,13 +120,14 @@ void Response::setErrorPage(Path &obj){
 //std::cout << "statuscode: " << _statusCode << "\n" << _contentType << "\r\n" << _contentLength << std::endl;
 // std::cout << "content: " << std::string("Content-Length: " + std::to_string(_body.length())) << std::endl;
 // std::cout << "content: " << _contentLength << std::endl;
-// std::cout << "Response: " << _statusCode << " statusmessage: " <<  _statusMessage << " content: " << _contentType << " length: " << _contentLength << std::endl;
+
 // std::cout << _body << std::endl;
 void Response::setResponseString() {
     std::ostringstream ss;
 	setContentLength();
 	errorCodeMessage();
 	setErrorCodeMessage(_statusCode);
+	std::cout << "statuscode: " << _statusCode << " statusmessage: " <<  _statusMessage << " content: " << _contentType << " length: " << _contentLength << std::endl;
     ss << _version << " " << _statusCode << " " << _statusMessage << "\r\n" << _contentType << "\r\n" << _contentLength << "\r\n\r\n" << _body;
     _responseString = ss.str();
 }

@@ -45,6 +45,7 @@ void	Response::directoryListing(std::string dirpath){
 		std::stringstream buffer;
 		buffer << t.rdbuf();
 		_body = buffer.str();
+		setStatusCode("200");
 		setContentLength();
 		return ;
 	}
@@ -88,8 +89,10 @@ void	Response::directoryListing(std::string dirpath){
 			dirpath = temp;
 		std::string filepath = dirpath + ent->d_name;
 		size_t found = filepath.find("public");
-		if (found == std::string::npos)
+		if (found == std::string::npos){
+			_statusCode = "403";
 			return ;
+		}
 		std::string filepathconfig = filepath.substr(found + 7);
 		struct stat file_info;
 		file << "<tr>\n";
@@ -114,6 +117,7 @@ void	Response::directoryListing(std::string dirpath){
 			"</html>\n";
 	_body = file.str();
 	setContentLength();
+	setStatusCode("200");
 }
 
 //returns 1 if path is directory 
@@ -144,7 +148,7 @@ bool	Response::findFile(std::string file, std::string path)
 					_statusCode = "403";
 					return 0;
 				}
-				closedir(dir);
+				filestream.close();
 				return 1;
 			}
 		}

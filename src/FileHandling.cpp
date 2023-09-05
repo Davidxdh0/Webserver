@@ -2,32 +2,39 @@
 
 #include "iostream"
 
-bool Response::hasAccess(std::string filepath, std::fstream &filestr){
-
-	if (access (filepath.c_str(), F_OK) != 0){
+bool Response::hasAccess(std::string filepath, std::fstream& filestr){
+	std::string path = filepath;
+	if (access (path.c_str(), F_OK) != 0){
 		setStatusCode("404");
+		std::cout << "doesn't exist" << std::endl;
 		return 0; // doesnt exist
 	}
 	if (filestr.is_open()){
 		setStatusCode("403");
+		std::cout << "already open" << std::endl;
 		return 0; //already open
 	}
-	filestr.open(filepath);
-	if (!filestr.is_open()){
-		setStatusCode("404");
-		return 0;; //not opened
-	}
-	if (access (filepath.c_str(), R_OK) != 0){
+	if (access (path.c_str(), R_OK) != 0){
 		setStatusCode("403");
+		std::cout << "no read access" << std::endl;
 		return 0; // no read access
 	}
-	char ch;
-    if (!(filestr >> ch)){
+	filestr.open(path);
+	if (!filestr.is_open()){
 		setStatusCode("404");
-		return 0;//emptyfile
+		std::cout << "not opened directory?" << std::endl;
+		return 0; //not opened
+	}
+	if (filestr.peek() == std::ifstream::traits_type::eof()) {
+		setStatusCode("404");
+		std::cout << "empty file" << std::endl;
+		return 0; // empty file
 	}
 	return 1;
 }
+// int hasAccess(std::string filepath, std::fstream *filestr){
+	
+// }
 
 /*
 isUpload()
@@ -45,7 +52,7 @@ anders fout.
 //change config file.
 
 
-bool	Response::isUpload()
+bool	Response::isUpload(std::string paths)
 {
 	std::string path = "/Users/dyeboa/Documents/Webserv/public/upload";
     if (path.find("upload") != std::string::npos) {
@@ -54,6 +61,7 @@ bool	Response::isUpload()
     }
     std::cout << "String does not contain upload" << std::endl;
     return false;
+	paths = "s";
 }
 
 //change to config variables later
@@ -80,25 +88,49 @@ std::string uniqueFileName(std::string path, std::string file)
 	return filename;
 }
 
-void	UploadFile()
+void	Response::MakeFiles(std::stringstream &raw, std::string path)
 {
+	std::string line;
+	std::string boundary = this->getContentType().substr(30);
+	std::cout << "boundary: " << this->getContentType().substr(30) << std::endl;
+	while (line != "\n") {
+        getline(raw, line);
+        if (line.empty())
+            break;
+		std::cout << "line " << line << std::endl;
+        std::string::size_type pos = line.find("boundary=");
+        if (pos != std::string::npos) {
+            std::string key = line.substr(1, pos);
+			boundary = line.substr(pos + 2);
+			std::cout << "boundary: " << boundary << std::endl;
+			if (key == "Content-Tyspe:"){
+				boundary = line.substr(pos + 2);
+				std::cout << boundary << std::endl;
+				path = "1";
+			}
+        }
+    }
 	//find boundary
 	//write naar
 }
 
-int Response::uploadFile(){
-
-	if (!isUpload())
-		return 0;
+int Response::uploadFile(std::stringstream& raw, std::string path){
+	// if (!isUpload(path))
+	// 	return 0;
 	// if (!checkMethod())
 	// 	return 0;
+	// MakeFiles(raw, path);
 	// if (!fileExist())
 	// 	return 0;
 	// if (!FileSize)
 	// 	return 0;
-	
+	// getboundary
+	// multiple files
+
 	std::cout << "Geupload" <<std::endl;
 	return 1;
+	path = "1";
+	raw.str();
 }
 
 void	Response::upload(){

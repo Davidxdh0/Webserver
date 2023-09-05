@@ -15,7 +15,7 @@ public:
     Request(const Request &src);
     ~Request();
 
-    void            parseRequest(std::stringstream &requestRaw);
+    void            parseRequest(std::stringstream &requestRaw, std::string &contenttype);
 	
     std::string     getMethod() { return _method; };
     std::string     getUri() { return _uri; };

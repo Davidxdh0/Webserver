@@ -38,6 +38,7 @@ public:
 	std::string		getStatusCode(void);
 	std::string		getStatusMessage(void);
 	std::string		getBody();
+	std::string		getContentType(void);
 	
     void            loadBody(const Path& path);
     void            loadCgi(const Path& path);
@@ -55,10 +56,11 @@ public:
 	void			setErrorCodeMessage(std::string code);
 	void			deletePage(std::string path);
 	void			upload();
-	int 			uploadFile();
+	int 			uploadFile(std::stringstream& raw, std::string path);
 	bool			checkMethod(std::string &str);
-	bool			isUpload();
+	bool			isUpload(std::string path);
 	bool 			hasAccess(std::string filepath, std::fstream &filestr);
+	void			MakeFiles(std::stringstream& raw, std::string path);
 	
 
 private:
@@ -72,7 +74,8 @@ private:
 	std::string     _contentLength;
     std::string     _body;
     std::string     _responseString;
-	
+	std::string     _boundary;
+	std::vector<std::string> _raw;
 };
 
 
