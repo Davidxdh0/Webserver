@@ -12,7 +12,7 @@
 #include "Client.h"
 
 Server::Server(const std::string& ip_address, Config& conf) :
-_ip_address(ip_address), _port(conf.getPort()), _socket(), _socketAddress(), _socketAddress_len(sizeof(_socketAddress)), _virtualhosts(conf.getHosts())
+_port(conf.getPort()), _socket(), _socketAddress(), _socketAddress_len(sizeof(_socketAddress)), _virtualhosts(conf.getHosts())
 {
     _socketAddress.sin_family = AF_INET;
     _socketAddress.sin_port = htons(_port);
@@ -101,7 +101,7 @@ void Server::createClient(int kqueu_fd, int client_socket) const
     struct kevent event[2];
 
     EV_SET(&event[0], client_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, client);
-//    EV_SET(&event[1], client_socket, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, client);
-    kevent(kqueu_fd, event, 1, nullptr, 0, nullptr);
+    EV_SET(&event[1], client_socket, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, client);
+    kevent(kqueu_fd, event, 2, nullptr, 0, nullptr);
     log("------ Client event registered in kqueu ------\n\n");
 }

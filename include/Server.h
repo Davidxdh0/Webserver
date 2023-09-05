@@ -28,7 +28,6 @@ public:
     int getSocket() const { return _socket; }
 
 private:
-    std::string         _ip_address;
     int                 _port;
     int                 _socket;
     struct sockaddr_in  _socketAddress;

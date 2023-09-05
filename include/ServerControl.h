@@ -23,7 +23,8 @@ private:
     int                 _kq_fd;
     vector<Server> _servers;
 
-    Server*    checkIdentIsServer(int ident);
-    void            webservLoop();
+    Server*     checkIdentIsServer(int ident);
+    void        loadServers(Config* port_configs);
+    void        webservLoop();
 };
 #endif //WEBSERV_DEV_SERVERCONTROL_H
