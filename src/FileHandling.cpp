@@ -91,24 +91,84 @@ std::string uniqueFileName(std::string path, std::string file)
 void	Response::MakeFiles(std::stringstream &raw, std::string path)
 {
 	std::string line;
-	std::string boundary = this->getContentType().substr(30);
-	std::cout << "boundary: " << this->getContentType().substr(30) << std::endl;
+	std::string boundary = "--" + this->getContentType().substr(30) + "\r";
+	std::cout << "boundary: " << this->getContentType().substr(30) + "\r\n" << std::endl;
+	bool block = 0;
 	while (line != "\n") {
         getline(raw, line);
         if (line.empty())
             break;
-		std::cout << "line " << line << std::endl;
-        std::string::size_type pos = line.find("boundary=");
-        if (pos != std::string::npos) {
-            std::string key = line.substr(1, pos);
-			boundary = line.substr(pos + 2);
-			std::cout << "boundary: " << boundary << std::endl;
-			if (key == "Content-Tyspe:"){
-				boundary = line.substr(pos + 2);
-				std::cout << boundary << std::endl;
-				path = "1";
+		// int i = line.compare("--" + this->getContentType().substr(30) + "--\r");
+		// if (i < 5)
+		// 	std::cout << i << " line: " << line << "\n" << "--" + this->getContentType().substr(30) + "--\r" << std::endl;
+		if(line != "--" + this->getContentType().substr(30) + "--\r")
+		{
+			if (line == boundary || block == 1){
+				block = 1;
+				// std::cout << "line: " << line << std::endl;
+				static std::string filename = "";
+				if (line.substr(0, 20) == "Content-Disposition:"){
+					// std::cout << "lines " << line << std::endl;
+					std::string::size_type pos = line.find("filename=");
+					if (pos != std::string::npos)
+					{	
+						pos += 10;
+						std::cout << "ps: "  << pos << " char:" << line[pos] << std::endl;
+						std::string::size_type pos2 = line.find("\"", pos);
+						std::cout << "ps2: "  << pos2 << " char:" << line[pos2] << std::endl;
+						if (pos2 != std::string::npos)
+						{
+							filename = line.substr(pos, pos2-pos);
+							std::cout  << pos2 << "  filename2: " << filename << std::endl;
+						}
+					}
+					if (filename == ""){
+						pos = line.find("name=");
+						if (pos != std::string::npos){
+							pos += 5;
+							std::string::size_type pos2 = line.find("\"", pos);
+							if (pos2 != std::string::npos)
+							{
+								filename = line.substr(pos, pos2-pos);
+								std::cout  << pos2 << "  filename2: " << filename << std::endl;
+							}	
+						}
+					}
+				}
+				else if (line.substr(0, 14) == "Content-Type: "){
+						std::string type = line.substr(13);
+						std::cout << "type: " << type << std::endl;
+					}
+				else if (line == "")
+					;
+				else{
+					std::ofstream file;
+					std::cout << "naam: " << filename <<std::endl;
+					file.open(filename, std::ofstream::app);
+					// if (!file.is_open()) {
+					// 	std::cout << "Failed to open the file." << std::endl;
+					// 	return ; // Exit with an error code
+					// }
+
+					file << line << std::endl;
+					std::cout << "line: " << line << std::endl;
+					file.close();
+				}
+
 			}
-        }
+		}
+		
+        // std::string::size_type pos = line.find("boundary=");
+        // if (pos != std::string::npos) {
+        //     std::string key = line.substr(1, pos);
+		// 	boundary = line.substr(pos + 2);
+		// 	std::cout << "boundary: " << boundary << std::endl;
+			// if (key == "Content-Tyspe:"){
+			// 	boundary = line.substr(pos + 2);
+			// 	std::cout << boundary << std::endl;
+				path = "1";
+			// }
+        // }
     }
 	//find boundary
 	//write naar
@@ -119,7 +179,7 @@ int Response::uploadFile(std::stringstream& raw, std::string path){
 	// 	return 0;
 	// if (!checkMethod())
 	// 	return 0;
-	// MakeFiles(raw, path);
+	MakeFiles(raw, path);
 	// if (!fileExist())
 	// 	return 0;
 	// if (!FileSize)

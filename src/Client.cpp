@@ -91,7 +91,7 @@ int Client::readRequest() {
             std::string key = bufferstring.substr(1, pos);
 			std::stringstream stream(key);
             stream >> content_length;
-			std::cout << content_length << std::endl;
+			std::cout << "content length: "<< content_length << std::endl;
 		}
 		if (content_length > 0){
 			std::cout << "Readrequest contentlength > 0: " << content_length << std::endl;
@@ -100,7 +100,7 @@ int Client::readRequest() {
 			}
 		}
 		else{
-			// std::cout << "Readrequest normaal" << std::endl;
+			std::cout << "Readrequest normaal" << std::endl;
 			if (bytes_read < static_cast<int>(sizeof(buffer)) - 1 && chunkedrequest == 0) {
 				_state = RESPONDING;
 			}

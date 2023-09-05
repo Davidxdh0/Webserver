@@ -125,3 +125,6 @@ status Codes
 redirect
 	https://blog.hubspot.com/website/html-redirect
 	https://www.redirect-checker.org/
+
+chunked requests
+	curl -X POST -H "Transfer-Encoding: chunked" -d @test.pdf 127.0.0.1:8080

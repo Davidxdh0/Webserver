@@ -20,7 +20,7 @@ void Request::parseRequest(std::stringstream &requestRaw, std::string& contentty
         getline(requestRaw, line, '\r');
         if (line.empty())
             break;
-		std::cout << line << std::endl;
+		// std::cout << line << std::endl;
         std::string::size_type pos = line.find(": ");
         if (pos != std::string::npos) {
             std::string key = line.substr(1, pos);
