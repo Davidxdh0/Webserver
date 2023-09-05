@@ -6,14 +6,16 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/06/06 13:22:53 by rubennijhui   ########   odam.nl         */
+/*   Updated: 2023/09/05 08:36:14 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.h"
 #include "ServerControl.h"
-#include <vector>
+#include "ParseConfig.h"
 #include "utils.h"
+#include <unistd.h>
+#include <fstream>
 
 using namespace std;
 
@@ -38,7 +40,7 @@ Config* dummy_configs()
 
     settings[1].setHost("localhost");
     settings[1].setRoot("/public");
-    settings[1].setIndex("index.html");
+    settings[1].setIndex("index1.html");
     settings[1].setAllowMethods(3);
     settings[1].setAutoindex(true);
     settings[1].setCgiPath("/cgi-bin");
@@ -50,18 +52,21 @@ Config* dummy_configs()
     return port_configs;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-//    vector<Config>  configs;
-//    Config          config1(8080);
-//    Config          config2(8081);
-//
-//    configs.push_back(config1);
-//    configs.push_back(config2);
-
     Config*  port_configs;
-
+	
     port_configs = dummy_configs();
+
+	if (argc == 2){
+		;//ParseConfig config(argv[1]);
+		;//config.ParseConfigFile();
+	}
+	// std::cout << port_configs->getHosts()[1].getIndex() << std::endl;
+	// Config*  port_configs = new Config[3];
+    // Settings* settings = new Settings[2];
+
     ServerControl   serverControl(port_configs);
     return 0;
+	argv++;
 }

@@ -14,8 +14,10 @@ public:
     Path();
     Path(const std::string& root, const std::string& uri);
     Path(const Path &src);
+	Path& operator=(const Path& other);
     ~Path();
 
+	void   			setFullPath(std::string newPath) { _full_path = newPath; };
     std::string     getFullPath() const { return _full_path; };
     std::string     getExtension() { return _extension; };
     std::string     getFilename() { return _filename; };

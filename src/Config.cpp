@@ -35,38 +35,41 @@ Config &Config::operator=(const Config &other)
 	return (*this);
 }
 
+
 // ---------------------- Config member functions ------------------------------
 
-//void Config::setWithFile(const char *fileLocation)
-//{
-//	if (!this->_configFile.is_open())
-//	{
-//		this->_configFile.close();
-//	}
-//
-//	this->_configFile.open(fileLocation);
-//
-//	if (!this->_configFile.is_open())
-//	{
-//		throw Config::FileNotFoundException();
-//	}
-//
-//	if (this->_configFile.fail())
-//	{
-//		throw Config::FileNotFoundException();
-//	}
-//
-//	this->_fileLocation = fileLocation;
-//}
+// void Config::setWithFile(const char *fileLocation)
+// {
+// 	if (!this->_configFile.is_open())
+// 	{
+// 		this->_configFile.close();
+// 	}
 
-// ---------------------- BureaucratException Functions ------------------------
+// 	this->_configFile.open(fileLocation);
 
-const char *Config::FileNotFoundException::except() const throw()
+// 	if (!this->_configFile.is_open())
+// 	{
+// 		throw Config::FileNotFoundException();
+// 	}
+
+// 	if (this->_configFile.fail())
+// 	{
+// 		throw Config::FileNotFoundException();
+// 	}
+
+// 	this->_fileLocation = fileLocation;
+// }
+
+
+
+// ---------------------- Config Exception Functions ------------------------
+
+const char *Config::FileNotRetrievedException::what() const throw()
 {
 	return ("Error finding or opening the file");
 }
 
-const char *Config::FileIncorrectFormatException::except() const throw()
+const char *Config::FileIncorrectFormatException::what() const throw()
 {
 	return ("Error parsing the file");
 };

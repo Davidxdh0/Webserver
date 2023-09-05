@@ -1,10 +1,14 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
+#include "Server.h"
 #include <fstream>
 #include <string>
+#include <vector>
+#include <map>
 #include "Settings.h"
 
+using namespace std;
 /**
  * @class
  * Config
@@ -14,9 +18,27 @@
  * for the webserv program. Using this class you can read and set the
  * configurations
  */
-class Config {
+
+enum E_Types {
+	E_port = 0,
+	E_servername,
+	E_errorpage,
+	E_client_max_body,
+	E_root,
+	E_index,
+	E_location,
+	E_name,
+	E_methods,
+	E_autoindex,
+	E_upload,
+	E_loc_handling
+};
+
+class Config
+{
 	public:
 		Config();
+		Config(const char* fileLocation);
 		Config(const Config& other);
         Config(int port);
 		~Config();
@@ -33,21 +55,24 @@ class Config {
         // ------------------- Config member functions ------------------------
 
 		void setWithFile(const char *fileLocation);
-
+		
+		// void	openConfig(ifstream& config_file, int argc, char *argv[]);
+		// void	initialiseConfig(int argc, char *argv[]);
+		// void	createConfig(ifstream& config_file);
 		// ------------------ ConfigException functions -----------------------
 
-		class FileNotFoundException : public std::exception
+		class FileNotRetrievedException : public std::exception
 		{
 		public:
-			virtual const char *except() const throw();
+			virtual const char *what() const throw();
 		};
 
 		class FileIncorrectFormatException : public std::exception
 		{
 		public:
-			virtual const char *except() const throw();
+			virtual const char *what() const throw();
 		};
-
+		
 
 	private:
 

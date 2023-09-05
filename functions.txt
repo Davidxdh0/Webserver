@@ -1,0 +1,127 @@
+Functions and information:
+
+Main:
+https://42seoul-gitbook-io.translate.goog/webserv/or-cgi?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=nl&_x_tr_hist=true
+
+
+
+int socketfd = socket(AF_INET, SOCK_STREAM, 0);
+	https://www.geeksforgeeks.org/socket-programming-cc/
+	https://man.freebsd.org/cgi/man.cgi?query=socket&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html
+
+int setsockopt(sockfd, SOL_SOCKET, SO_KEEPALIVE,  const void *optval, socklen_t optlen);
+	https://www.geeksforgeeks.org/socket-programming-cc/
+	https://man.freebsd.org/cgi/man.cgi?query=setsockopt&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html
+	*** way more options, for us to use?
+
+int bind(socketfd, const struct sockaddr *addr, socklen_t addrlen);
+	https://www.geeksforgeeks.org/socket-programming-cc/
+	https://man.freebsd.org/cgi/man.cgi?query=bind&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html
+
+struct sockaddr_in
+	0 - AF_INET: Specifies the iPv4 address family.
+	1 - https://stackoverflow.com/questions/5444197/converting-host-to-ip-by-sockaddr-in-gethostname-etc
+	3 - The port number must be specified in direct binary form in the sin_port member of the structure. 
+		Therefore, it is necessary to convert the value to this data type.
+	https://www.gta.ufrj.br/ensino/eel878/sockets/sockaddr_inman.html
+
+
+listen(socketfd, 10)
+	https://www.geeksforgeeks.org/socket-programming-cc/
+	https://man.freebsd.org/cgi/man.cgi?query=listen&apropos=0&sektion=2&manpath=FreeBSD+13.2-RELEASE+and+Ports&arch=default&format=html
+	https://stackoverflow.com/questions/13241519/sockets-in-c-errors
+
+accept(socketfd, (struct sockaddr *)&clientAddress, &addrlen);
+	https://www.geeksforgeeks.org/socket-programming-cc/
+
+EV_SET(&event, _socket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, nullptr);
+
+kqueue()
+
+kevent(kqueuFd, &event, 1, nullptr, 0, nullptr);
+
+log(ss.str());
+
+fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0
+
+createClient(kqueu_fd, client_socket);
+
+struct kevent event = {};
+
+EV_SET(&event, _socket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, nullptr);
+
+kevent(kqueuFd, &event, 1, nullptr, 0, nullptr);
+
+log("------ ServerBlock event registered in kqueu ------\n\n");
+
+EV_SET(events, 0, 0, 0, 0, 0, 0);
+        kevent(_kq_fd, nullptr, 0, events, 1, &timeout);
+		
+ServerBlock *tmp = checkIdentIsServer(events->ident);
+
+
+
+if (tmp != nullptr) {
+    tmp->acceptConnection(_kq_fd);
+    }
+else {
+	Client *client = static_cast<Client *>(events->udata);
+	if (events->filter == EVFILT_READ && client->getState() == READING) {
+		client->handleRequest();
+	} else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
+		client->writeResponse();
+		delete client;
+	}
+}
+
+config file
+	https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts
+	https://www.solo.io/topics/nginx/nginx-configuration/
+
+nginx
+list directories
+	https://nginx.org/en/docs/http/ngx_http_index_module.html
+	https://docs.nginx.com/nginx/admin-guide/web-server/web-server/
+	https://www.oreilly.com/library/view/nginx-http-server/9781788623551/052b1381-d911-46df-8bd2-1bebf70f44b8.xhtml
+	https://askubuntu.com/questions/979587/nginx-loads-index-html-automatically-without-being-instructed-to
+	https://trac.nginx.org/nginx/browser/nginx/src/http/modules/ngx_http_autoindex_module.c#L630
+	https://serverfault.com/questions/326810/replicating-userdir-apache-functionality-in-nginx
+	stat:
+		time_t    st_mtime   Time of last data modification. 
+	https://www.tutorialspoint.com/cplusplus/cpp_date_time.htm	
+	https://stackoverflow.com/questions/21159047/get-the-creation-date-of-file-or-folder-in-c
+
+http post
+	https://javaplant-tistory-com.translate.goog/18?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=nl
+
+isdirectory
+	https://stackoverflow.com/questions/1542763/what-is-the-correct-way-to-use-the-stat-function-to-test-if-a-dirent-is-a-dire
+	https://stackoverflow.com/questions/146924/how-can-i-tell-if-a-given-path-is-a-directory-or-a-file-c-c
+
+cgicgi
+	https://www.tutorialspoint.com/cplusplus/cpp_web_programming.htm
+
+form
+	https://www.freecodecamp.org/news/upload-files-with-html/
+
+delete
+	https://reqbin.com/Article/HttpDelete
+	https://reqbin.com/req/cvy4trgb/delete-request-example
+	https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
+
+files
+	https://www.geeksforgeeks.org/access-command-in-linux-with-examples/
+	https://gehrcke.de/2011/06/reading-files-in-c-using-ifstream-dealing-correctly-with-badbit-failbit-eofbit-and-perror/
+	https://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exists-using-standard-c-c11-14-17-c
+	https://stackoverflow.com/questions/40163270/what-is-s-isreg-and-what-does-it-do
+	https://www.parashift.com/c++-faq-lite/iostream-vs-stdio.html
+	https://stackoverflow.com/questions/10301288/is-my-fstream-bad-or-not-good
+
+status Codes
+	403 https://serverfault.com/questions/748561/nginx-doesnt-have-permission-to-access-files-with-the-same-ownership
+->	https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+	https://42seoul-gitbook-io.translate.goog/webserv/or-response?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=nl&_x_tr_hist=true
+
+redirect
+	https://blog.hubspot.com/website/html-redirect
+	https://www.redirect-checker.org/

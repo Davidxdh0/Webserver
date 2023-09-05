@@ -20,6 +20,15 @@ Path::Path(const Path &src) {
     *this = src;
 }
 
+Path& Path::operator=(const Path& other){
+	if (this != &other){
+		_full_path = other._full_path;
+		_filename = other._filename;
+		_extension = other._extension;
+	}
+	return *this;
+}
+
 Path::~Path() {}
 
 std::ostream& operator<<(std::ostream& os, const Path& path) {
