@@ -14,10 +14,10 @@
 class Client {
 public:
     Client();
-    Client(int socket /*int port*/);
+    explicit Client(int socket);
     ~Client();
 
-    void                handleRequest();
+    void                handleRequest(long data);
     void                setResponse();
     void                writeResponse();
     void                configure();
@@ -34,7 +34,7 @@ private:
     std::stringstream   _requestRaw;
 
 
-    int                 readRequest();
+    int                 readRequest(long data);
 };
 
 

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
+#include <sys/socket.h>
 #include "Client.h"
 #include "utils.h"
 
@@ -17,8 +18,8 @@ Client::~Client() {
     close(_socket);
 }
 
-void Client::handleRequest() {
-    this->readRequest();
+void Client::handleRequest(long data) {
+    this->readRequest(data);
     if (_state != RESPONDING) {
         return;
     }
@@ -27,18 +28,18 @@ void Client::handleRequest() {
     this->setResponse();
 }
 
-int Client::readRequest() {
-    char buffer[4096];
+int Client::readRequest(long data) {
+    char buffer[1024];
     size_t bytes_read;
     size_t t = -1;
 
-    bytes_read = read(_socket, buffer, sizeof buffer - 1);
+    bytes_read = recv(_socket, buffer, sizeof buffer - 1, 0);
     if (bytes_read == t) {
         exitWithError("Error reading from socket");
     }
     buffer[bytes_read] = '\0';
     _requestRaw << buffer;
-    if (bytes_read < sizeof buffer - 1) {
+    if (bytes_read < sizeof buffer - 1 || bytes_read == data) {
         _state = RESPONDING;
     }
     return 1;

@@ -34,6 +34,10 @@ ServerControl::ServerControl(Config*  port_configs) : _kq_fd(kqueue()), _servers
 ServerControl::~ServerControl()
 {
     close(_kq_fd);
+    for (size_t i = 0; i < _servers.size(); i++)
+    {
+        close(_servers[i].getSocket());
+    }
 }
 
 Server* ServerControl::checkIdentIsServer(int ident)
@@ -48,22 +52,32 @@ Server* ServerControl::checkIdentIsServer(int ident)
 
 void   ServerControl::webservLoop() {
     struct timespec timeout = {};
-    struct kevent events[1];
+    struct kevent events[2];
 
     while (1){
-        EV_SET(events, 0, 0, 0, 0, 0, 0);
-        kevent(_kq_fd, nullptr, 0, events, 1, &timeout);
-        if (events->ident != 0) {
-            Server *tmp = checkIdentIsServer(events->ident);
-            if (tmp != nullptr) {
-                tmp->acceptConnection(_kq_fd);
-            } else {
-                Client *client = static_cast<Client *>(events->udata);
-                if (events->filter == EVFILT_READ && client->getState() == READING) {
-                    client->handleRequest();
-                } else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
-                    client->writeResponse();
-                    delete client;
+        EV_SET(&events[0], 0, 0, 0, 0, 0, 0);
+        EV_SET(&events[1], 0, 0, 0, 0, 0, 0);
+        kevent(_kq_fd, nullptr, 0, events, 2, &timeout);
+        for (int i = 0; i < 2; i++) {
+            if (events[i].flags & EV_ERROR) {
+                exitWithError("Error in kevent");
+            }
+            if (events[i].ident != 0) {
+                Server *tmp = checkIdentIsServer(events[i].ident);
+                if (tmp != nullptr) {
+                    tmp->acceptConnection(_kq_fd);
+                } else {
+                    Client *client = static_cast<Client *>(events[i].udata);
+                    if (events[i].flags & EV_EOF && events->data == 0) {
+                        delete client;
+                    } else if (events[i].filter == EVFILT_READ && client->getState() == READING) {
+                        client->handleRequest(events[i].data);
+                        EV_SET(events, events[i].ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, client);
+                        kevent(_kq_fd, events, 1, nullptr, 0, nullptr);
+                    } else if (events[i].filter == EVFILT_WRITE && client->getState() == RESPONDING) {
+                        client->writeResponse();
+                        delete client;
+                    }
                 }
             }
         }

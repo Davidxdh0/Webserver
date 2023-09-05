@@ -33,6 +33,11 @@ int Server::createSocket() {
         exitWithError("Cannot create socket");
         return 1;
     }
+    int reuse = 1;
+    if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) == -1) {
+        exitWithError("Error setting socket options");
+        return 1;
+    }
     if (bind(_socket, (sockaddr *)&_socketAddress, _socketAddress_len) < 0)
     {
         exitWithError("Cannot connect socket to address");
@@ -72,8 +77,11 @@ void Server::startListen(int kqueuFd) const
 
 void Server::acceptConnection(int kqueu_fd)
 {
-    int client_socket = accept(_socket, (sockaddr *)&_socketAddress, &_socketAddress_len);
+    int opt_value = 1;
+    setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 
+    int client_socket = accept(_socket, (sockaddr *)&_socketAddress, &_socketAddress_len);
+    setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
     if (client_socket < 0)
     {
         std::ostringstream ss;
@@ -89,11 +97,11 @@ void Server::acceptConnection(int kqueu_fd)
 
 void Server::createClient(int kqueu_fd, int client_socket) const
 {
-    Client* client = new Client(client_socket/*, this->_port*/);
+    Client* client = new Client(client_socket);
     struct kevent event[2];
 
     EV_SET(&event[0], client_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, client);
-    EV_SET(&event[1], client_socket, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, client);
-    kevent(kqueu_fd, event, 2, nullptr, 0, nullptr);
+//    EV_SET(&event[1], client_socket, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, client);
+    kevent(kqueu_fd, event, 1, nullptr, 0, nullptr);
     log("------ Client event registered in kqueu ------\n\n");
 }
