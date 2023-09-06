@@ -11,44 +11,30 @@
 #include "utils.h"
 #include "Client.h"
 
-Server::Server(const std::string& ip_address, Config& conf) :
+Server::Server(Config& conf) :
 _port(conf.getPort()), _socket(), _socketAddress(), _socketAddress_len(sizeof(_socketAddress)), _virtualhosts(conf.getHosts())
 {
     _socketAddress.sin_family = AF_INET;
     _socketAddress.sin_port = htons(_port);
 
-    if (createSocket() != 0)
-    {
-        std::cout << "Failed to start server with PORT: " << ntohs(_socketAddress.sin_port);
-    }
+    createSocket();
 }
 
 Server::~Server() {
 }
 
-int Server::createSocket() {
+void Server::createSocket() {
+    int reuse = 1;
+
     _socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_socket < 0)
-    {
         exitWithError("Cannot create socket");
-        return 1;
-    }
-    int reuse = 1;
-    if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) == -1) {
+    if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) < 0)
         exitWithError("Error setting socket options");
-        return 1;
-    }
     if (bind(_socket, (sockaddr *)&_socketAddress, _socketAddress_len) < 0)
-    {
         exitWithError("Cannot connect socket to address");
-        return 1;
-    }
     if (fcntl(_socket, F_SETFL, O_NONBLOCK) < 0)
-    {
         exitWithError("Cannot set socket to non-blocking");
-        return 1;
-    }
-    return 0;
 }
 
 void Server::closeServer() const
@@ -60,9 +46,7 @@ void Server::closeServer() const
 void Server::startListen(int kqueuFd) const
 {
     if (listen(_socket, 20) < 0)
-    {
         exitWithError("Socket listen failed");
-    }
 
     std::ostringstream ss;
     ss << "\n*** Listening on ADDRESS: " << inet_ntoa(_socketAddress.sin_addr) << " PORT: " << ntohs(_socketAddress.sin_port) << " ***\n\n";
@@ -78,26 +62,24 @@ void Server::startListen(int kqueuFd) const
 void Server::acceptConnection(int kqueu_fd)
 {
     int opt_value = 1;
-    setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 
     int client_socket = accept(_socket, (sockaddr *)&_socketAddress, &_socketAddress_len);
-    setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
     if (client_socket < 0)
     {
         std::ostringstream ss;
         ss << "Server failed to accept incoming connection from ADDRESS: " << inet_ntoa(_socketAddress.sin_addr) << "; PORT: " << ntohs(_socketAddress.sin_port);
         exitWithError(ss.str());
     }
+    if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(int)) < 0)
+        exitWithError("Error setting socket options");
     if (fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0)
-    {
         exitWithError("Cannot set socket to non-blocking");
-    }
     createClient(kqueu_fd, client_socket);
 }
 
 void Server::createClient(int kqueu_fd, int client_socket) const
 {
-    Client* client = new Client(client_socket);
+    Client* client = new Client(client_socket, _virtualhosts);
     struct kevent event[2];
 
     EV_SET(&event[0], client_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, client);

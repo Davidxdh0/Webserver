@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <map>
+#include "Path.h"
 
 class Settings {
 
@@ -40,6 +41,7 @@ public:
     const std::map<int, std::string> &getErrorPages() const { return _error_pages; };
     int getClientMaxBodySize() const { return _client_max_body_size; };
     const std::map<std::string, Settings> &getLocations() const { return _locations; };
+    Settings getRightSettings(Path& uri);
 
 private:
 

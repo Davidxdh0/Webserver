@@ -22,13 +22,13 @@ using namespace std;
 Config* dummy_configs()
 {
     Config*  port_configs = new Config[3];
-    Settings* settings = new Settings[2];
+    Settings* settings = new Settings[3];
 
     port_configs[0].setPort(8080);
     port_configs[1].setPort(8081);
     port_configs[2].setPort(0);
 
-    settings[0].setHost("localhost");
+    settings[0].setHost("localhost:8080");
     settings[0].setRoot("/public");
     settings[0].setIndex("index.html");
     settings[0].setAllowMethods(3);
@@ -47,6 +47,8 @@ Config* dummy_configs()
     settings[1].setCgiExtension(".php");
     settings[1].setUploadPath("/uploads");
     settings[1].setClientMaxBodySize(1000000);
+
+    settings[2].setHost("");
 
     port_configs[0].setHosts(settings);
     return port_configs;

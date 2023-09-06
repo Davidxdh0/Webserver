@@ -10,14 +10,15 @@
 #include "utils.h"
 #include <algorithm>
 
-Client::Client() : _request(), _response(), _socket(), _state(READING) {}
+Client::Client() : _socket(), _state(READING) {}
 
-Client::Client(int socket /*int port*/) : _request(), _response(), _socket(socket), _state(READING) /*_port(port)*/ {
+Client::Client(int socket, Settings* vhosts) : _socket(socket), _state(READING), _vhosts(vhosts) {
 }
 
 Client::~Client() {
     close(_socket);
 }
+
 std::stringstream&	Client::getRequestRaw(){return _requestRaw;}
 const Request&		Client::getRequest()const{return _request;}
 const Response&		Client::getResponse()const{return _response;}
@@ -25,13 +26,9 @@ const Path&			Client::getPath()const{return _path;}
 
 void Client::handleRequest(long data) {
     this->readRequest(data);
-    if (_state != RESPONDING) {
+    if (_state != RESPONDING)
         return;
-    }
-	std::cout << "requestraw: " << _requestRaw.str() << std::endl;
-	std::string contenttype;
-    _request.parseRequest(_requestRaw, contenttype);
-	_response.setContentType(contenttype);
+    _request.parseRequest(_requestRaw);
     this->configure();
     this->setResponse();
 }
@@ -39,19 +36,17 @@ void Client::handleRequest(long data) {
 int Client::readRequest(long data) {
     char buffer[1024];
     size_t bytes_read;
-	static size_t content_length = 0;
     size_t t = -1;
-	static int chunkedrequest = 0;
+//	static size_t content_length = 0;
+//	static int chunkedrequest = 0;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
-    if (bytes_read == t){
+    if (bytes_read == t)
         exitWithError("Error reading from socket");
-    }
     buffer[bytes_read] = '\0';
     _requestRaw << buffer;
-    if (bytes_read < sizeof buffer - 1 || bytes_read == data) {
+    if (bytes_read < sizeof buffer - 1 || bytes_read == data)
         _state = RESPONDING;
-    }
 //	else if (bytes_read >= 0)
 //	{
 //		buffer[bytes_read] = '\0';
@@ -178,10 +173,19 @@ void Client::writeResponse() {
 }
 
 void Client::configure() {
-    std::string    root = ROOT;
-    std::string    index = INDEX;
 
-    _path = Path(root, _request.getUri());
+    Settings ret;
+    std::string host = _request.getHostname();
+    Path uri(_request.getUri());
 
+    int i = 0;
+    while(!_vhosts[i].getHost().empty()) {
+        if (_vhosts[i].getHost() == host) {
+            ret = _vhosts[i].getRightSettings(uri);
+            break;
+        }
+        i++;
+    }
+    _settings = ret;
 }
 

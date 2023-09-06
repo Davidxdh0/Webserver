@@ -7,12 +7,13 @@
 
 
 #include <string>
+#include <vector>
 
 class Path {
 
 public:
     Path();
-    Path(const std::string& root, const std::string& uri);
+    Path(const std::string& uri);
     Path(const Path &src);
 	Path& operator=(const Path& other);
     ~Path();
@@ -24,9 +25,10 @@ public:
     const char*     c_str() const { return _full_path.c_str(); };
 private:
 
-    std::string     _full_path;
-    std::string     _extension;
-    std::string     _filename;
+    std::string                 _full_path;
+    std::vector<std::string>    _tokens;
+    std::string                 _extension;
+    std::string                 _filename;
 
 
 };

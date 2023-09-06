@@ -4,16 +4,26 @@
 
 #include "Path.h"
 #include "iostream"
+#include <sstream>
+#include <string>
 
-Path::Path(): _full_path(), _extension(), _filename() {}
+Path::Path() {}
 
-Path::Path(const std::string& root, const std::string& uri) {
-    _full_path = root + uri;
-    _filename = _full_path.substr(_full_path.find_last_of('/') + 1);
-    _extension = _filename.substr(_filename.find_last_of('.') + 1);
-    std::cout << "Path: " << _full_path << std::endl;
-    std::cout << "Extension: " << _extension << std::endl;
-    std::cout << "Filename: " << _filename << std::endl;
+Path::Path(const std::string& str) {
+    std::string buf;
+    std::istringstream ss(str);
+
+    _full_path = str;
+    std::getline(ss, buf, '/');
+    while(std::getline(ss, buf, '/')) {
+        _tokens.push_back(buf);
+    }
+
+    _extension = buf.substr(buf.find_last_of('.') + 1);
+    if (_extension.empty())
+        _filename = "";
+    else
+        _filename = buf;
 }
 
 Path::Path(const Path &src) {
