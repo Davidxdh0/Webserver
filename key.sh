@@ -1,4 +1,3 @@
-
 #!/bin/bash
 while true; do
 read -rsn1 var
@@ -11,4 +10,3 @@ fi
 done
 #/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend
 #caffeinate -iu -t 25600
-
