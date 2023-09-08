@@ -22,7 +22,6 @@ void	Response::showDir(){
   	closedir (dir);
 }
 
-
 /*
 todo: 	
 	Error catching - can't open file?

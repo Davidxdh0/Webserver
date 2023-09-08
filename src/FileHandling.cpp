@@ -22,7 +22,7 @@ bool Response::hasAccess(std::string filepath, std::fstream& filestr){
 	filestr.open(path);
 	if (!filestr.is_open()){
 		setStatusCode("404");
-		std::cout << "not opened directory?" << std::endl;
+		std::cout << "not opened or directory" << std::endl;
 		return 0; //not opened
 	}
 	if (filestr.peek() == std::ifstream::traits_type::eof()) {
@@ -32,25 +32,6 @@ bool Response::hasAccess(std::string filepath, std::fstream& filestr){
 	}
 	return 1;
 }
-// int hasAccess(std::string filepath, std::fstream *filestr){
-	
-// }
-
-/*
-isUpload()
-checkMethods accepted
-checkFile bestaat in dir
-kan openen?
-stream to string
-uploadpath
-write stream to file at uploadpath
-if i can open file, return goed
-anders fout.
-
-*/
-
-//change config file.
-
 
 bool	Response::isUpload(std::string paths)
 {
@@ -78,11 +59,18 @@ bool	Response::checkMethod(std::string &str)
 std::string uniqueFileName(std::string path, std::string file)
 {
 	int i = 1;
-	// extensie eraf, i erbij, extensie erbij.
+	std::string extension = "";
 	std::string filename = path + file;
-	while (access (filename.c_str(), F_OK) != 0)
+	std::string rawfile = file;
+	size_t lastDot = file.rfind('.');
+	if (lastDot != std::string::npos){
+		extension	= file.substr(lastDot);
+		rawfile		= file.substr(0, lastDot);
+	}
+	while (access (filename.c_str(), F_OK) == 0)
 	{
-		filename = filename + std::to_string(i);
+		file = rawfile + std::to_string(i) + extension;
+		filename = path + file;
 		i++;
 	}
 	return filename;
@@ -91,17 +79,13 @@ std::string uniqueFileName(std::string path, std::string file)
 std::string	Response::GetFilename(std::string line){
 	std::string filename = "";
 	std::string::size_type pos = line.find("filename=");
-		std::cout << "0" << std::endl;
 	if (pos != std::string::npos){
-			std::cout << "1" << std::endl;
 		pos += 10;
 		std::string::size_type pos2 = line.find("\"", pos);
-		if (pos2 != std::string::npos){
+		if (pos2 != std::string::npos)
 			filename = line.substr(pos, pos2 - pos);
-		}
 	}
 	else{
-		std::cout << "2" << std::endl;
 		pos = line.find("name=");
 		if (pos != std::string::npos){
 			pos += 5;
@@ -116,78 +100,37 @@ std::string	Response::GetFilename(std::string line){
 	return filename;
 }
 
+// std::cout << "boundary: " << this->getContentType().substr(30) + "\r\n" << std::endl;
 void	Response::MakeFiles(std::stringstream &raw, std::string path)
 {
-	std::string line;
 	std::string boundary = "--" + this->getContentType().substr(30) + "\r";
-	// std::cout << "boundary: " << this->getContentType().substr(30) + "\r\n" << std::endl;
-
-	// std::ofstream file;
-	// std::ofstream file2;
 	std::string filename = "";
-	std::string rawstring;
-	rawstring = raw.str();
-	std::cout << "size " << raw.str().size() << std::endl;
-	// std::cout << raw.str() << std::endl;
+	std::string rawstring = raw.str();
 
-	size_t bound = rawstring.find("Content-Disposition");
-	size_t start2 = rawstring.find("\r\n\r\n", bound);
-    size_t end 	 = rawstring.find("\r\n--" + this->getContentType().substr(30), start2);
-	std::string bodystr = rawstring.substr(start2 + 4, end - start2 - 4);
-
+	size_t bound		= rawstring.find(boundary);
+	size_t start		= rawstring.find("\r\n\r\n", bound);
+    size_t end			= rawstring.find("\r\n--" + this->getContentType().substr(30), start);
+	if (bound == std::string::npos || start == std::string::npos || end == std::string::npos){
+		std::cout << "Error when uploading" << std::endl;
+		return ;
+	}
+	start += 4;
+	std::string bodystr = rawstring.substr(start, end - start);
 	if (filename == "")
 		filename = GetFilename(rawstring);
 	if (filename != ""){
-		std::ofstream file("public/upload/" + filename, std::ios::app | std::ios::binary);
-		std::ofstream file2("public/upload/2" + filename, std::ios::app | std::ios::binary);
+		std::string uniqueName = uniqueFileName("public/upload/", filename);
+		// std::cout << "unieknaam: " << uniqueName << std::endl;
+		std::ofstream file(uniqueName, std::ios::binary);
+		std::ofstream file2("public/upload/" + filename + "2", std::ios::binary);
 		file << bodystr;
 		file2.write(bodystr.c_str(), bodystr.size());
 		file.close();
 	}
-	std::cout << "bodysize " << bodystr.size() << std::endl;
-	std::cout << "Done upload " << filename << std::endl;
-
+	std::cout << "Done upload " << filename << " BodySize " << bodystr.size() << std::endl;
+	//PATH?!
 	path = "";
 }
-
-	// 	int i = line.compare("--" + this->getContentType().substr(30) + "--\r");
-	// 	if (i < 5)
-	// 		std::cout << i << " line: " << line << "\n" << "--" + this->getContentType().substr(30) + "--\r" << std::endl;
-	// 	if(line != "--" + this->getContentType().substr(30) + "--\r")
-	// 	{
-	// 		if (line == boundary || block == 1){
-	// 			block = 1;
-	// 			// std::cout << "line: " << line << std::endl;
-				
-				
-	// 				std::cout << "naam: " << filename <<std::endl;
-					
-	// 				if (!file.is_open()) {
-	// 					std::cout << "Failed to open the file." << std::endl;
-	// 					return ; // Exit with an error code
-	// 				}
-
-	// 				file << line << std::endl;
-	// 				// std::cout << "line: " << line << std::endl;
-	// 				file.close();
-	// 			}
-
-	// 	// 	}
-	// 	}
-    
-	// file.open(filename);
-	// if (file.is_open()) {
-    //     if (line.substr(0, 2) == "\r\n") {
-    //         line = line.substr(2); // Remove the first "\r\n"
-    //     }
-    //     if (line.substr(line.length() - 2) == "\r\n") {
-    //         line = line.substr(0, line.length() - 2); // Remove the last "\r\n"
-    //     }
-    // }
-	// file.close();
-	//find boundary
-	//write naar
-// }
 
 int Response::uploadFile(std::stringstream& raw, std::string path){
 	// if (!isUpload(path))
@@ -195,12 +138,6 @@ int Response::uploadFile(std::stringstream& raw, std::string path){
 	// if (!checkMethod())
 	// 	return 0;
 	MakeFiles(raw, path);
-	// if (!fileExist())
-	// 	return 0;
-	// if (!FileSize)
-	// 	return 0;
-	// getboundary
-	// multiple files
 
 	std::cout << "Geupload" <<std::endl;
 	return 1;

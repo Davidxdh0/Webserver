@@ -35,7 +35,7 @@ void Request::parseRequest(std::stringstream &requestRaw, std::string& contentty
         }
     }
 	requestRaw.seekg(0);
-	std::cout << "contenttype == " << contenttype << std::endl;
+	std::cout << "Content_type: " << contenttype << std::endl;
     std::cout << "Method: " << _method << std::endl;
     std::cout << "Uri: " << _uri << std::endl;
     std::cout << "Version: " << _version << std::endl;

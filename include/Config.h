@@ -19,20 +19,7 @@ using namespace std;
  * configurations
  */
 
-enum class EnumConfig {
-	Port = 0,
-	Servername,
-	Errorpage,
-	Client_max_body,
-	Root,
-	Index,
-	Location,
-	Name,
-	Methods,
-	Autoindex,
-	Upload,
-	Loc_handling
-};
+
 
 class Config
 {
