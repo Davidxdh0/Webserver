@@ -19,19 +19,19 @@ using namespace std;
  * configurations
  */
 
-enum E_Types {
-	E_port = 0,
-	E_servername,
-	E_errorpage,
-	E_client_max_body,
-	E_root,
-	E_index,
-	E_location,
-	E_name,
-	E_methods,
-	E_autoindex,
-	E_upload,
-	E_loc_handling
+enum class EnumConfig {
+	Port = 0,
+	Servername,
+	Errorpage,
+	Client_max_body,
+	Root,
+	Index,
+	Location,
+	Name,
+	Methods,
+	Autoindex,
+	Upload,
+	Loc_handling
 };
 
 class Config
