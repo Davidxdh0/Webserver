@@ -35,10 +35,12 @@ class Config
         // ------------------- Config setters ------------------------
         void    setPort(int port) { this->_port = port; };
         void    setHosts(Settings* hosts) { this->_hosts = hosts; };
+        // void    addHosts(Settings* hosts) {  _hosts.push_back(hosts);}
 		// ------------------- Config getters ------------------------
 
         int getPort() const { return this->_port; };
         Settings* getHosts() const { return this->_hosts; };
+        // std::vector<Settings*> getHosts() const { return this->_hosts; };
         // ------------------- Config member functions ------------------------
 
 		void setWithFile(const char *fileLocation);
@@ -65,6 +67,7 @@ class Config
 
 		int		        _port;
         Settings*       _hosts;
+		
 };
 
 #endif

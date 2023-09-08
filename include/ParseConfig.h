@@ -22,7 +22,9 @@ public:
 	int 			ParseConfigFile();
 	void			readconfig(std::map<string, string>& map, std::fstream &filestream);
 	std::string 	findMapInLine(std::map<string, string>& map, std::string line);
-	void			parseLineConfig(std::map<string, string>& map, std::string line);
+	void			VariableToMap(Settings &config, std::string variable);
+
+	void			parseLineConfig(std::map<string, string>& map, std::string line, std::vector<pair<int, Settings* > > &config);
 	std::map<string, string> initMap();
 
     int 	hasAccess(std::string filepath, std::fstream& filestr);

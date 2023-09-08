@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/05 08:36:14 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/09 00:42:18 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,14 @@ int main(int argc, char* argv[])
     port_configs = dummy_configs();
 
 	if (argc == 2){
-		;//ParseConfig config(argv[1]);
-		;//config.ParseConfigFile();
+		ParseConfig config(argv[1]);
+		config.ParseConfigFile();
 	}
 	// std::cout << port_configs->getHosts()[1].getIndex() << std::endl;
 	// Config*  port_configs = new Config[3];
     // Settings* settings = new Settings[2];
 
-    ServerControl   serverControl(port_configs);
+    // ServerControl   serverControl(port_configs);
     return 0;
 	argv++;
 }
