@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/09 00:42:18 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/11 10:28:20 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Config* dummy_configs()
     settings[0].setRoot("/public");
     settings[0].setIndex("index.html");
     settings[0].setAllowMethods(3);
-    settings[0].setAutoindex(true);
+    settings[0].setAutoindex("true");
     settings[0].setCgiPath("/cgi-bin");
     settings[0].setCgiExtension(".php");
     settings[0].setUploadPath("/uploads");
@@ -42,7 +42,7 @@ Config* dummy_configs()
     settings[1].setRoot("/public");
     settings[1].setIndex("index1.html");
     settings[1].setAllowMethods(3);
-    settings[1].setAutoindex(true);
+    settings[1].setAutoindex("true");
     settings[1].setCgiPath("/cgi-bin");
     settings[1].setCgiExtension(".php");
     settings[1].setUploadPath("/uploads");
