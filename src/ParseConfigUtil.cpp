@@ -1,6 +1,8 @@
 #include "ParseConfig.h"
 #include "Settings.h"
 
+// 200, 204, 307, 400, 402 — 406, 408, 410, 411, 413, 416, and 500 — 504. 
+
 // find bracket en check 
 // size_t ParseConfig::FindBracket(std::string line)
 // {
@@ -32,6 +34,7 @@ void	ParseConfig::PrintSettings(Settings *items)
 	std::cout << "cgi path:\t\t" << items->getCgiPath() << "\n";
 	std::cout << "cgi_extension:\t" << items->getCgiExtension() << "\n";
 	std::cout << "upload_path:\t\t" << items->getUploadPath() << "\n";
+	std::cout << "upload_enable:\t\t" << items->getUploadPath() << "\n";
 	for (itError = errorCopy.begin(); itError != errorCopy.end(); itError++) {
 		std::cout << "error_pages:\t\t" << itError->first << " " << itError->second << "\n";
 	}
@@ -81,9 +84,8 @@ std::map<string, string> ParseConfig::initMap(){
 
 
 void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::string line){
-	size_t firstNonWhitespace = line.find_first_not_of(" \t");
-    if (firstNonWhitespace != std::string::npos)
-        line = line.substr(firstNonWhitespace);
+	line = ParseLine(line);
+	std::cout << line << std::endl;
 
 	if (variable == "LISTEN")
 		config.setHost(line);
@@ -121,7 +123,7 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 	else if (variable == "RETURN")
 		config.setReturn(line);
 	else {
-		std::cout << "Not in map: " << variable << std::endl;
+		std::cout << "Not in map: " << variable << " line: " << line << std::endl;
 	}
 	// std::cout << "Variable Set: " << variable << " line: " << line << std::endl;
 }

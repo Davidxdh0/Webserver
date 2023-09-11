@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/11 14:01:42 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/11 14:34:42 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
 		config.ParseConfigFile();
 	}
 
-    ServerControl   serverControl(port_configs);
+    // ServerControl   serverControl(port_configs);
     return 0;
 	argv++;
 }

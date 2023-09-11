@@ -58,7 +58,7 @@ void	ParseConfig::parseLineConfig(std::map<string, string>& map, std::string lin
 	std::istringstream iss(line);
 	std::string word;
 	std::string variable = "";
-	// std::cout << line << "\n";
+
 	while (iss >> word){
 		// std::cout << word << "\n";
 		if (variable == "")
@@ -89,7 +89,7 @@ void	ParseConfig::readconfig(std::map<string, string>& map, std::fstream &filest
 	std::string bracket = "";
 	int			endline;
 	Settings*	temp;
-	int			amountLocation = 0;
+	// int			amountLocation = 0;
 	// std::vector<pair<int, Settings* > > _Config_Vector;
 	
 	while (getline(filestream, line)){
@@ -118,17 +118,17 @@ void	ParseConfig::readconfig(std::map<string, string>& map, std::fstream &filest
 	}
 	std::vector<std::pair<int, Settings* > >::iterator it;
 	std::vector<std::pair<std::string, Settings* > >::iterator it_location;
-	for (it = _Config_Vector.begin(); it != _Config_Vector.end(); it++){
-		std::cout << "Printing Config_vector: " << amountLocation << std::endl;
-		// std::cout << "config poort: " << it->first << std::endl;
-		Settings* top = it->second;
-		PrintSettings(top);
-		std::vector<std::pair<std::string, Settings*> > locationsCopy = top->getLocations();
-    	for (it_location = locationsCopy.begin(); it_location != locationsCopy.end(); it_location++) {
-			std::cout << "Location number: " << ++amountLocation << std::endl;
-    	    PrintSettings(it_location->second);
-    	}
-	}
+	// for (it = _Config_Vector.begin(); it != _Config_Vector.end(); it++){
+	// 	std::cout << "Printing Config_vector: " << amountLocation << std::endl;
+	// 	// std::cout << "config poort: " << it->first << std::endl;
+	// 	Settings* top = it->second;
+	// 	PrintSettings(top);
+	// 	std::vector<std::pair<std::string, Settings*> > locationsCopy = top->getLocations();
+    // 	for (it_location = locationsCopy.begin(); it_location != locationsCopy.end(); it_location++) {
+	// 		std::cout << "Location number: " << ++amountLocation << std::endl;
+    // 	    PrintSettings(it_location->second);
+    // 	}
+	// }
 }
 
 int ParseConfig::ParseConfigFile() {

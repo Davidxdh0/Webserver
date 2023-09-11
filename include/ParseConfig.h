@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <map>
 
 #include <iostream>
@@ -35,6 +36,22 @@ public:
     int 	hasAccess(std::string filepath, std::fstream& filestr);
 	void	readconfig(std::fstream &filestream);
 	
+	std::string ParseLine(std::string line);
+	bool ParseListen(std::string line);
+    bool ParseHost(std::string line);
+    bool ParseRoot(std::string line);
+    bool ParseIndex(std::string line);
+    bool ParseMethods(std::string line);
+    bool ParseAutoindex(std::string line);
+    bool ParseCgiPath(std::string line);
+    bool ParseCgiExtension(std::string line);
+    bool ParseUploadPath(std::string line);
+    bool ParseUploadEnable(std::string line);
+    bool ParseErrorPages(std::string line);
+    bool ParseClientMaxBody(std::string line);
+    bool ParseLocation(std::string line);
+    bool ParseReturn(std::string line);
+
 private:
 	std::string		_filename;
 	Config			_config;
