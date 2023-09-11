@@ -113,8 +113,8 @@ void	ParseConfig::readconfig(std::map<string, string>& map, std::fstream &filest
 			Settings* temp = new Settings;
 			_Config_Vector.back().second->addLocations(std::make_pair(line, temp));
 		}
-		if (bracket == "open")
-			parseLineConfig(map, line.substr(0, endline), _Config_Vector, block);
+		// if (bracket == "open")
+		parseLineConfig(map, line.substr(0, endline), _Config_Vector, block);
 	}
 	std::vector<std::pair<int, Settings* > >::iterator it;
 	std::vector<std::pair<std::string, Settings* > >::iterator it_location;

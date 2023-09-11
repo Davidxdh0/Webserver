@@ -2,10 +2,10 @@
 #include "Settings.h"
 
 // find bracket en check 
-size_t ParseConfig::FindBracket(std::string line)
-{
+// size_t ParseConfig::FindBracket(std::string line)
+// {
 
-}
+// }
 
 
 // while (errorCopy.empty()) {
