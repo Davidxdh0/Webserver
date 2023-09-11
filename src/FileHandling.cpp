@@ -128,17 +128,12 @@ void	Response::MakeFiles(std::stringstream &raw, std::string path)
 		file.close();
 	}
 	std::cout << "Done upload " << filename << " BodySize " << bodystr.size() << std::endl;
-	//PATH?!
+//PATH?!
 	path = "";
 }
 
 int Response::uploadFile(std::stringstream& raw, std::string path){
-	// if (!isUpload(path))
-	// 	return 0;
-	// if (!checkMethod())
-	// 	return 0;
 	MakeFiles(raw, path);
-
 	std::cout << "Geupload" <<std::endl;
 	return 1;
 	path = "1";

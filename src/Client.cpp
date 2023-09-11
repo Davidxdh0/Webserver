@@ -140,6 +140,5 @@ void Client::configure() {
     std::string    index = INDEX;
 
     _path = Path(root, _request.getUri());
-
 }
 
