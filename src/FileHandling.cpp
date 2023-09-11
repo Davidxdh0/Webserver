@@ -101,6 +101,7 @@ std::string	Response::GetFilename(std::string line){
 }
 
 // std::cout << "boundary: " << this->getContentType().substr(30) + "\r\n" << std::endl;
+// std::cout << "unieknaam: " << uniqueName << std::endl;
 void	Response::MakeFiles(std::stringstream &raw, std::string path)
 {
 	std::string boundary = "--" + this->getContentType().substr(30) + "\r";
@@ -120,7 +121,7 @@ void	Response::MakeFiles(std::stringstream &raw, std::string path)
 		filename = GetFilename(rawstring);
 	if (filename != ""){
 		std::string uniqueName = uniqueFileName("public/upload/", filename);
-		// std::cout << "unieknaam: " << uniqueName << std::endl;
+
 		std::ofstream file(uniqueName, std::ios::binary);
 		std::ofstream file2("public/upload/" + filename + "2", std::ios::binary);
 		file << bodystr;

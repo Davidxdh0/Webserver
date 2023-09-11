@@ -9,7 +9,7 @@
 #include "utils.h"
 #include <algorithm>
 
-Client::Client() : _request(), _response(), _socket(), _state(READING) {}
+Client::Client() : _request(), _response(), _socket(), _state(READING){}
 
 Client::Client(int socket /*int port*/) : _request(), _response(), _socket(socket), _state(READING) /*_port(port)*/ {
 }
@@ -27,6 +27,7 @@ void Client::handleRequest() {
     if (_state != RESPONDING) {
         return;
     }
+	// std::cout << _requestRaw.str() << std::endl;
 	std::string contenttype;
     _request.parseRequest(_requestRaw, contenttype);
 	_response.setContentType(contenttype);
@@ -37,10 +38,9 @@ void Client::handleRequest() {
 int Client::readRequest() {
     char buffer[4096];
     size_t bytes_read;
-	static size_t content_length = 0;
-	static size_t total_read = 0;
+	// static size_t content_length = 0;
     size_t t = -1;
-	static int chunkedrequest = 0;
+	// static int chunkedrequest = 0;
 	
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
     if (bytes_read == t)
@@ -48,26 +48,27 @@ int Client::readRequest() {
 	else if (bytes_read >= 0)
 	{
 		buffer[bytes_read] = '\0';
-		total_read += bytes_read;
+		// _total_read += bytes_read;
+		// std::cout << "Contentlength: " << content_length << " != " << _total_read  << std::endl;
+		// std::string bufferstring = buffer;
+		// std::string::size_type pos = bufferstring.find("Content-Length: ");
+        // if (pos != std::string::npos){ //&& content_length >= 0) {
+        //     std::string key = bufferstring.substr(pos + 15);
+		// 	std::stringstream stream(key);
+        //     stream >> content_length;
+		// 	std::cout << "Found Contentlength: " << content_length << " totalread: " << _total_read << std::endl;
+		// }
+		// if (content_length > 0){
+		// 	std::cout << "Contentlength > 0" << std::endl;
+		// 	if (_total_read >= content_length - 1 && chunkedrequest == 0){
+		// 		_state = RESPONDING;
+		// 	}
+		// }
+			// std::cout << "Doesn't contain content length" << std::endl;
+			if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {// && chunkedrequest == 0) {
+				_state = RESPONDING;
+			}
 		
-		std::string bufferstring = buffer;
-		std::string::size_type pos = bufferstring.find("Content-Length: ");
-        if (pos != std::string::npos){ //&& content_length >= 0) {
-            std::string key = bufferstring.substr(pos + 15);
-			std::stringstream stream(key);
-            stream >> content_length;
-		}
-		if (content_length > 0){
-			std::cout << "Contentlength: " << content_length << " != " << total_read  << std::endl;
-			if (total_read >= content_length - 1 && chunkedrequest == 0){
-				_state = RESPONDING;
-			}
-		}
-		else{
-			if (bytes_read < static_cast<int>(sizeof(buffer)) - 1 && chunkedrequest == 0) {
-				_state = RESPONDING;
-			}
-		}
 		_requestRaw.write(buffer, bytes_read);
 		// _requestRaw << buffer;
 	}

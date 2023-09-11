@@ -36,6 +36,7 @@ private:
 //    int                 _port;
     clientState         _state;
     std::stringstream   _requestRaw;
+	// size_t				_total_read;
 
 
 

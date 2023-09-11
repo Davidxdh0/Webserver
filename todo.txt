@@ -11,7 +11,7 @@ Na configfile
 -uploadplek (access?)
 -errorpages
 -paths
--indexpaginas index.html - indexon?
+-auto indexpaginas index.html - indexon?
 
 to want:
 - chunked transfer encoding en tot content length lezen.
