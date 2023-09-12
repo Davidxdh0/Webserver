@@ -1,5 +1,5 @@
 David
--configfile parsen
+-configfile FOUT: "server{" werkt: "server {"
 
 Alle
 - CGI 

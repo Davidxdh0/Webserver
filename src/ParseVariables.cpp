@@ -1,8 +1,6 @@
 #include "ParseConfig.h"
 #include "Settings.h"
 
-
-
 std::string	ParseConfig::ParseLine(std::string line){
 	std::string::iterator it;
 	std::string::iterator it_rhs;
@@ -49,15 +47,51 @@ std::string	ParseConfig::ParseLine(std::string line){
 		line = "";
 	// std::cout << "line:" << line  << " end" << std::endl;
 	return ss.str();
-	
 }
-/*
 
+int		ParseConfig::countCharacter(char c, std::string line){
+	int count = 0;
+	for(size_t i = 0; i < line.size(); i++){
+		if (line[i] == c)
+			count++;
+	}
+	return count;
+}
+
+void ParseConfig::substrSemicolon(std::string &line){
+	std::string::size_type pos;
+	pos = line.find(";");
+	if (pos != std::string::npos)
+		line = line.substr(0, pos);
+}
+
+void	ParseConfig::ParseServer(std::string &line)
+{
+	std::istringstream iss(line);
+	std::string word;
+	std::string str;
+	int words = 0;
+	while(iss >> word){
+		if (word == " ")
+			continue;
+		if (word == "{")
+			setBrackets('{', SERVER);
+		words++;
+		if (word == "server")
+			continue;
+		str = word;
+	}
+	if (words != 2)
+		exit(1);
+	line = str;
+}
+
+/*
 	listen 8000;
 	80 is default
-
 */
-bool	ParseConfig::ParseListen(std::string &line)
+
+void	ParseConfig::ParseListen(std::string &line)
 {	
 	std::istringstream iss(line);
 	std::string word;
@@ -68,327 +102,352 @@ bool	ParseConfig::ParseListen(std::string &line)
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "LISTEN")
+		if (word == "listen")
 			continue;
-		try {
-			port = std::stoi(word);
-			if (port < 1 || port > 65000)
-				return 0;
-			} catch (const std::invalid_argument& e) {
-				return false;
-			}
+		else{
+			try {
+				port = std::stoi(word);
+				if (port < 1 || port > 65000){
+					exit(1);
+				}
+				} catch (const std::invalid_argument& e) {
+					std::cout << "3: " << word << std::endl;
+					exit(1);
+				}
 		}
-	if (words != 2);
-		return 0;
+	}
+	if (words > 2)
+		exit(1);
 	line = to_string(port);
-	return 1;
+	if (words == 1)
+		line = "80";
 }
 /*
 	127.0.0.1;
 	localhost
 */
-bool	ParseConfig::ParseHost(std::string &line)
+void	ParseConfig::ParseHost(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "SERVER_NAME")
+		if (word == "server_name")
 			continue;
 		str = word;
 	}
-	if (words != 2);
-		return 0;
+	if (words != 2)
+		exit(1);
 	line = str;
-	return 1;
 }
+
+bool isRootDirectory(std::string dirpath) 
+{
+    struct stat file_dir;
+    if (stat(dirpath.c_str(), &file_dir) == 0)
+        return S_ISDIR(file_dir.st_mode);
+    return false;
+}
+
 /*
 	/public
 */
-bool	ParseConfig::ParseRoot(std::string line)
+void	ParseConfig::ParseRoot(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
+
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "ROOT")
+		if (word == "root")
 			continue;
 		if (word[0] != '/')
-			return 0;
+			exit(1);
 		if (word.size() < 3)
-			return 0;
+			exit(1);
+		if (!isRootDirectory(word)){
+			std::cout << "BAD root: " << word << std::endl;
+			exit(1);
+		}
+		str = word;
 	}
-	if (words != 2);
-		return 0;
+	if (words != 2)
+		exit(1);
 	line = str;
-	return 1;
 }
 /*
 	index 		index.html index2.html
 	check of bestaat, anders volgende
 */
-bool	ParseConfig::ParseIndex(std::string line)
+void	ParseConfig::ParseIndex(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string::size_type pos;
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "INDEX")
+		if (word == "index")
 			continue;
 		pos = word.find(".");
 		if (pos != std::string::npos && pos != 0){
-			str = word.substr(pos, word.size());
-			if (str != "HTML" || str != "PHP")
-				return 0;
+			str = word.substr(pos + 1, word.size());
+			if (str != "html" && str != "php"){
+				exit(1);
+			}
 		}	
 	}
-	if (words != 2);
-		return 0;
-	line = str;
-	return 1;
+	if (words != 2)
+		exit(1);
+	line = word;
 }
 /*
 	allow_methods GET POST DELETE
 */
-bool	ParseConfig::ParseMethods(std::string &line)
+void	ParseConfig::ParseMethods(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
-	std::string get = "";
-	std::string post = "";
-	std::string del = "";
+	int get = 0;
+	int post = 0;
+	int del = 0;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "SERVER_NAME")
+		if (word == "allow_methods")
 			continue;
-		if (word == "GET" && get == "")
-			get = " GET ";
-		else if (word == "POST" && post == "")
-			post = " POST ";
-		else if (word == "DELETE" && del == "")
-			del = " DELETE ";
-		else
-			return 0;
+		else if (word == "GET" && get == 0)
+			get = 1;
+		else if (word == "POST" && post == 0)
+			post = 2;
+		else if (word == "DELETE" && del == 0)
+			del = 4;
+		else{
+			std::cout << "BAD: " << word << std::endl;
+			exit(1);
+		}
 	}
-	if (words < 2 || words > 4)
-		return 0;
-	line = get + post + del;
-	return 1;
+	if (words < 1 || words > 4)
+		exit(1);
+	line = to_string(get + post + del);
 }
 /*
 	autoindex on/off
 */
-bool	ParseConfig::ParseAutoindex(std::string &line)
+void	ParseConfig::ParseAutoIndex(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "AUTOINDEX")
+		if (word == "autoindex")
 			continue;
-		if (word != "ON" || word != "OFF")
-			return 0;
+		if (word != "on" && word != "off")
+			exit(1);
 	}
-	if (words != 2);
-		return 0;
-	line = str;
-	return 1;
+	if (words != 2)
+		exit(1);
+	line = word;
 }
 /*
 	cgi_pass /Users/dyeboa/.brew/bin/php-cgi
 */
-bool	ParseConfig::ParseCgiPath(std::string &line)
+void	ParseConfig::ParseCgiPath(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "SERVER_NAME")
+		if (word == "cgi_pass")
 			continue;
-		str = word;
 	}
-	if (words != 2);
-		return 0;
-	line = str;
-	return 1;
+	if (words != 2)
+		exit(1);
+	line = word;
 }
 
 /*
 	cgi_extension php
 */
-bool	ParseConfig::ParseCgiExtension(std::string &line)
+void	ParseConfig::ParseCgiExtension(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "SERVER_NAME")
+		if (word == "cgi_extension")
 			continue;
+		if (word != "php")
+			exit(1);
 		str = word;
 	}
-	if (words != 2);
-		return 0;
+	if (words != 2)
+		exit(1);
 	line = str;
-	return 1;
 }
 
 /*
 	upload_store /upload
 */
-bool	ParseConfig::ParseUploadPath(std::string &line)
+void	ParseConfig::ParseUploadPath(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "UPLOAD_STORE")
+		if (word == "upload_store")
 			continue;
-		if (word.size() < 2 || word[0] != '/')
-			return 0;
+		else if (word.size() < 2 && word[0] != '/')
+			exit(1);
+		str = word;
 	}
-	if (words != 2);
-		return 0;
+	if (words != 2)
+		exit(1);
 	line = str;
-	return 1;
 }
 
 /*
 	upload_enable on
 */
-bool	ParseConfig::ParseUploadEnable(std::string &line)
+void	ParseConfig::ParseUploadEnable(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "UPLOAD_ENABLE")
+		if (word == "upload_enable")
 			continue;
-		if (word != "ON" || word != "OFF")
-			return 0;
+		if (word != "on" && word != "off")
+			exit(1);
 	}
-	if (words != 2);
-		return 0;
+	if (words != 2)
+		exit(1);
 	line = word;
-	return 1;
 }
 
 /*
 	error_page 413 error/400.html;
 */
-bool	ParseConfig::ParseErrorPages(std::string line)
+void	ParseConfig::ParseErrorPages(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "SERVER_NAME")
+		if (word == "error_page")
 			continue;
-		str = word;
 	}
-	if (words != 2);
-		return 0;
-	line = str;
-	return 1;
+	if (words != 3)
+		exit(1);
 }
 
 /*
 	client_max_body_size 100m;
 	default file upload size 1m
 */
-bool	ParseConfig::ParseClientMaxBody(std::string line)
+void	ParseConfig::ParseClientMaxBody(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
+	char size;
 	int words = 0;
-	int port = 0;
+	double bytes = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "SERVER_NAME")
+		if (word == "client_max_body_size")
 			continue;
-		str = word;
+		else{
+			size = word[word.size() - 1];
+			if (size != 'm')
+				exit(1);
+			str = word.substr(0, word.size() - 1);
+			try {
+				// std::cout << str << std::endl;
+				bytes = std::stod(str);
+				bytes *= 1000000;
+				line = to_string(static_cast<size_t>(bytes));
+			} catch (const std::exception& e){
+				exit(1);
+			}
+		}
 	}
-	if (words != 2);
-		return 0;
-	line = str;
-	return 1;
+	if (words != 1 && words != 2)
+		exit(1);
+	if (words == 1)
+		line = "1000000";
 }
 
 /*
 	location /upload {
 */
-bool	ParseConfig::ParseLocation(std::string line)
+void	ParseConfig::ParseLocation(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
 	int words = 0;
-	int port = 0;
 	while(iss >> word){
 		if (word == " ")
-			continue;
+			break;
+		if (word == "{"){
+			setBrackets('{', LOCATION);
+			break;
+		}
 		words++;
-		if (word == "SERVER_NAME")
+		if (word == "location")
 			continue;
+		if (words == 1 && !std::isalpha(word[0]) && word[0] != '/'){
+			std::cout << "ParseLocation Fails" << std::endl;
+			exit(1);
+		}
 		str = word;
 	}
-	if (words != 2);
-		return 0;
+	if (words != 2){
+		std::cout << "ParseLocation Fails" << std::endl;
+		exit(1);
+	}
 	line = str;
-	return 1;
 }
 
 /*
@@ -396,23 +455,57 @@ bool	ParseConfig::ParseLocation(std::string line)
 	return 301 
 	return /index.html;
 */
-bool	ParseConfig::ParseReturn(std::string line)
+void	ParseConfig::ParseReturn(std::string line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
+	int mistake = 0;
 	int words = 0;
-	int port = 0;
+	int errorpage = 0;
 	while(iss >> word){
 		if (word == " ")
 			continue;
 		words++;
-		if (word == "SERVER_NAME")
+		if (word == "return")
 			continue;
-		str = word;
+		else if (words == 1)
+			try {
+				errorpage = std::stoi(word);
+				line = to_string(errorpage);
+				} catch (const std::exception& e){
+					mistake = 1;
+				}
+		else if (words == 2){
+			if (mistake == 1){
+				std::cout << "mistake 1 Fails" << std::endl;
+				exit(1);
+			}
+			if (word[0] == '/'){
+				std::cout << "return[0] /" << std::endl;
+				exit(1);
+			}
+		}
 	}
-	if (words != 2);
-		return 0;
-	line = str;
-	return 1;
+	if (words != 2 && words != 3){
+		std::cout << "words: "<< words << std::endl;
+		exit(1);
+	}
+}
+
+void	ParseConfig::ParseAlias(std::string &line){
+	std::istringstream iss(line);
+	std::string word;
+	std::string str;
+	int words = 0;
+	while(iss >> word){
+		if (word == " ")
+			continue;
+		words++;
+		if (word == "alias")
+			continue;
+	}
+	if (words != 2)
+		exit(1);
+	line = word;
 }

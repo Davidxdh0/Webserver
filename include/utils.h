@@ -20,7 +20,7 @@ typedef enum e_requestMethod {
     DELETE
 } 			requestMethod;
 
-#define ROOT "/Users/dyeboa/Documents/Webserv/public"
+#define ROOT "/Users/dyeboa/Documents/Webserv/"
 // #define ROOT "/Users/ajanse/Webserv_dev/public";
 #define INDEX "index.html";
 

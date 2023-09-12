@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/11 14:34:42 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/12 22:44:03 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ int main(int argc, char* argv[])
 
 	if (argc == 2){
 		ParseConfig config(argv[1]);
-		config.ParseConfigFile();
+		std::vector<pair<int, Settings* > > Config_Vect = config.ParseConfigFile();
+		// config.PrintVector(Config_Vect);
 	}
 
     // ServerControl   serverControl(port_configs);

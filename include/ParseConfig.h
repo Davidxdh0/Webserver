@@ -5,6 +5,7 @@
 #include "ServerControl.h"
 #include "Settings.h"
 #include "utils.h"
+#include <sys/stat.h>
 #include <unistd.h>
 #include <fstream>
 #include <iostream>
@@ -23,7 +24,7 @@ public:
 	ParseConfig& operator=(const ParseConfig& other);
     ~ParseConfig();
 
-	int 			ParseConfigFile();
+	std::vector<pair<int, Settings* > >	ParseConfigFile();
 	size_t			FindBracket(std::string line);
 	void			readconfig(std::map<string, string>& map, std::fstream &filestream);
 	std::string 	findMapInLine(std::map<string, string>& map, std::string line);
@@ -37,28 +38,38 @@ public:
 	void	readconfig(std::fstream &filestream);
 	
 	std::string ParseLine(std::string line);
-	bool ParseListen(std::string line);
-    bool ParseHost(std::string line);
-    bool ParseRoot(std::string line);
-    bool ParseIndex(std::string line);
-    bool ParseMethods(std::string line);
-    bool ParseAutoindex(std::string line);
-    bool ParseCgiPath(std::string line);
-    bool ParseCgiExtension(std::string line);
-    bool ParseUploadPath(std::string line);
-    bool ParseUploadEnable(std::string line);
-    bool ParseErrorPages(std::string line);
-    bool ParseClientMaxBody(std::string line);
-    bool ParseLocation(std::string line);
-    bool ParseReturn(std::string line);
+	void ParseListen(std::string &line);
+	void ParseServer(std::string &line);
+    void ParseHost(std::string &line);
+    void ParseRoot(std::string &line);
+    void ParseIndex(std::string &line);
+    void ParseMethods(std::string &line);
+    void ParseAutoIndex(std::string &line);
+    void ParseCgiPath(std::string &line);
+    void ParseCgiExtension(std::string &line);
+    void ParseUploadPath(std::string &line);
+    void ParseUploadEnable(std::string &line);
+    void ParseErrorPages(std::string &line);
+    void ParseClientMaxBody(std::string &line);
+    void ParseLocation(std::string &line);
+    void ParseReturn(std::string line);
+	void ParseAlias(std::string &line);
 
+	void	PrintVector(std::vector<pair<int, Settings* > > Config_Vector);
+	void	setBrackets(char c, int block);
+	void	substrSemicolon(std::string &line);
+	int		countCharacter(char c, std::string line);
+	std::string	split(std::string line, int wordpos);
 private:
 	std::string		_filename;
 	Config			_config;
 	std::vector<pair<int, Settings* > > _Config_Vector;
+	
 	static const int LOCATION = 1;
     static const int SERVER = 2;
-	int				_bracket; //0 closed // 1 serveropen // 2 server&locationopen // 3 locationopen
+	int				server;
+	int				_serverBracket; //0 closed // 1 open 
+	int				_locationBracket;
 
 };
 

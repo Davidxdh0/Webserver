@@ -48,7 +48,7 @@ public:
 	const std::string 	getErrorPageString() { std::string p = _error_pages.back().second; return p; };
     std::vector<std::pair<std::string, Settings*> > &getLocations() { return _locations; };
 	std::string			getLocationsString() { std::string p = _locations.back().first; _locations.pop_back(); return p; };
-	const int			&getClientMaxBodySize() const { return _client_max_body_size; };
+	const size_t		&getClientMaxBodySize() const { return _client_max_body_size; };
 	const int			&getUploadEnable() const { return _upload_enable; };
 	const std::string	&getReturn() const { return _return; };
 
@@ -67,7 +67,7 @@ private:
 	int												_upload_enable;
 	std::string										_return;
     std::vector<std::pair<int, std::string> >  		_error_pages; // 404, 500, 501, 502, 503, 504
-    int                             				_client_max_body_size;
+    size_t                            				_client_max_body_size;
     std::vector<std::pair<std::string, Settings*> >	_locations;
 
 };
