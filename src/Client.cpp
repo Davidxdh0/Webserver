@@ -104,8 +104,8 @@ void Client::setResponse() {
     } else {
         _response.loadBody(_path);
     }
-	if (_request.getisUpload())
-		_response.uploadFile(_requestRaw, _vhosts);
+	// if (_request.getisUpload())
+	// 	_response.uploadFile(_requestRaw, _vhosts);
 
     _response.setHeaders(_path);
     _response.setResponseString();
