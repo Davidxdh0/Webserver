@@ -61,6 +61,7 @@ public:
 	int		countCharacter(char c, std::string line);
 	void	duplicatePort();
 	std::string	split(std::string line, int wordpos);
+	void	ExitString(std::string msg);
 private:
 	std::string		_filename;
 	Config			_config;

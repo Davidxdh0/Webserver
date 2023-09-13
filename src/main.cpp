@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/13 15:35:03 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/13 16:02:23 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 		// config.PrintVector(Config_Vect);
 	}
 
-    // ServerControl   serverControl(port_configs);
+    ServerControl   serverControl(port_configs);
     return 0;
 	argv++;
 }

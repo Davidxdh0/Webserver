@@ -106,6 +106,11 @@ std::string	ParseConfig::split(std::string line, int wordpos){
 	return "";
 }
 
+void	ParseConfig::ExitString(std::string msg){
+	std::cout << "Error: " << msg << std::endl;
+	exit(1);
+}
+
 void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::string line){
 	// std::cout << line << std::endl;
 	int temp = 0;
@@ -117,20 +122,20 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 	if (variable == "server" && _serverBracket == 0 && _locationBracket == 0)
 	{
 		if (semicolons != 0)
-			exit(1);
+			ExitString("Semicolon");
 		ParseServer(line);
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "listen")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseListen(line);
 		_Config_Vector.back().first = std::stoi(line);
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "error_page")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseErrorPages(line);
 		temp = std::stoi(split(line, 2));
 		config.addErrorPage(std::make_pair(temp, split(line, 3)));
@@ -138,48 +143,48 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "client_max_body_size")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseClientMaxBody(line);
 		config.setClientMaxBodySize(static_cast<size_t>(std::stod(line)));
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "root")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseRoot(line);
 		config.setRoot(line);
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "index")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseIndex(line);
 		config.setIndex(line);
 	}
 	else if (_serverBracket == 1 && _locationBracket == 0 && variable == "location"){
 		if (semicolons != 0)
-			exit(1);
+				ExitString("Semicolon");
 		ParseLocation(line);
 		_Config_Vector.back().second->getLocations().back().first = line;
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "server_name")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseHost(line);
 		config.setHost(line);
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "allow_methods")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseMethods(line);
 		config.setAllowMethods(std::stoi(line));
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "autoindex")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseAutoIndex(line);
 		line == "off" ? temp = 0 : temp = 1;
 		config.setAutoindex(line);
@@ -187,7 +192,7 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "upload_enable")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseUploadEnable(line);
 		line == "off" ? temp = 0 : temp = 1;
 		config.setUploadEnable(temp);
@@ -195,28 +200,28 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "upload_store")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseUploadPath(line);
 		config.setUploadPath(line);
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "cgi_pass")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseCgiPath(line);
 		config.setCgiPath(line);
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "cgi_extension")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseCgiExtension(line);
 		config.setCgiExtension(line);
 	}
 	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "return")
 	{
 		if (semicolons != 1)
-			exit(1);
+			ExitString("Semicolon");
 		ParseReturn(line);
 		std::string three = split(line, 3);
 		if (three != "")
@@ -226,7 +231,6 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 		config.setReturn(line);
 	}
 	else {
-		std::cout << "Error: VariableToMap line: " << line << std::endl;
-		exit(1);
+		ExitString("Error: VariableToMap line: " + line );
 	}
 }
