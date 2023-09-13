@@ -4,6 +4,7 @@
 
 #include "Request.h"
 #include "iostream"
+#include <stdlib.h>
 
 Request::Request() {}
 
@@ -28,6 +29,8 @@ void Request::parseRequest(std::stringstream &requestRaw) {
                 _hostname = line.substr(pos + 2);
             } else if (key == "Content-Type:") {
                 _contenttype = line.substr(pos + 2);
+            } else if (key == "Content-Length:") {
+                _contentlength = stol(line.substr(pos + 2));
             }
         }
     }

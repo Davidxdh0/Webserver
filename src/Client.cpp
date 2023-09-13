@@ -10,7 +10,7 @@
 #include "utils.h"
 #include <algorithm>
 
-Client::Client() : _socket(), _state(READING) {}
+Client::Client() : _socket(), _state(READING), _vhosts() {}
 
 Client::Client(int socket, Settings* vhosts) : _socket(socket), _state(READING), _vhosts(vhosts) {
 }
@@ -115,34 +115,16 @@ int Client::readRequest(long data) {
 }
 
 void Client::setResponse() {
-    _response.setVersion("HTTP/1.1");
-    _response.setStatusCode("200");
-    //_response.setStatusMessage("OK");
-    if (_path.getExtension() == "css") {
-        _response.setContentType("Content-Type: text/css");
-    } else if (_path.getExtension() == "gif") {
-        _response.setContentType("Content-Type: image/gif");
-	} else if (_response.getContentType().substr(0, 20) == "multipart/form-data;" && _request.getMethod() == "POST"){
-		std::cout << "Uploading file" << _response.getContentType() << std::endl;
-		_response.uploadFile(_requestRaw, _path.getFullPath());
-    } else {
-        _response.setContentType("Content-Type: text/html");
+    this->checkMethod();
+    if (_path.isDirectory()) {
+        this->index();
     }
     if (_path.getExtension() == "php") {
         _response.loadCgi(_path);
     } else {
         _response.loadBody(_path);
     }
-	if (_request.getUri() == "/upload/upload.php")
-		;//_response.upload(_requestRaw);
-	if (_request.getMethod() == "DELETE")
-		_response.deletePage("/Users/dyeboa/Documents/Webserv/public/AA"); // _path.getFullPath()
-	if ( _response.isDirectory(_path.getFullPath())){
-		_response.directoryListing(_path.getFullPath());
-	}
-	if (_response.getStatusCode() != "200"){
-		_response.setErrorPage(_path);
-	}
+    _response.setHeaders(_path);
     _response.setResponseString();
 }
 
@@ -187,5 +169,36 @@ void Client::configure() {
         i++;
     }
     _settings = ret;
+    _path = _settings.getRoot() + _request.getUri();
+}
+
+void Client::checkMethod() {
+    std::string method = _request.getMethod();
+    int allowed = _settings.getAllowMethods();
+    int method_i = 0;
+
+    if (method == "GET") {
+        method_i = 1;
+    } else if (method == "POST") {
+        method_i = 2;
+    } else if (method == "DELETE") {
+        method_i = 4;
+    }
+    if ((allowed & method_i) == 0)
+        _response.setStatusCode("405");
+}
+
+void Client::index() {
+    std::string index_path = _path.getFullPath() + _settings.getIndex();
+
+    if (access(index_path.c_str(), F_OK) == -1) {
+        if (_settings.getAutoindex()) {
+            _response.directoryListing(_path.getFullPath());
+        } else {
+            _response.setStatusCode("403");
+        }
+    } else {
+        _path = index_path;
+    }
 }
 

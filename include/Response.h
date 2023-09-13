@@ -32,7 +32,7 @@ public:
 	void            setBody(const std::string &body);
     void            setStatusCode(const std::string &statusCode);
     void            setStatusMessage(const std::string &statusMessage);
-	void            setHeaders(const std::string &headers);
+	void            setHeaders(const Path& path);
     void            setContentLength();
 	void            setContentType(const std::string &headers);
 	std::string		getStatusCode(void);
@@ -59,7 +59,7 @@ public:
 	int 			uploadFile(std::stringstream& raw, std::string path);
 	bool			checkMethod(std::string &str);
 	bool			isUpload(std::string path);
-	bool 			hasAccess(std::string filepath, std::fstream &filestr);
+	bool 			hasAccess(const std::string& filepath, std::fstream &filestr);
 	void			MakeFiles(std::stringstream& raw, std::string path);
 	
 

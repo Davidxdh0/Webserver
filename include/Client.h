@@ -20,9 +20,7 @@ public:
     ~Client();
 
     void                handleRequest(long data);
-    void                setResponse();
     void                writeResponse();
-    void                configure();
     int                 getState() { return _state; };
 	std::stringstream   &getRequestRaw();
 	const Request		&getRequest() const;
@@ -41,6 +39,10 @@ private:
 
 
     int                 readRequest(long data);
+    void                configure();
+    void                setResponse();
+    void                checkMethod();
+    void                index();
 };
 
 

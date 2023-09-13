@@ -23,6 +23,9 @@ public:
     std::string     getExtension() { return _extension; };
     std::string     getFilename() { return _filename; };
     const char*     c_str() const { return _full_path.c_str(); };
+
+    bool            isDirectory();
+
 private:
 
     std::string                 _full_path;

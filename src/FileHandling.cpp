@@ -2,35 +2,35 @@
 
 #include "iostream"
 
-bool Response::hasAccess(std::string filepath, std::fstream& filestr){
-	std::string path = filepath;
+bool Response::hasAccess(const std::string& filepath, std::fstream& filestr){
+	const std::string& path = filepath;
 	if (access (path.c_str(), F_OK) != 0){
 		setStatusCode("404");
 		std::cout << "doesn't exist" << std::endl;
-		return 0; // doesnt exist
+		return false; // doesnt exist
 	}
 	if (filestr.is_open()){
 		setStatusCode("403");
 		std::cout << "already open" << std::endl;
-		return 0; //already open
+		return false; //already open
 	}
 	if (access (path.c_str(), R_OK) != 0){
 		setStatusCode("403");
 		std::cout << "no read access" << std::endl;
-		return 0; // no read access
+		return false; // no read access
 	}
 	filestr.open(path);
 	if (!filestr.is_open()){
 		setStatusCode("404");
 		std::cout << "not opened directory?" << std::endl;
-		return 0; //not opened
+		return false; //not opened
 	}
 	if (filestr.peek() == std::ifstream::traits_type::eof()) {
 		setStatusCode("404");
 		std::cout << "empty file" << std::endl;
-		return 0; // empty file
+		return false; // empty file
 	}
-	return 1;
+	return true;
 }
 // int hasAccess(std::string filepath, std::fstream *filestr){
 	
@@ -103,7 +103,7 @@ void	Response::MakeFiles(std::stringstream &raw, std::string path)
             std::string key = line.substr(1, pos);
 			boundary = line.substr(pos + 2);
 			std::cout << "boundary: " << boundary << std::endl;
-			if (key == "Content-Tyspe:"){
+			if (key == "Content-Type:"){
 				boundary = line.substr(pos + 2);
 				std::cout << boundary << std::endl;
 				path = "1";
