@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <ctime>
 #include <vector>
+#include "MimeTypes.h"
 
 Response::Response() {}
 
@@ -24,9 +25,8 @@ void	Response::setVersion(const std::string &version) {_version = version;}
 void    Response::setBody(const std::string &body) { _body = body;}
 void	Response::setStatusCode(const std::string &statusCode) {_statusCode = statusCode;}
 void	Response::setStatusMessage(const std::string &statusMessage) {_statusMessage = statusMessage;}
-void	Response::setHeaders(const std::string &headers) {_headers = headers;}
 void    Response::setContentLength(){_contentLength = std::string("Content-Length: " + std::to_string(_body.length() ));}
-void    Response::setContentType(const std::string &type){_contentType = type;}
+void    Response::setContentType(const std::string &type){_contentType = "Content-Type: " + type;}
 
 std::string	Response::getStatusCode(void) {return _statusCode;}
 std::string	Response::getStatusMessage(void) {return _statusMessage;}
@@ -159,4 +159,13 @@ void Response::errorCodeMessage() {
 	_errorMessage.push_back(std::make_pair("503", "Service Unavailable"));
 	_errorMessage.push_back(std::make_pair("504", "Gateway Timeout"));
 	_errorMessage.push_back(std::make_pair("505", "HTTP Version Not Supported"));
+}
+
+void Response::setHeaders(const Path &path) {
+    std::string type = MimeTypes::getType(path.c_str());
+
+    this->setStatusCode("200");
+    this->setVersion("HTTP/1.1");
+    this->setContentType(type);
+    this->setContentLength();
 }

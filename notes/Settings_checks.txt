@@ -1,0 +1,22 @@
+_allow_methods:
+        if (method is not in _allow_methods)
+        return 405
+
+_client_max_body_size:
+    if (method is post and content_length > _client_max_body_size)
+    return 413
+
+_index :
+    if (last_char_path is '/' and _index.exists())
+
+_autoindex: depends on _index
+    if (last_char_path is '/' and _autoindex is on)
+
+_cgi: depends on _index
+    if (cgi is on and extension is php)
+
+_upload_path:
+    if (upload is on and method is post with file)
+
+_error_page:
+    if (error and error_page is defined)

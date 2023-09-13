@@ -10,7 +10,7 @@
 #include "utils.h"
 #include <algorithm>
 
-Client::Client() : _socket(), _state(READING){}
+Client::Client() : _socket(), _state(READING), _vhosts() {}
 
 Client::Client(int socket, Settings* vhosts) : _socket(socket), _state(READING), _vhosts(vhosts) {
 }
@@ -26,10 +26,8 @@ const Path&			Client::getPath()const{return _path;}
 
 void Client::handleRequest(long data) {
     this->readRequest(data);
-    if (_state != RESPONDING){
+    if (_state != RESPONDING)
         return;
-    }
-	// std::cout << _requestRaw.str() << std::endl;
     _request.parseRequest(_requestRaw);
     this->configure();
     this->setResponse();
@@ -40,68 +38,49 @@ int Client::readRequest(long data) {
     size_t bytes_read;
     size_t t = -1;
 //	static size_t content_length = 0;
-//	// static int chunkedrequest = 0;
-	
+//	static int chunkedrequest = 0;
+
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
     if (bytes_read == t)
         exitWithError("Error reading from socket");
-	else if (bytes_read >= 0)
-	{
-		buffer[bytes_read] = '\0';
-		// _total_read += bytes_read;
-		// std::cout << "Contentlength: " << content_length << " != " << _total_read  << std::endl;
-		// std::string bufferstring = buffer;
-		// std::string::size_type pos = bufferstring.find("Content-Length: ");
+	else {
+        buffer[bytes_read] = '\0';
+        // _total_read += bytes_read;
+        // std::cout << "Contentlength: " << content_length << " != " << _total_read  << std::endl;
+        // std::string bufferstring = buffer;
+        // std::string::size_type pos = bufferstring.find("Content-Length: ");
         // if (pos != std::string::npos){ //&& content_length >= 0) {
         //     std::string key = bufferstring.substr(pos + 15);
-		// 	std::stringstream stream(key);
+        // 	std::stringstream stream(key);
         //     stream >> content_length;
-		// 	std::cout << "Found Contentlength: " << content_length << " totalread: " << _total_read << std::endl;
-		// }
-		// if (content_length > 0){
-		// 	std::cout << "Contentlength > 0" << std::endl;
-		// 	if (_total_read >= content_length - 1 && chunkedrequest == 0){
-		// 		_state = RESPONDING;
-		// 	}
-		// }
-			// std::cout << "Doesn't contain content length" << std::endl;
-		if (bytes_read < sizeof buffer - 1 || bytes_read == static_cast<size_t>(data))
-        	_state = RESPONDING;
-		_requestRaw.write(buffer, bytes_read);
-		// _requestRaw << buffer;
-	}
+        // 	std::cout << "Found Contentlength: " << content_length << " totalread: " << _total_read << std::endl;
+        // }
+        // if (content_length > 0){
+        // 	std::cout << "Contentlength > 0" << std::endl;
+        // 	if (_total_read >= content_length - 1 && chunkedrequest == 0){
+        // 		_state = RESPONDING;
+        // 	}
+        // }
+        // std::cout << "Doesn't contain content length" << std::endl;
+        if (bytes_read < sizeof buffer - 1 || bytes_read == static_cast<size_t>(data))
+            _state = RESPONDING;
+        _requestRaw.write(buffer, bytes_read);
+        // _requestRaw << buffer;
+    }
     return 1;
 }
 
 void Client::setResponse() {
-    _response.setVersion("HTTP/1.1");
-    _response.setStatusCode("200");
-    //_response.setStatusMessage("OK");
-    if (_path.getExtension() == "css") {
-        _response.setContentType("Content-Type: text/css");
-    } else if (_path.getExtension() == "gif") {
-        _response.setContentType("Content-Type: image/gif");
-	} else if (_response.getContentType().substr(0, 20) == "multipart/form-data;" && _request.getMethod() == "POST"){
-		std::cout << "Uploading file" << _response.getContentType() << std::endl;
-		_response.uploadFile(_requestRaw, _path.getFullPath());
-    } else {
-        _response.setContentType("Content-Type: text/html");
+    this->checkMethod();
+    if (_path.isDirectory()) {
+        this->index();
     }
     if (_path.getExtension() == "php") {
         _response.loadCgi(_path);
     } else {
         _response.loadBody(_path);
     }
-	if (_request.getUri() == "/upload/upload.php")
-		;//_response.upload(_requestRaw);
-	if (_request.getMethod() == "DELETE")
-		_response.deletePage("/Users/dyeboa/Documents/Webserv/public/AA"); // _path.getFullPath()
-	if ( _response.isDirectory(_path.getFullPath())){
-		_response.directoryListing(_path.getFullPath());
-	}
-	if (_response.getStatusCode() != "200"){
-		_response.setErrorPage(_path);
-	}
+    _response.setHeaders(_path);
     _response.setResponseString();
 }
 
@@ -146,5 +125,36 @@ void Client::configure() {
         i++;
     }
     _settings = ret;
+    _path = _settings.getRoot() + _request.getUri();
+}
+
+void Client::checkMethod() {
+    std::string method = _request.getMethod();
+    int allowed = _settings.getAllowMethods();
+    int method_i = 0;
+
+    if (method == "GET") {
+        method_i = 1;
+    } else if (method == "POST") {
+        method_i = 2;
+    } else if (method == "DELETE") {
+        method_i = 4;
+    }
+    if ((allowed & method_i) == 0)
+        _response.setStatusCode("405");
+}
+
+void Client::index() {
+    std::string index_path = _path.getFullPath() + _settings.getIndex();
+
+    if (access(index_path.c_str(), F_OK) == -1) {
+        if (_settings.getAutoindex()) {
+            _response.directoryListing(_path.getFullPath());
+        } else {
+            _response.setStatusCode("403");
+        }
+    } else {
+        _path = index_path;
+    }
 }
 

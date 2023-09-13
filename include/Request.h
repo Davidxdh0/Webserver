@@ -30,6 +30,8 @@ private:
     std::string                         _version;
     std::string                         _hostname;
     std::string                         _contenttype;
+    std::string                         _body;
+    long                                _contentlength;
 
 };
 

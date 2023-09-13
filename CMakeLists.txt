@@ -22,4 +22,4 @@ add_executable(Webserv_dev
         src/Request.cpp
         src/Response.cpp
         src/utils.cpp
-        src/Path.cpp src/Settings.cpp src/FileHandling.cpp src/ListDirectories.cpp src/ParseConfig.cpp)
+        src/Path.cpp src/Settings.cpp src/FileHandling.cpp src/ListDirectories.cpp src/ParseConfig.cpp src/MimeTypes.cpp)

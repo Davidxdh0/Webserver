@@ -41,6 +41,10 @@ Path& Path::operator=(const Path& other){
 
 Path::~Path() {}
 
+bool Path::isDirectory() {
+    return _full_path[_full_path.length() - 1] == '/';
+}
+
 std::ostream& operator<<(std::ostream& os, const Path& path) {
     os << path.getFullPath();
     return os;

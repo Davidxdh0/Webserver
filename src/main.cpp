@@ -29,8 +29,8 @@ Config* dummy_configs()
     port_configs[2].setPort(0);
 
     settings[0].setHost("localhost:8080");
-    settings[0].setRoot("/public");
-    settings[0].setIndex("index.html");
+    settings[0].setRoot("/Users/ajanse/Webserv_dev/public");
+    settings[0].setIndex("index.php");
     settings[0].setAllowMethods(3);
     settings[0].setAutoindex("true");
     settings[0].setCgiPath("/cgi-bin");
@@ -68,5 +68,4 @@ int main(int argc, char* argv[])
 
     ServerControl   serverControl(port_configs);
     return 0;
-	argv++;
 }
