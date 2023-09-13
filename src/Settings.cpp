@@ -20,11 +20,11 @@ Settings::~Settings()
 Settings Settings::getRightSettings(Path &uri) {
     Settings ret(*this);
     if (!_locations.empty()){
-        std::map<std::string, Settings>::iterator it = _locations.begin();
+        std::vector<std::pair<std::string, Settings* > >::iterator it = _locations.begin();
 
         while (it != _locations.end()) {
             if (uri.getFullPath().find(it->first) != std::string::npos) {
-                ret = it->second;
+                ret = *it->second;
                 break;
             }
             it++;

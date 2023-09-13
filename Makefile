@@ -6,7 +6,7 @@
 #    By: rubennijhuis <rubennijhuis@student.coda      +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/02 20:54:00 by rubennijhui   #+#    #+#                  #
-#    Updated: 2023/09/11 16:19:42 by dyeboa        ########   odam.nl          #
+#    Updated: 2023/09/13 15:23:10 by dyeboa        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,6 @@ INC			=	-I $(INCLUDE_DIR)
 
 SRCS		=	main.cpp \
 				Config.cpp \
-				Location.cpp \
 				Server.cpp \
 				ServerControl.cpp \
 				Client.cpp \

@@ -26,13 +26,11 @@ const Path&			Client::getPath()const{return _path;}
 
 void Client::handleRequest(long data) {
     this->readRequest(data);
-    if (_state != RESPONDING)
+    if (_state != RESPONDING){
         return;
     }
 	// std::cout << _requestRaw.str() << std::endl;
-	std::string contenttype;
-    _request.parseRequest(_requestRaw, contenttype);
-	_response.setContentType(contenttype);
+    _request.parseRequest(_requestRaw);
     this->configure();
     this->setResponse();
 }
@@ -67,10 +65,8 @@ int Client::readRequest(long data) {
 		// 	}
 		// }
 			// std::cout << "Doesn't contain content length" << std::endl;
-			if (bytes_read < static_cast<int>(sizeof(buffer)) - 1) {// && chunkedrequest == 0) {
-				_state = RESPONDING;
-			}
-		
+		if (bytes_read < sizeof buffer - 1 || bytes_read == static_cast<size_t>(data))
+        	_state = RESPONDING;
 		_requestRaw.write(buffer, bytes_read);
 		// _requestRaw << buffer;
 	}
