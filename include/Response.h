@@ -57,7 +57,7 @@ public:
 	void			setErrorCodeMessage(std::string code);
 	void			deletePage(std::string path);
 	void			upload();
-	int 			uploadFile(std::stringstream& raw, std::string path);
+	int 			uploadFile(std::stringstream& raw, Settings* settings);
 	bool			checkMethod(std::string &str);
 	bool			isUpload(std::string path);
 	bool 			hasAccess(const std::string& filepath, std::fstream &filestr);

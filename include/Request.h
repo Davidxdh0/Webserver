@@ -21,6 +21,7 @@ public:
     std::string     getUri() { return _uri; };
     std::string     getVersion() { return _version; };
     std::string     getHostname() { return _hostname; };
+	const bool		&getisUpload() const { return _isUpload;};
 
 private:
 
@@ -31,6 +32,7 @@ private:
     std::string                         _hostname;
     std::string                         _contenttype;
     std::string                         _body;
+	bool								_isUpload;
     long                                _contentlength;
 
 };

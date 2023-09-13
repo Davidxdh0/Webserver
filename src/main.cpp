@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/13 16:02:23 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/13 22:13:42 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ Config* dummy_configs()
     port_configs[2].setPort(0);
 
     settings[0].setHost("localhost:8080");
-    settings[0].setRoot("/Users/ajanse/Webserv_dev/public");
-    settings[0].setIndex("index.php");
+    settings[0].setRoot("/Users/dyeboa/Documents/Webserv/public");
+    settings[0].setIndex("index.html");
     settings[0].setAllowMethods(3);
     settings[0].setAutoindex("true");
     settings[0].setCgiPath("/cgi-bin");

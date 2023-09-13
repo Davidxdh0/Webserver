@@ -6,7 +6,7 @@
 #    By: rubennijhuis <rubennijhuis@student.coda      +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/02 20:54:00 by rubennijhui   #+#    #+#                  #
-#    Updated: 2023/09/13 15:52:16 by dyeboa        ########   odam.nl          #
+#    Updated: 2023/09/13 16:51:19 by dyeboa        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,8 @@ SRCS		=	main.cpp \
 				Settings.cpp \
 				ParseConfig.cpp \
 				ParseConfigUtil.cpp \
-				ParseVariables.cpp
+				ParseVariables.cpp \
+				MimeTypes.cpp
 
 OBJS		=	$(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 

@@ -36,7 +36,7 @@ void	ParseConfig::PrintSettings(Settings *items)
 	std::cout << "cgi path:\t\t" << items->getCgiPath() << "\n";
 	std::cout << "cgi_extension:\t\t" << items->getCgiExtension() << "\n";
 	std::cout << "upload_path:\t\t" << items->getUploadPath() << "\n";
-	std::cout << "upload_enable:\t\t" << items->getUploadPath() << "\n";
+	std::cout << "upload_enable:\t\t" << items->getUploadEnable() << "\n";
 	for (itError = errorCopy.begin(); itError != errorCopy.end(); itError++) {
 		std::cout << "error_pages:\t\t" << itError->first << " " << itError->second << "\n";
 	}
@@ -48,6 +48,48 @@ void	ParseConfig::PrintSettings(Settings *items)
 	std::cout << "----------------------" << std::endl;
 
 }
+void ParseConfig::fillLocations(){
+	std::vector<std::pair<int, Settings* > >::iterator it_server;
+	std::vector<std::pair<std::string, Settings* > >::iterator it_location;
+	for (it_server = _Config_Vector.begin(); it_server != _Config_Vector.end(); it_server++){
+		// std::cout << "Printing Config_vector: " << std::endl;
+		// std::cout << "port:\t\t\t" << it_server->first << std::endl;
+		if (it_server->first == -1)
+			it_server->first = 80;
+		if (it_server->second->getAllowMethods() == -1)
+			it_server->second->setAllowMethods(0);
+		if (it_server->second->getUploadEnable() == -1)
+			it_server->second->setUploadEnable(0);
+		if (it_server->second->getClientMaxBodySize() == 1)
+			it_server->second->setClientMaxBodySize(1000000);	
+		if (it_server->second->getAutoindex() == "")
+			it_server->second->setAutoindex("off");	
+		Settings* top = it_server->second;
+		std::vector<std::pair<std::string, Settings*> > loc = top->getLocations();
+    	for (it_location = loc.begin(); it_location != loc.end(); it_location++) {
+			if (it_location->second->getAllowMethods() == -1)
+				it_location->second->setAllowMethods(it_server->second->getAllowMethods());
+			if (it_location->second->getClientMaxBodySize() == 1)
+				it_location->second->setClientMaxBodySize(it_server->second->getClientMaxBodySize());
+			if (it_location->second->getAutoindex() == "")
+				it_location->second->setAutoindex(it_server->second->getAutoindex());
+			if (it_location->second->getRoot() == "")
+				it_location->second->setRoot(it_server->second->getRoot());
+			if (it_location->second->getCgiPath() == "")
+				it_location->second->setCgiPath(it_server->second->getCgiPath());
+			if (it_location->second->getCgiExtension() == "")
+				it_location->second->setCgiExtension(it_server->second->getCgiExtension());
+			if (it_location->second->getUploadPath() == "")
+				it_location->second->setUploadPath(it_server->second->getUploadPath());
+			if (it_location->second->getUploadEnable() == -1)
+				it_location->second->setUploadEnable(it_server->second->getUploadEnable());
+			if (it_location->second->getReturn() == "")
+				it_location->second->setReturn(it_server->second->getReturn());
+			it_location->second->getErrorPages() = it_server->second->getErrorPages();
+		
+    	}
+	}
+}
 
 void	ParseConfig::duplicatePort(){
 	std::vector<std::pair<int, Settings* > >::iterator it;
@@ -56,11 +98,11 @@ void	ParseConfig::duplicatePort(){
 		it_rest = it;
 		it_rest++;
 		for (; it_rest != _Config_Vector.end(); it_rest++){
-			if (it->first == it_rest->first){
-				std::cout << "Error: Duplicate port" << std::endl;
-				exit(1);
-			}
+			if (it->first == it_rest->first)
+				ExitString("duplicate port");
 		}
+		if (it->second->getHost() == "")
+			ExitString("No hostname");
 	}
 }
 

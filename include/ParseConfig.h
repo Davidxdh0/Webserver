@@ -59,6 +59,7 @@ public:
 	void	setBrackets(char c, int block);
 	void	substrSemicolon(std::string &line);
 	int		countCharacter(char c, std::string line);
+	void	fillLocations();
 	void	duplicatePort();
 	std::string	split(std::string line, int wordpos);
 	void	ExitString(std::string msg);

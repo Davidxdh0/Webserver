@@ -54,7 +54,8 @@ public:
 	const std::string	&getReturn() const { return _return; };
 
 	// poppers
-	    Settings getRightSettings(Path& uri);
+	int			countSlash(std::string location);
+	Settings	getRightSettings(Path& uri);
 
 private:
 

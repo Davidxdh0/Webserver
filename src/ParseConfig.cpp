@@ -156,6 +156,7 @@ std::vector<pair<int, Settings* > > ParseConfig::ParseConfigFile() {
 				// std::cout << "Readconfig" << std::endl;
 				// std::cout << "----------------------" << std::endl;
 	readconfig(map, filestream);
+	fillLocations();
 	duplicatePort();	
 	return _Config_Vector;
 }

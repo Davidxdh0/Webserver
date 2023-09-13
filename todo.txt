@@ -1,10 +1,19 @@
 David
--configfile FOUT: "server{" werkt: "server {"
+- serversettings to locations
+- Location	Settings
+- AutoIndex settings
+- upload 	Settings
+- delete 	Settings
+- errorpages Settings
+- redirect settings
+- alias settings
+- chunked requests
+
 
 Alle
 - CGI 
 - Set POST data in the env of cgi
-- Flow mooier maken
+- cgi chunked terugsturen?
 
 Na configfile
 -methods delete/upload

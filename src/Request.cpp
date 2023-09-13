@@ -14,7 +14,7 @@ Request::Request(const Request &src) {
 
 void Request::parseRequest(std::stringstream &requestRaw) {
     std::string line;
-
+	
     requestRaw >> _method >> _uri >> _version;
     getline(requestRaw, line, '\r');
     while (line != "\n") {
@@ -29,6 +29,7 @@ void Request::parseRequest(std::stringstream &requestRaw) {
                 _hostname = line.substr(pos + 2);
             } else if (key == "Content-Type:") {
                 _contenttype = line.substr(pos + 2);
+				_isUpload = ("multipart/form-data;" == _contenttype.substr(0, 20)) ? 1 : 0;
             } else if (key == "Content-Length:") {
                 _contentlength = stol(line.substr(pos + 2));
             }

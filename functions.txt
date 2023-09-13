@@ -123,9 +123,10 @@ redirect
 	https://www.redirect-checker.org/
 
 chunked requests
-	curl -X POST -H "Transfer-Encoding: chunked" -d @test.pdf 127.0.0.1:8080
+	curl -X POST -H "Transfer-Encoding: chunked" -d @steps.txt 127.0.0.1:8080
+	https://stackoverflow.com/questions/5590791/http-chunked-encoding-need-an-example-of-trailer-mentioned-in-spec
 
-	config file
+config file
 	https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts
 	https://www.solo.io/topics/nginx/nginx-configuration/
 	https://www.nginx.com/resources/wiki/start/topics/examples/full/

@@ -33,18 +33,6 @@ bool Response::hasAccess(const std::string& filepath, std::fstream& filestr){
 	return true;
 }
 
-bool	Response::isUpload(std::string paths)
-{
-	std::string path = "/Users/dyeboa/Documents/Webserv/public/upload";
-    if (path.find("upload") != std::string::npos) {
-        std::cout << "String contains upload" << std::endl;
-        return true;
-    }
-    std::cout << "String does not contain upload" << std::endl;
-    return false;
-	paths = "s";
-}
-
 //change to config variables later
 bool	Response::checkMethod(std::string &str)
 {	
@@ -133,11 +121,18 @@ void	Response::MakeFiles(std::stringstream &raw, std::string path)
 	path = "";
 }
 
-int Response::uploadFile(std::stringstream& raw, std::string path){
-	MakeFiles(raw, path);
+//check access dir
+//path settings:
+	//upload enable
+	//method
+	//filesize
+int Response::uploadFile(std::stringstream& raw, Settings *settings){
+	if (!settings->getUploadEnable())
+		;//seterrorcode
+	
+	MakeFiles(raw, settings->getUploadPath());
 	std::cout << "Geupload" <<std::endl;
 	return 1;
-	path = "1";
 	raw.str();
 }
 
