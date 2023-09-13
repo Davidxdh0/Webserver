@@ -1,53 +1,19 @@
-Ruben
-- configfile parsen
-
 David
-todo:
-- errorCodes overal updaten https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-- File upload config Location
-	-https://stackoverflow.com/questions/4526273/what-does-enctype-multipart-form-data-mean
-- Directory listing - autoindex on/off - config location
-- File deletion - DELETE method van config file
-
-//- chunked transfer
+-configfile FOUT: "server{" werkt: "server {"
 
 Alle
 - CGI 
 - Set POST data in the env of cgi
-lezen: chunked transfer, 
-?
-- parse request
-	- error codes
-- parse response
-- handle response
+- Flow mooier maken
 
-eval:
--Try a redirected URL.
--Try a wrong URL on the server.
--Stress tests your server. It must stay available at all cost. (siege - homebrew)
--Your server must be able to listen to multiple ports 
--read/recv/write/send and check if the returned value is correctly checked 
-	(checking only -1 or 0 values is not enough, both should be checked).
-	-chi
-UNKNOWN requests should not result in a crash.
+Na configfile
+-methods delete/upload
+-uploadplek (access?)
+-errorpages
+-paths
+-auto indexpaginas index.html - indexon?
 
-lijstje:
-- Errorcodes overal - config file
-- file upload - multiple files - https://stackoverflow.com/questions/4526273/what-does-enctype-multipart-form-data-mean
-- flow mooier.
+to want:
 - chunked transfer encoding en tot content length lezen.
 	-https://en.wikipedia.org/wiki/Chunked_transfer_encoding
 	-https://bunny.net/academy/http/what-is-chunked-encoding/
-	
-
-- delete met check config
-- autoindex met on/off check
-
-- parse config
-	- server config(s)
-		-location config(s)	
-	-$remote_addr
-	-# check if commented.
-	- https://docs.nginx.com/nginx/admin-guide/web-server/web-server/
-	- alias vervangt location. https://nginx.org/en/docs/http/ngx_http_core_module.html
-	- root plakt location erachter.

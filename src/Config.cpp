@@ -4,7 +4,7 @@
 
 Config::Config() : _port()
 {
-	std::cout << "Config created with an empty construcor" << std::endl;
+	// std::cout << "Config created with an empty construcor" << std::endl;
 }
 
 Config::~Config()

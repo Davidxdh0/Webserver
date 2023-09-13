@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/05 08:36:14 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/13 15:35:03 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Config* dummy_configs()
     settings[0].setRoot("/Users/ajanse/Webserv_dev/public");
     settings[0].setIndex("index.php");
     settings[0].setAllowMethods(3);
-    settings[0].setAutoindex(true);
+    settings[0].setAutoindex("true");
     settings[0].setCgiPath("/cgi-bin");
     settings[0].setCgiExtension(".php");
     settings[0].setUploadPath("/uploads");
@@ -42,7 +42,7 @@ Config* dummy_configs()
     settings[1].setRoot("/public");
     settings[1].setIndex("index1.html");
     settings[1].setAllowMethods(3);
-    settings[1].setAutoindex(true);
+    settings[1].setAutoindex("true");
     settings[1].setCgiPath("/cgi-bin");
     settings[1].setCgiExtension(".php");
     settings[1].setUploadPath("/uploads");
@@ -61,13 +61,11 @@ int main(int argc, char* argv[])
     port_configs = dummy_configs();
 
 	if (argc == 2){
-		;//ParseConfig config(argv[1]);
-		;//config.ParseConfigFile();
+		ParseConfig config(argv[1]);
+		std::vector<pair<int, Settings* > > Config_Vect = config.ParseConfigFile();
+		// config.PrintVector(Config_Vect);
 	}
-	// std::cout << port_configs->getHosts()[1].getIndex() << std::endl;
-	// Config*  port_configs = new Config[3];
-    // Settings* settings = new Settings[2];
 
-    ServerControl   serverControl(port_configs);
+    // ServerControl   serverControl(port_configs);
     return 0;
 }

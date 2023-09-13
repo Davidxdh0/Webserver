@@ -1,10 +1,10 @@
-#include "../include/ParseConfig.h"
 #include "ParseConfig.h"
-#include <iostream>
 
 ParseConfig::ParseConfig(char* filename) : _filename(filename)
 {
-	std::cout << "ParseConfig created with an empty construcor" << std::endl;
+	_serverBracket = 0;
+	_locationBracket = 0;
+	// std::cout << "ParseConfig created with an empty construcor" << std::endl;
 }
 
 ParseConfig::~ParseConfig()
@@ -52,31 +52,109 @@ int ParseConfig::hasAccess(std::string filepath, std::fstream& filestr){
 	}
 	return 200;
 }
-//check !empty line
-//check op '#' ';' einde line of 
-//dan zoeken wat eerste woord, $variable/expand, open/close block { } is.
-//per open/close block een location. nested locations mag?
-//dus per open block een config/settings block. - meerdere ports per settings
-void	ParseConfig::readconfig(std::fstream &filestream){
-	string	line;
-	// int i = 0;
-	std::cout << "readconfig" << std::endl;
-	while (getline(filestream, line)){
-		std::cout << line << std::endl;
+
+void	ParseConfig::setBrackets(char c, int block){
+	// std::cout << "setBrackets " << c << " " << _locationBracket << ":" << _serverBracket <<  std::endl;
+	if (c == '{'){
+		if (block == SERVER && _serverBracket == 0 && _locationBracket == 0)
+			_serverBracket = 1;
+		else if (block == LOCATION && _locationBracket == 0 && _serverBracket == 1)
+			_locationBracket = 1;
+		else{
+			std::cout << "setBrackets open fails " << _locationBracket << ":" << _serverBracket <<  std::endl;
+			exit(1);
+		}
+	}
+	else if (c == '}'){
+		if (block == SERVER &&_serverBracket == 1 && _locationBracket == 0)
+			_serverBracket = 0;
+		else if (block == LOCATION && _locationBracket == 1 && _serverBracket == 1)
+			_locationBracket = 0;
+		else if (block == LOCATION && _locationBracket == 0 && _serverBracket == 1)
+			_serverBracket = 0;
+		else{
+			std::cout << "setBrackets close fails " << _locationBracket << ":" << _serverBracket << std::endl;
+			exit(1);
+		}
+	}
+			
+}
+void	ParseConfig::parseLineConfig(std::map<string, string>& map, std::string line, std::vector<pair<int, Settings* > > &config, int block){
+	std::istringstream iss(line);
+	std::string word;
+	std::string variable = "";
+
+	while (iss >> word){
+		if (variable == "")
+			variable = findMapInLine(map, word);
+		if (variable != ""){
+			if (block == SERVER)
+				VariableToMap(*config.back().second, variable, line);
+			else
+				VariableToMap(*config.back().second->getLocations().back().second, variable, line);
+			while (iss)
+				iss >> word;
+		}
+		else if (word == "}")
+			setBrackets('}', block);
+		else if (word == "{")
+			setBrackets('{', block);
+		else if (word == "\n" && word == " " && word == "\t")
+			continue;
+		else{
+			std::cout << "Error: parseLineConfig word: " << word << std::endl; 
+			exit(1);
+		}
 	}
 }
 
-// void	Config::initialiseConfig(int argc, char *argv[]){
-
-// 	// setWithFile(const char *fileLocation);
-// 	// createConfig(config_file);
-// }
-int ParseConfig::ParseConfigFile() {
-	std::fstream filestream(_filename);
-	int p = hasAccess(_filename, filestream);
-	readconfig(filestream);
-	std::cout << p << std::endl;
-
-	return p;
+void	ParseConfig::readconfig(std::map<string, string>& map, std::fstream &filestream){
+	string		line;
+	size_t		comment;
+	size_t		location = 0;
+	size_t		server	= 0;
+	size_t		server2	= 0;
+	int			block = 0; //
+	std::string bracket = "";
+	int			endline;
+	Settings*	temp;
+	
+	while (getline(filestream, line)){
+		line = ParseLine(line);
+		endline = line.length();
+		comment = line.find('#');
+		if (comment != std::string::npos)
+			endline = comment;
+		//add server
+		server = line.substr(0, endline).find("server {");
+		server2 = line.substr(0, endline).find("server{");
+		if (server != std::string::npos || server2 != std::string::npos){
+			block = SERVER;
+			temp = new Settings;
+			_Config_Vector.push_back(std::make_pair(-1, temp));
+		}
+		//add location
+		location = line.substr(0, endline).find("location ");
+		if (location != std::string::npos){
+			block = LOCATION;
+			Settings* temp = new Settings;
+			_Config_Vector.back().second->addLocations(std::make_pair(line, temp));
+		}
+		parseLineConfig(map, line.substr(0, endline), _Config_Vector, block);
+	}
 }
 
+std::vector<pair<int, Settings* > > ParseConfig::ParseConfigFile() {
+	std::map<string, string> map;
+	std::fstream filestream(_filename);
+				// std::cout << "ParseConfigFile" << std::endl;
+				// std::cout << "HasAccess" << std::endl;
+	hasAccess(_filename, filestream);
+				// std::cout << "InitMap" << std::endl;
+	map	= initMap();
+				// std::cout << "Readconfig" << std::endl;
+				// std::cout << "----------------------" << std::endl;
+	readconfig(map, filestream);
+	duplicatePort();	
+	return _Config_Vector;
+}

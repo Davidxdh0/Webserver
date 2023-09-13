@@ -34,6 +34,7 @@ private:
     int                 _socket;
     clientState         _state;
     std::stringstream   _requestRaw;
+	// size_t				_total_read;
     Settings            _settings;
     Settings*           _vhosts;
 

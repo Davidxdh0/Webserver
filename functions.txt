@@ -74,10 +74,6 @@ else {
 	}
 }
 
-config file
-	https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts
-	https://www.solo.io/topics/nginx/nginx-configuration/
-
 nginx
 list directories
 	https://nginx.org/en/docs/http/ngx_http_index_module.html
@@ -125,3 +121,11 @@ status Codes
 redirect
 	https://blog.hubspot.com/website/html-redirect
 	https://www.redirect-checker.org/
+
+chunked requests
+	curl -X POST -H "Transfer-Encoding: chunked" -d @test.pdf 127.0.0.1:8080
+
+	config file
+	https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts
+	https://www.solo.io/topics/nginx/nginx-configuration/
+	https://www.nginx.com/resources/wiki/start/topics/examples/full/

@@ -39,6 +39,7 @@ public:
 	std::string		getStatusMessage(void);
 	std::string		getBody();
 	std::string		getContentType(void);
+	std::string		GetFilename(std::string line);
 	
     void            loadBody(const Path& path);
     void            loadCgi(const Path& path);

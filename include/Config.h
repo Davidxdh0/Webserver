@@ -19,20 +19,7 @@ using namespace std;
  * configurations
  */
 
-enum E_Types {
-	E_port = 0,
-	E_servername,
-	E_errorpage,
-	E_client_max_body,
-	E_root,
-	E_index,
-	E_location,
-	E_name,
-	E_methods,
-	E_autoindex,
-	E_upload,
-	E_loc_handling
-};
+
 
 class Config
 {
@@ -47,10 +34,12 @@ class Config
         // ------------------- Config setters ------------------------
         void    setPort(int port) { this->_port = port; };
         void    setHosts(Settings* hosts) { this->_hosts = hosts; };
+        // void    addHosts(Settings* hosts) {  _hosts.push_back(hosts);}
 		// ------------------- Config getters ------------------------
 
         int         getPort() const { return this->_port; };
         Settings*   getHosts() const { return this->_hosts; };
+        // std::vector<Settings*> getHosts() const { return this->_hosts; };
         Settings    getRightSettings(const std::string& host,Path uri);
         // ------------------- Config member functions ------------------------
 		// void	openConfig(ifstream& config_file, int argc, char *argv[]);
@@ -75,6 +64,7 @@ class Config
 
 		int		        _port;
         Settings*       _hosts;
+		
 };
 
 #endif
