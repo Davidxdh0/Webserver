@@ -17,10 +17,13 @@ public:
 
     void            parseRequest(std::stringstream &requestRaw);
 	
-    std::string     getMethod() { return _method; };
-    std::string     getUri() { return _uri; };
-    std::string     getVersion() { return _version; };
-    std::string     getHostname() { return _hostname; };
+    std::string     getMethod() const { return _method; };
+    std::string     getUri() const { return _uri; };
+    std::string     getVersion() const { return _version; };
+    std::string     getHostname() const { return _hostname; };
+    std::string     getBody() const { return _body; };
+    long            getContentLength() const { return _contentlength; };
+    std::string     getContentType() const { return _contenttype; };
 
 private:
 

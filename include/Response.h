@@ -42,7 +42,7 @@ public:
 	std::string		GetFilename(std::string line);
 	
     void            loadBody(const Path& path);
-    void            loadCgi(const Path& path);
+    void            loadCgi(const Path& path, const Request& request);
     void            setResponseString();
     std::string     getResponseString() { return _responseString; };
 

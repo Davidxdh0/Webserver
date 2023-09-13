@@ -51,39 +51,7 @@ void Response::loadBody(const Path& path) {
 	}
 }
 
-void Response::loadCgi(const Path& path) {
-    int         og_StdOut;
-    int         pid;
-    const char* exc = "/usr/bin/php";
-    std::FILE*  temp = std::tmpfile();
-    int         fd_temp = fileno(temp);
-    std::string flag = "-f";
-    char*       argv[] = {const_cast<char *>(exc), const_cast<char *>(flag.c_str()), const_cast<char *>(path.c_str()), nullptr};
 
-    og_StdOut = dup(STDOUT_FILENO);
-    pid = fork();
-    if (pid == -1)
-        exitWithError("Error forking");
-    if (pid == 0) {
-        std::cout << "Loading CGI from: " << path << std::endl;
-        dup2(fd_temp, STDOUT_FILENO);
-        execve(exc, argv , nullptr);
-    } else {
-        waitpid(-1, nullptr, 0);
-        dup2(og_StdOut, STDOUT_FILENO);
-        lseek(fd_temp, 0, SEEK_SET);
-        char buffer[1024];
-        long ret = 1;
-        while (ret > 0) {
-            memset(buffer, 0, 1024);
-            ret = read(fd_temp, buffer, 1024);
-            _body += buffer;
-            std::cout << "Read: " << _body << std::endl;
-        }
-        setContentLength();
-        fclose(temp);
-    }
-}
 
 void Response::setErrorPage(Path &obj){
 	_path = obj;

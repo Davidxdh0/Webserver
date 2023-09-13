@@ -6,7 +6,7 @@
 #include "iostream"
 #include <stdlib.h>
 
-Request::Request() {}
+Request::Request(): _contentlength(0) {}
 
 Request::Request(const Request &src) {
     *this = src;
@@ -33,6 +33,14 @@ void Request::parseRequest(std::stringstream &requestRaw) {
                 _contentlength = stol(line.substr(pos + 2));
             }
         }
+    }
+    requestRaw.get();
+    if (_contentlength > 0) {
+        char *body = new char[_contentlength + 1];
+        requestRaw.read(body, _contentlength);
+        body[_contentlength] = '\0';
+        _body = body;
+        delete[] body;
     }
 }
 

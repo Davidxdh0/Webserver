@@ -76,7 +76,7 @@ void Client::setResponse() {
         this->index();
     }
     if (_path.getExtension() == "php") {
-        _response.loadCgi(_path);
+        _response.loadCgi(_path, _request);
     } else {
         _response.loadBody(_path);
     }
@@ -148,7 +148,7 @@ void Client::index() {
     std::string index_path = _path.getFullPath() + _settings.getIndex();
 
     if (access(index_path.c_str(), F_OK) == -1) {
-        if (_settings.getAutoindex()) {
+        if (_settings.getAutoindex() == "on") {
             _response.directoryListing(_path.getFullPath());
         } else {
             _response.setStatusCode("403");
