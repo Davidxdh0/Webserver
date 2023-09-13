@@ -1,5 +1,4 @@
 David
-- serversettings to locations
 - Location	Settings
 - AutoIndex settings
 - upload 	Settings
