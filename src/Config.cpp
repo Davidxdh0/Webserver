@@ -1,4 +1,5 @@
 #include "../include/Config.h"
+#include "Path.h"
 #include <iostream>
 
 Config::Config() : _port()
@@ -34,6 +35,20 @@ Config &Config::operator=(const Config &other)
 
 	return (*this);
 }
+
+//Settings Config::getRightSettings(const std::string& host,Path uri) {
+//    Settings ret;
+//    int i = 0;
+//    while(!_hosts[i].getHost().empty()) {
+//        if (_hosts[i].getHost() == host) {
+//            ret = _hosts[i].getRightSettings(uri);
+//            break;
+//        }
+//        i++;
+//    }
+//    return ret;
+//}
+
 
 
 // ---------------------- Config member functions ------------------------------

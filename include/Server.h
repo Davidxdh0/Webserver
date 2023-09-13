@@ -19,7 +19,7 @@ class Config;
 class Server
 {
 public:
-    Server(const std::string& ip_address, Config& conf);
+    explicit Server(Config& conf);
     ~Server();
 
 
@@ -28,16 +28,16 @@ public:
     int getSocket() const { return _socket; }
 
 private:
-    std::string         _ip_address;
+    Config              _config;
     int                 _port;
     int                 _socket;
     struct sockaddr_in  _socketAddress;
     unsigned int        _socketAddress_len;
     Settings*           _virtualhosts;
 
-    int         createSocket();
-    void        closeServer() const;
+    void        createSocket();
     void        createClient(int kqueu_fd, int client_socket) const;
+    void        closeServer() const;
 };
 
 #endif //WEBSERV_DEV_SERVER_H

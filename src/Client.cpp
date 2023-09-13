@@ -5,26 +5,28 @@
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
+#include <sys/socket.h>
 #include "Client.h"
 #include "utils.h"
 #include <algorithm>
 
-Client::Client() : _request(), _response(), _socket(), _state(READING){}
+Client::Client() : _socket(), _state(READING){}
 
-Client::Client(int socket /*int port*/) : _request(), _response(), _socket(socket), _state(READING) /*_port(port)*/ {
+Client::Client(int socket, Settings* vhosts) : _socket(socket), _state(READING), _vhosts(vhosts) {
 }
 
 Client::~Client() {
     close(_socket);
 }
+
 std::stringstream&	Client::getRequestRaw(){return _requestRaw;}
 const Request&		Client::getRequest()const{return _request;}
 const Response&		Client::getResponse()const{return _response;}
 const Path&			Client::getPath()const{return _path;}
 
-void Client::handleRequest() {
-    this->readRequest();
-    if (_state != RESPONDING) {
+void Client::handleRequest(long data) {
+    this->readRequest(data);
+    if (_state != RESPONDING)
         return;
     }
 	// std::cout << _requestRaw.str() << std::endl;
@@ -35,12 +37,12 @@ void Client::handleRequest() {
     this->setResponse();
 }
 
-int Client::readRequest() {
-    char buffer[4096];
+int Client::readRequest(long data) {
+    char buffer[1024];
     size_t bytes_read;
-	// static size_t content_length = 0;
     size_t t = -1;
-	// static int chunkedrequest = 0;
+//	static size_t content_length = 0;
+//	// static int chunkedrequest = 0;
 	
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
     if (bytes_read == t)
@@ -74,11 +76,11 @@ int Client::readRequest() {
 	}
     return 1;
 }
-// std::string p = "multipart/form-data; boundary=" //---------------------------"
+
 void Client::setResponse() {
     _response.setVersion("HTTP/1.1");
     _response.setStatusCode("200");
-	// std::cout << "subs: " << _response.getContentType().substr(0, 20) << std::endl;
+    //_response.setStatusMessage("OK");
     if (_path.getExtension() == "css") {
         _response.setContentType("Content-Type: text/css");
     } else if (_path.getExtension() == "gif") {
@@ -107,9 +109,6 @@ void Client::setResponse() {
     _response.setResponseString();
 }
 
-// to check size of response - 
-// std::cout << "size = " << _response.getResponseString().size() << std::endl;
-// std::cout << "WriteResponseSize = " << _response.getResponseString().size() << std::endl;
 void Client::writeResponse() {
 	int i = 1;
 	if (_response.getResponseString().size() > 64000){
@@ -137,9 +136,19 @@ void Client::writeResponse() {
 }
 
 void Client::configure() {
-    std::string    root = ROOT;
-    std::string    index = INDEX;
 
-    _path = Path(root, _request.getUri());
+    Settings ret;
+    std::string host = _request.getHostname();
+    Path uri(_request.getUri());
+
+    int i = 0;
+    while(!_vhosts[i].getHost().empty()) {
+        if (_vhosts[i].getHost() == host) {
+            ret = _vhosts[i].getRightSettings(uri);
+            break;
+        }
+        i++;
+    }
+    _settings = ret;
 }
 

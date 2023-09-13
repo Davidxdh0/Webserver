@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "Path.h"
 
 class Settings {
 
@@ -53,7 +54,8 @@ public:
 	const std::string	&getReturn() const { return _return; };
 
 	// poppers
-	
+	    Settings getRightSettings(Path& uri);
+
 private:
 
     std::string                     				_host;

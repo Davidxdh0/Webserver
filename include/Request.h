@@ -15,11 +15,12 @@ public:
     Request(const Request &src);
     ~Request();
 
-    void            parseRequest(std::stringstream &requestRaw, std::string &contenttype);
+    void            parseRequest(std::stringstream &requestRaw);
 	
     std::string     getMethod() { return _method; };
     std::string     getUri() { return _uri; };
     std::string     getVersion() { return _version; };
+    std::string     getHostname() { return _hostname; };
 
 private:
 
@@ -28,6 +29,7 @@ private:
     std::string                         _uri;
     std::string                         _version;
     std::string                         _hostname;
+    std::string                         _contenttype;
 
 };
 

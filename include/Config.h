@@ -1,12 +1,12 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
-#include "Server.h"
 #include <fstream>
 #include <string>
 #include <vector>
 #include <map>
 #include "Settings.h"
+#include "Path.h"
 
 using namespace std;
 /**
@@ -25,7 +25,6 @@ class Config
 {
 	public:
 		Config();
-		Config(const char* fileLocation);
 		Config(const Config& other);
         Config(int port);
 		~Config();
@@ -38,13 +37,11 @@ class Config
         // void    addHosts(Settings* hosts) {  _hosts.push_back(hosts);}
 		// ------------------- Config getters ------------------------
 
-        int getPort() const { return this->_port; };
-        Settings* getHosts() const { return this->_hosts; };
+        int         getPort() const { return this->_port; };
+        Settings*   getHosts() const { return this->_hosts; };
         // std::vector<Settings*> getHosts() const { return this->_hosts; };
+        Settings    getRightSettings(const std::string& host,Path uri);
         // ------------------- Config member functions ------------------------
-
-		void setWithFile(const char *fileLocation);
-		
 		// void	openConfig(ifstream& config_file, int argc, char *argv[]);
 		// void	initialiseConfig(int argc, char *argv[]);
 		// void	createConfig(ifstream& config_file);

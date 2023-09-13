@@ -8,16 +8,18 @@
 #include "Request.h"
 #include "Response.h"
 #include "Path.h"
+#include "Config.h"
+#include "Settings.h"
 #include "utils.h"
 #include <sys/event.h>
 
 class Client {
 public:
     Client();
-    Client(int socket /*int port*/);
+    Client(int socket, Settings* vhosts);
     ~Client();
 
-    void                handleRequest();
+    void                handleRequest(long data);
     void                setResponse();
     void                writeResponse();
     void                configure();
@@ -26,21 +28,20 @@ public:
 	const Request		&getRequest() const;
 	const Response		&getResponse() const;
 	const Path			&getPath() const;
-	static Client		&getInstance() {static Client instance; return instance;}
 private:
 
     Request             _request;
     Response            _response;
     Path                _path;
     int                 _socket;
-//    int                 _port;
     clientState         _state;
     std::stringstream   _requestRaw;
 	// size_t				_total_read;
+    Settings            _settings;
+    Settings*           _vhosts;
 
 
-
-    int                 readRequest();
+    int                 readRequest(long data);
 };
 
 
