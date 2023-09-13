@@ -34,7 +34,7 @@ void	ParseConfig::PrintSettings(Settings *items)
 	std::cout << "methods:\t\t" << items->getAllowMethods() << "\n";
 	std::cout << "autoindex:\t\t" << items->getAutoindex() << "\n";
 	std::cout << "cgi path:\t\t" << items->getCgiPath() << "\n";
-	std::cout << "cgi_extension:\t" << items->getCgiExtension() << "\n";
+	std::cout << "cgi_extension:\t\t" << items->getCgiExtension() << "\n";
 	std::cout << "upload_path:\t\t" << items->getUploadPath() << "\n";
 	std::cout << "upload_enable:\t\t" << items->getUploadPath() << "\n";
 	for (itError = errorCopy.begin(); itError != errorCopy.end(); itError++) {
@@ -49,10 +49,24 @@ void	ParseConfig::PrintSettings(Settings *items)
 
 }
 
-std::string ParseConfig::findMapInLine(std::map<string, string>& map, std::string word){
-	if(map.find(word) != map.end()){
-		return word;
+void	ParseConfig::duplicatePort(){
+	std::vector<std::pair<int, Settings* > >::iterator it;
+	std::vector<std::pair<int, Settings* > >::iterator it_rest;
+	for (it = _Config_Vector.begin(); it != _Config_Vector.end(); it++){
+		it_rest = it;
+		it_rest++;
+		for (; it_rest != _Config_Vector.end(); it_rest++){
+			if (it->first == it_rest->first){
+				std::cout << "Error: Duplicate port" << std::endl;
+				exit(1);
+			}
+		}
 	}
+}
+
+std::string ParseConfig::findMapInLine(std::map<string, string>& map, std::string word){
+	if(map.find(word) != map.end())
+		return word;
 	return "";
 }
 
@@ -86,15 +100,13 @@ std::string	ParseConfig::split(std::string line, int wordpos){
 		if (word == " ")
 			break;
         words++;
-        if (words == wordpos) {
+        if (words == wordpos)
 			return word;
-		}
 	}
 	return "";
 }
 
 void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::string line){
-	line = ParseLine(line);
 	// std::cout << line << std::endl;
 	int temp = 0;
 	int semicolons = countCharacter(';', line);
@@ -102,21 +114,20 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 	pos = line.find(";");
 	line = line.substr(0, pos);
 	
-	if (variable == "listen")
+	if (variable == "server" && _serverBracket == 0 && _locationBracket == 0)
+	{
+		if (semicolons != 0)
+			exit(1);
+		ParseServer(line);
+	}
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "listen")
 	{
 		if (semicolons != 1)
 			exit(1);
 		ParseListen(line);
 		_Config_Vector.back().first = std::stoi(line);
 	}
-	else if (variable == "server")
-	{
-		if (semicolons != 0)
-			exit(1);
-		ParseServer(line);
-		// config.setHost(line);
-	}
-	else if (variable == "error_page")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "error_page")
 	{
 		if (semicolons != 1)
 			exit(1);
@@ -124,48 +135,48 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 		temp = std::stoi(split(line, 2));
 		config.addErrorPage(std::make_pair(temp, split(line, 3)));
 	}
-	else if (variable == "client_max_body_size")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "client_max_body_size")
 	{
 		if (semicolons != 1)
 			exit(1);
 		ParseClientMaxBody(line);
 		config.setClientMaxBodySize(static_cast<size_t>(std::stod(line)));
 	}
-	else if (variable == "root")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "root")
 	{
 		if (semicolons != 1)
 			exit(1);
 		ParseRoot(line);
 		config.setRoot(line);
 	}
-	else if (variable == "index")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "index")
 	{
 		if (semicolons != 1)
 			exit(1);
 		ParseIndex(line);
 		config.setIndex(line);
 	}
-	else if (variable == "location"){
+	else if (_serverBracket == 1 && _locationBracket == 0 && variable == "location"){
 		if (semicolons != 0)
 			exit(1);
 		ParseLocation(line);
 		_Config_Vector.back().second->getLocations().back().first = line;
 	}
-	else if (variable == "server_name")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "server_name")
 	{
 		if (semicolons != 1)
 			exit(1);
 		ParseHost(line);
 		config.setHost(line);
 	}
-	else if (variable == "allow_methods")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "allow_methods")
 	{
 		if (semicolons != 1)
 			exit(1);
 		ParseMethods(line);
 		config.setAllowMethods(std::stoi(line));
 	}
-	else if (variable == "autoindex")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "autoindex")
 	{
 		if (semicolons != 1)
 			exit(1);
@@ -173,7 +184,7 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 		line == "off" ? temp = 0 : temp = 1;
 		config.setAutoindex(line);
 	}
-	else if (variable == "upload_enable")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "upload_enable")
 	{
 		if (semicolons != 1)
 			exit(1);
@@ -181,28 +192,28 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 		line == "off" ? temp = 0 : temp = 1;
 		config.setUploadEnable(temp);
 	}
-	else if (variable == "upload_store")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "upload_store")
 	{
 		if (semicolons != 1)
 			exit(1);
 		ParseUploadPath(line);
 		config.setUploadPath(line);
 	}
-	else if (variable == "cgi_pass")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "cgi_pass")
 	{
 		if (semicolons != 1)
 			exit(1);
 		ParseCgiPath(line);
 		config.setCgiPath(line);
 	}
-	else if (variable == "cgi_extension")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "cgi_extension")
 	{
 		if (semicolons != 1)
 			exit(1);
 		ParseCgiExtension(line);
 		config.setCgiExtension(line);
 	}
-	else if (variable == "return")
+	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "return")
 	{
 		if (semicolons != 1)
 			exit(1);
@@ -215,6 +226,7 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 		config.setReturn(line);
 	}
 	else {
-		std::cout << "Not in map: " << variable << " line: " << line << std::endl;
+		std::cout << "Error: VariableToMap line: " << line << std::endl;
+		exit(1);
 	}
 }

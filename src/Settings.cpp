@@ -4,7 +4,7 @@
 
 #include "Settings.h"
 
-Settings::Settings() : _allow_methods(), _autoindex(), _client_max_body_size()
+Settings::Settings() : _allow_methods(0), _autoindex(), _client_max_body_size(1000000)
 {
 }
 

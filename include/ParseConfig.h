@@ -59,6 +59,7 @@ public:
 	void	setBrackets(char c, int block);
 	void	substrSemicolon(std::string &line);
 	int		countCharacter(char c, std::string line);
+	void	duplicatePort();
 	std::string	split(std::string line, int wordpos);
 private:
 	std::string		_filename;

@@ -80,35 +80,25 @@ void	ParseConfig::setBrackets(char c, int block){
 			
 }
 void	ParseConfig::parseLineConfig(std::map<string, string>& map, std::string line, std::vector<pair<int, Settings* > > &config, int block){
-	// int	semicolon = line.find(';'); // meerdere in 1 lijn? error.
-	// int openBracket = line.find('{');
-	
 	std::istringstream iss(line);
 	std::string word;
 	std::string variable = "";
 
 	while (iss >> word){
-		// std::cout << word << "\n";	
 		if (variable == "")
 			variable = findMapInLine(map, word);
-		if (variable != "")
-		{
+		if (variable != ""){
 			if (block == SERVER)
 				VariableToMap(*config.back().second, variable, line);
 			else
 				VariableToMap(*config.back().second->getLocations().back().second, variable, line);
-			while (iss){
+			while (iss)
 				iss >> word;
-			}
 		}
-		else if (word == "}"){
-			// std::cout << "parselineconfig setbrackkets" << std::endl; 
+		else if (word == "}")
 			setBrackets('}', block);
-		}
-		else if (word == "{"){
-			// std::cout << "parselineconfig setbrackkets" << std::endl; 
+		else if (word == "{")
 			setBrackets('{', block);
-		}
 		else if (word == "\n" && word == " " && word == "\t")
 			continue;
 		else{
@@ -123,25 +113,28 @@ void	ParseConfig::readconfig(std::map<string, string>& map, std::fstream &filest
 	size_t		comment;
 	size_t		location = 0;
 	size_t		server	= 0;
+	size_t		server2	= 0;
 	int			block = 0; //
 	std::string bracket = "";
 	int			endline;
 	Settings*	temp;
 	
 	while (getline(filestream, line)){
+		line = ParseLine(line);
 		endline = line.length();
 		comment = line.find('#');
 		if (comment != std::string::npos)
 			endline = comment;
 		//add server
-		server = line.substr(0, endline).find("server ");
-		if (server != std::string::npos){
+		server = line.substr(0, endline).find("server {");
+		server2 = line.substr(0, endline).find("server{");
+		if (server != std::string::npos || server2 != std::string::npos){
 			block = SERVER;
 			temp = new Settings;
 			_Config_Vector.push_back(std::make_pair(-1, temp));
 		}
 		//add location
-		location = line.substr(0, endline).find("location");
+		location = line.substr(0, endline).find("location ");
 		if (location != std::string::npos){
 			block = LOCATION;
 			Settings* temp = new Settings;
@@ -162,6 +155,6 @@ std::vector<pair<int, Settings* > > ParseConfig::ParseConfigFile() {
 				// std::cout << "Readconfig" << std::endl;
 				// std::cout << "----------------------" << std::endl;
 	readconfig(map, filestream);
-	// PrintVector();
+	duplicatePort();	
 	return _Config_Vector;
 }

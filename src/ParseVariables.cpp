@@ -76,6 +76,8 @@ void	ParseConfig::ParseServer(std::string &line)
 			continue;
 		if (word == "{")
 			setBrackets('{', SERVER);
+		if (word == "}")
+			setBrackets('}', SERVER);
 		words++;
 		if (word == "server")
 			continue;
@@ -432,6 +434,10 @@ void	ParseConfig::ParseLocation(std::string &line)
 			break;
 		if (word == "{"){
 			setBrackets('{', LOCATION);
+			break;
+		}
+		if (word == "}"){
+			setBrackets('}', LOCATION);
 			break;
 		}
 		words++;
