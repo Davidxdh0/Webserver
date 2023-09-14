@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/13 22:43:06 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/14 13:22:30 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,15 @@ Config* dummy_configs()
 int main(int argc, char* argv[])
 {
     Config*  port_configs;
-	
+    std::vector<pair<int, Settings* > > Config_Vect;
     port_configs = dummy_configs();
 
 	if (argc == 2){
 		ParseConfig config(argv[1]);
-		std::vector<pair<int, Settings* > > Config_Vect = config.ParseConfigFile();
-		// config.PrintVector(Config_Vect);
+		Config_Vect = config.ParseConfigFile();
+//		 config.PrintVector(Config_Vect);
 	}
-
-    ServerControl   serverControl(port_configs);
+    ServerControl   serverControl(Config_Vect);
+//
     return 0;
 }

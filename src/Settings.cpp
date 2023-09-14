@@ -32,18 +32,24 @@ Settings Settings::getRightSettings(Path &uri) {
 	// int urislash = countSlash(uri.getFullPath());
 	// int locationslash = 0;
     Settings ret(*this);
-    if (!_locations.empty()){
+    std::cout << "getRightSettings:" << uri.getFullPath() << std::endl;
+    std::cout << "getRightSettings:" << uri.getExtension() << std::endl;
+    std::cout << "getRightSettings:" << uri.getFilename() << std::endl;
+//    std::cout << "getRightSettings:" << std::endl;
+    if (!_locations.empty() != 0){
         std::vector<std::pair<std::string, Settings* > >::iterator it = _locations.begin();
-
         while (it != _locations.end()) {
+            std::cout << "Location: " << getRoot() + uri.getFullPath() << " : " << it->first << std::endl;
             if (uri.getFullPath().find(it->first) != std::string::npos) {
-				// std::cout << uri.getFullPath() << " : " << it->first << std::endl;
+				std::cout << "Found settings" << std::endl;
                 ret = *it->second;
+                return ret;
                 break;
             }
             it++;
         }
     }
+    exit(1);
     return ret;
 }
 

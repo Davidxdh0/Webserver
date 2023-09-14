@@ -136,20 +136,32 @@ void Client::writeResponse() {
 			std::cout << "Wrote response" << std::endl;
 	}
 }
-
+//    std::cout << "port == "<< port << std::endl;
+//	std::cout << "uri: " << _request.getUri() << std::endl;
+//	std::cout << "hostname request: " << _request.getHostname() << std::endl;
+//	std::cout << "hostname config: " << host << std::endl;
+//std::cout << "_vhost " << _vhosts[i].getHost() + port  << "==" << host  << std::endl;
 void Client::configure() {
 
     Settings ret;
+    int foundHostname = 0;
     std::string host = _request.getHostname();
     Path uri(_request.getUri());
-
-    int i = 0;
-    while(!_vhosts[i].getHost().empty()) {
-        if (_vhosts[i].getHost() == host) {
-            ret = _vhosts[i].getRightSettings(uri);
-            break;
+    std::string port = host.substr(host.find(":"));
+    std::cout << "hostname: " << _vhosts->getHost() << std::endl;
+    if (host == "localhost" + port && _vhosts->getHost() == "127.0.0.1")
+        _vhosts->setHost("localhost");
+    if (host == "127.0.0.1" + port && _vhosts->getHost() == "localhost")
+        _vhosts->setHost("127.0.0.1");
+    if (!_vhosts->getHost().empty()) {
+        if (_vhosts->getHost() + port == host) {
+            ret = _vhosts->getRightSettings(uri);
+            foundHostname = 1;
         }
-        i++;
+    }
+    if (foundHostname == 0) {
+        std::cout << "Error hostname request != config host"  << std::endl;
+        exit(1);
     }
     _settings = ret;
     _path = _settings.getRoot() + _request.getUri();

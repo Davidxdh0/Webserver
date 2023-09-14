@@ -16,15 +16,15 @@ class ServerControl
 {
 public:
     ServerControl();
-    explicit ServerControl(Config* port_configs);
+    explicit ServerControl(std::vector<pair<int, Settings* > > port_configs);
     ~ServerControl();
 
 private:
-    int                 _kq_fd;
-    vector<Server> _servers;
+    int             _kq_fd;
+    vector<Server>  _servers;
 
     Server*     checkIdentIsServer(int ident);
-    void        loadServers(Config* port_configs);
+    void        loadServers(std::vector<pair<int, Settings* > > port_configs);
     void        webservLoop();
 };
 #endif //WEBSERV_DEV_SERVERCONTROL_H
