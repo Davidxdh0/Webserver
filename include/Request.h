@@ -22,6 +22,7 @@ public:
     std::string     getVersion() { return _version; };
     std::string     getHostname() { return _hostname; };
 	const bool		&getisUpload() const { return _isUpload;};
+    const std::string &getContentType() const { return _contenttype;}
 
 private:
 

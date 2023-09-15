@@ -6,7 +6,7 @@
 #include "iostream"
 #include <stdlib.h>
 
-Request::Request() {}
+Request::Request() : _isUpload(0){}
 
 Request::Request(const Request &src) {
     *this = src;
@@ -21,7 +21,7 @@ void Request::parseRequest(std::stringstream &requestRaw) {
         getline(requestRaw, line, '\r');
         if (line.empty())
             break;
-
+//        std::cout << line << std::endl;
         std::string::size_type pos = line.find(": ");
         if (pos != std::string::npos) {
             std::string key = line.substr(1, pos);

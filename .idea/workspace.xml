@@ -21,18 +21,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f1fa27f-9bb1-439f-a988-a4f53142e7d5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/empty.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Webserv.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/test.conf" beforeDir="false" afterPath="$PROJECT_DIR$/config/test.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Client.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Client.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Request.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Request.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Response.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Response.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Settings.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Settings.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/upload/index1.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/upload/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/AA/fifth.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/AA/first.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/AA/fourth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/AA/second.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/AA/third.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FileHandling.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ResponseUploadDelete.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ListDirectories.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ResponseDirectory.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Response.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Response.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Request.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Request.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ResponseDirectory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ResponseDirectory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ResponseUploadDelete.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ResponseUploadDelete.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Settings.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Settings.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
@@ -49,8 +56,14 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$APPLICATION_HOME_DIR$/plugins/restClient/lib/restClient.jar!/com/intellij/ws/rest/client/stubs/http-client.d.ts" root0="SKIP_INSPECTION" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectApplicationVersion">
     <option name="ide" value="CLion" />
@@ -80,8 +93,13 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public" />
+    </key>
+  </component>
   <component name="RunManager">
-    <configuration name="Webserv_dev" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Webserv" TARGET_NAME="Webserv_dev" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Webserv" RUN_TARGET_NAME="Webserv_dev">
+    <configuration name="Webserv_dev" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="/config/test.conf" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" RUN_PATH="Webserv_dev" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -100,7 +118,9 @@
       <workItem from="1694723432789" duration="1892000" />
       <workItem from="1694725759213" duration="9519000" />
       <workItem from="1694735833077" duration="55000" />
-      <workItem from="1694735899193" duration="6833000" />
+      <workItem from="1694735899193" duration="14539000" />
+      <workItem from="1694751039242" duration="52000" />
+      <workItem from="1694751101408" duration="3475000" />
     </task>
     <servers />
   </component>

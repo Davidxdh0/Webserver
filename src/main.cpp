@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 	if (argc == 2){
 		ParseConfig config(argv[1]);
 		Config_Vect = config.ParseConfigFile();
-        //config.PrintVector(Config_Vect);
+        config.PrintVector(Config_Vect);
 	}
     ServerControl   serverControl(Config_Vect);
 

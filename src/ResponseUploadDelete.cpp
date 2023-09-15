@@ -6,6 +6,7 @@
 bool Response::hasAccess(const std::string& filepath, std::fstream& filestr){
 	const std::string& path = filepath;
     bool directory = 0;
+
     if (path[path.length() - 1] == '/')
         directory = 1;
 	if (access (path.c_str(), F_OK) != 0){
@@ -84,84 +85,69 @@ std::string	Response::GetFilename(std::string line){
 			std::string::size_type pos2 = line.find("\"", pos);
 			if (pos2 != std::string::npos){
 				filename = line.substr(pos, pos2-pos);
-				std::cout  << pos2 << "  filename2: " << filename << std::endl;
 			}
 		}
 	}
-	std::cout << "3" << std::endl;
 	return filename;
 }
 
 // std::cout << "boundary: " << this->getContentType().substr(30) + "\r\n" << std::endl;
 // std::cout << "unieknaam: " << uniqueName << std::endl;
-void	Response::MakeFiles(std::stringstream &raw, std::string path)
+void	Response::MakeFiles(std::stringstream &raw, std::string path, Settings &settings, const std::string &contentType)
 {
-	std::string boundary = "--" + this->getContentType().substr(30) + "\r";
+	std::string boundary = "--" + contentType.substr(30) + "\r";
 	std::string filename = "";
 	std::string rawstring = raw.str();
-
 	size_t bound		= rawstring.find(boundary);
 	size_t start		= rawstring.find("\r\n\r\n", bound);
-    size_t end			= rawstring.find("\r\n--" + this->getContentType().substr(30), start);
-	if (bound == std::string::npos || start == std::string::npos || end == std::string::npos){
-		std::cout << "Error when uploading" << std::endl;
+    size_t end			= rawstring.find("\r\n--" + contentType.substr(30), start);
+	if (bound == std::string::npos || start == std::string::npos || end == std::string::npos)
 		return ;
-	}
 	start += 4;
 	std::string bodystr = rawstring.substr(start, end - start);
 	if (filename == "")
 		filename = GetFilename(rawstring);
 	if (filename != ""){
-		std::string uniqueName = uniqueFileName("public/upload/", filename);
-
+		std::string uniqueName = uniqueFileName(settings.getRoot() + path + "/", filename);
 		std::ofstream file(uniqueName, std::ios::binary);
-		std::ofstream file2("public/upload/" + filename + "2", std::ios::binary);
 		file << bodystr;
-		file2.write(bodystr.c_str(), bodystr.size());
 		file.close();
 	}
-	std::cout << "Done upload " << filename << " BodySize " << bodystr.size() << std::endl;
-//PATH?!
-	path = "";
 }
 
-//check access dir
-//path settings:
-	//upload enable
-	//method
-	//filesize
-int Response::uploadFile(std::stringstream& raw, Settings *settings){
-	if (!settings->getUploadEnable())
-		;//seterrorcode
-	
-	MakeFiles(raw, settings->getUploadPath());
-	std::cout << "Geupload" <<std::endl;
+//std::cout << settings->getUploadEnable()        << std::endl;
+//std::cout << settings->getClientMaxBodySize()   << std::endl;
+//std::cout << settings->getAllowMethods()        << std::endl;
+//std::cout << settings->getUploadPath()           << std::endl;
+//std::cout << "Geupload" <<std::endl;
+int Response::uploadFile(std::stringstream& raw, Settings *settings, const std::string &contentType){
+    if (!settings->getUploadEnable()){
+        setStatusCode("403");
+        return 0;
+    }
+    if (access((settings->getRoot() +  settings->getUploadPath()).c_str(), W_OK) == -1) {
+        setStatusCode("403");
+        return 0;
+    }
+    if (raw.str().size() > settings->getClientMaxBodySize()){
+        setStatusCode("413");
+        return 0;
+    }
+    if (settings->getAllowMethods() < 2) {
+        setStatusCode("405");
+        return 0;
+    }
+	MakeFiles(raw, settings->getUploadPath(), *settings, contentType);
 	return 1;
-	raw.str();
 }
 
-void	Response::upload(){
-	// struct stat file_info;
-
-	std::cout << "\nResponse::upload\n" << std::endl;
-	std::cout << "Content of requestRaw:" << std::endl;
-	// getRequestRaw().str();
-	std::string line;
-	std::cout << getBody() << std::endl;
-	std::cout << "Content of done:" << std::endl;
-    
-}
-
-void	Response::deletePage(std::string path)
+void	Response::deletePage(std::string path,  Settings *settings)
 {
 	setStatusCode("202");
-	// std::string del = "DELETE";
-	// if (!checkMethod(del)){
-	// 	setStatusCode() _statusCode = 405;
-	// 	std::cout << "Delete method not found" << std::endl;
-	// 	return ;
-	// }
-	static int i = 0;
+	 if (settings->getAllowMethods() < 4){
+	 	setStatusCode("405");
+	 	return ;
+	 }
 	if (isDirectory(path)){
 		if (path[path.length() - 1] != '/')
 			path = path + '/';
@@ -172,33 +158,20 @@ void	Response::deletePage(std::string path)
 			return ;
 		}
 		while ((ent = readdir(dir)) != NULL) {
-			if (isDirectory(path + ent->d_name) && std::string(ent->d_name) != "." && std::string(ent->d_name) != ".."){
-				deletePage(path + ent->d_name);
-				i++;
+			if (isDirectory(path + ent->d_name) && std::string(ent->d_name) != "." && std::string(ent->d_name) != "..")
+                deletePage(path + ent->d_name, settings);
+			if (std::string(ent->d_name) == "." || std::string(ent->d_name) == "..")
 				continue;
-			}
-			if (std::string(ent->d_name) == "." || std::string(ent->d_name) == ".."){
-				continue ;
-			}
-			if (remove((path + std::string(ent->d_name)).c_str()) != 0){
+			else if (remove((path + std::string(ent->d_name)).c_str()) != 0){
 				setStatusCode("405");
-			}
-		}
+		    }
+        }
 		closedir(dir);
 	}
 	if (remove(path.c_str()) != 0 ){
 		setStatusCode("405");
 		return ;
 	}
-	i = 0;
-	sleep(2);
-	mkdir("public/AA", 0777);
-	std::ofstream MyFile("public/AA/first.txt");
-	std::ofstream MyFile1("public/AA/second.css");
-	std::ofstream MyFile2("public/AA/third.php");
-	std::ofstream MyFile3("public/AA/fourth");
-	std::ofstream MyFile4("public/AA/fifth.html");
-	
 	std::stringstream p;
 	p << 	"<html>\n"
 			"<body>\n"

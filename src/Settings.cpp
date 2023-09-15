@@ -48,13 +48,12 @@ Settings Settings::getRightSettings(Path &uri) {
     if (uri.getFullPath()[uri.getFilename().length()] == '/')
         search = uri.getFullPath().substr(0, uri.getFullPath().length() - 1);
     else
-        search = uri.getFullPath().substr(0, uri.getFullPath().size() - uri.getFilename().size());
+        search = uri.getFullPath().substr(0, uri.getFullPath().size());
     if (!_locations.empty() != 0){
         while (search.length()) {
             for (it = _locations.begin(); it != _locations.end(); it++){
                 fullpath = getRoot() + it->first;
-                size_t pos = fullpath.find(search, _root.length()) != std::string::npos;
-                if (pos != 0) {
+                if (fullpath.find(search, _root.length())) {
                     if (fullpath.length() == (getRoot() + search).length()) {
                         ret = *it->second;
                         return ret;

@@ -10,10 +10,10 @@
 #include <sys/stat.h>
 #include <ctime>
 
-void	Response::showDir(){
+void	Response::showDir(std::string &path){
 	DIR *dir;
 	struct dirent *ent;
-	if ((dir = opendir("/Users/dyeboa/Documents/Webserv/public")) == NULL){
+	if ((dir = opendir(path.c_str())) == NULL){
 		std::cout << "Error: Can't open showDir" << std::endl;
 	}
 	while ((ent = readdir (dir)) != NULL) {
@@ -29,7 +29,6 @@ todo:
 	check for autoindex in config */
 	
 // std::cout << "_body\n\n" << _body << std::endl;
-// dirpath = "/Users/dyeboa/Documents/Webserv/public" + dirpath;
 // std::cout << "character: " << dirpath[strlen(dirpath.c_str()-1)] << std::endl;
 // std::cout << "directoryListing url: "<< dirpath << std::endl;
 void	Response::directoryListing(std::string dirpath, std::string setting_index){
@@ -76,6 +75,7 @@ void	Response::directoryListing(std::string dirpath, std::string setting_index){
             "<th>Name</th>\n"
             "<th>Date</th>\n"
             "<th>Size</th>\n"
+            "<th>DELETE</th>\n"
         	"</tr>\n";
 	if ((dir = opendir(dirpath.c_str())) == NULL){
 		std::cout << "Error: Can't open directory - directoryListing()" << std::endl;
@@ -105,10 +105,8 @@ void	Response::directoryListing(std::string dirpath, std::string setting_index){
 			char time[100];
 			std::strftime(time, sizeof(time), "%Y-%m-%d %H:%M:%S", std::localtime(&modified));
 			off_t filesize = file_info.st_size;
-            if (std::string(ent->d_name) == "..")
-			    file << "<td><a href=" << filepath.substr(0, filepath.length() - 2) << ">" << ent->d_name << "</a></td>\n";
-            else
-                file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
+
+            file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
 			file << "<td>" << time << "</td>\n";
 			file << "<td>" << filesize << "</td>\n";
 		}
@@ -186,77 +184,4 @@ todo: 	add checks for autoindex
 		Error catching
 		add delete button
 
-how to test:
-	std::cout << "\n";
-	showDir();
-	createIndex();
-	std::cout << "\n" << std::endl;
 */
-// void	Response::createIndex(){
-// 	DIR *dir;
-// 	struct dirent *ent;
-// 	if ((dir = opendir("/Users/dyeboa/Documents/Webserv/public/upload")) == NULL){
-// 		std::cout << "Error: Can't open showDir" << std::endl;
-// 	}
-// 	while ((ent = readdir (dir)) != NULL) {
-// 		if (!strcmp("index.html", ent->d_name)){
-//     		std::cout << "Directory: index.html found ->" << ent->d_name << std::endl;
-// 			// return ;
-// 		}
-//   	}
-// 	closedir(dir);
-// 	std::ofstream file("/Users/dyeboa/Documents/Webserv/public/upload/index.html");
-// 	file << "<!DOCTYPE html>\n"
-// 			"<html>\n"
-// 			"<head>\n"
-// 			"<title>Index of /</title>\n"
-// 			"<style>\n"
-// 			"table {\n"
-// 			"border-collapse: collapse;\n"
-// 			"width: 100%;\n"
-// 			"}\n"
-// 			"th, td {\n"
-// 			"text-align: left;\n"
-// 			"padding: 8px;\n"
-// 			"}\n"
-// 			"</style>\n"
-// 			"</head>\n"
-// 			"<body>\n"
-// 			"<h1>Index of PATH</h1>\n<table>\n"
-// 			"<tr>\n"
-//             "<th>Name</th>\n"
-//             "<th>Date</th>\n"
-//             "<th>Size</th>\n"
-// 			"<th>Delete</th>\n"
-//         	"</tr>\n";
-// 	if ((dir = opendir("/Users/dyeboa/Documents/Webserv/public")) == NULL){
-// 		std::cout << "Error: Can't open showDir" << std::endl;
-// 	}
-// 	while ((ent = readdir (dir)) != NULL) {	
-// 		struct stat file_info;
-// 		std::string filepath = std::string("/Users/dyeboa/Documents/Webserv/public") + "/" + ent->d_name;
-// 		// std::cout << "Filepath = " << filepath << std::endl;
-// 		file << "<tr>\n";
-// 		if (stat(filepath.c_str(), &file_info) == 0) {
-// 			time_t modified = file_info.st_mtime;
-// 			char time[100];
-// 			std::strftime(time, sizeof(time), "%Y-%m-%d %H:%M:%S", std::localtime(&modified));
-// 			off_t filesize = file_info.st_size;
-// 			file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
-// 			file << "<td>" << time << "</td>\n";
-// 			file << "<td>" << filesize << "</td>\n";
-// 			file << "<td><a href= " << remove(ent->d_name) << ">"  << ent->d_name << "\">Click to delete: " << ent->d_name << "</a></td>\n";
-// 			// file << "<td><a href=\"/delete_file?filename=/upload/" << ent->d_name << "\">Click to delete: " << ent->d_name << "</a></td>\n";
-// 		}
-// 		else{
-// 			file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
-// 			file << "<td>" << "Date not found" << "</td>\n";
-// 			file << "<td>" << "Filesize not found" << "</td>\n";
-// 		}
-// 		file << "</tr>\n";
-// 	}
-// 	closedir(dir);
-// 	file << "</table>\n</body>\n"
-// 			"</html>\n";
-// 	file.close();
-// }

@@ -7,6 +7,7 @@
 
 #include <string>
 #include <sstream>
+#include <unistd.h>
 #include "Path.h"
 #include "Request.h"
 #include "vector"
@@ -49,20 +50,20 @@ public:
 
 	bool 			RequestDirectory(void);
 	void			directoryListing(std::string dirpath, std::string indexSettings);
-	void			showDir(void);
+	void			showDir(std::string &path);
 	void			createIndex(void);
 	bool 			isDirectory(std::string path);
 	bool			findFile(std::string file, std::string path);
 	void 			setErrorPage(std::string root, std::string errorPage);
 	void			errorCodeMessage();
 	void			setErrorCodeMessage(std::string code);
-	void			deletePage(std::string path);
+	void			deletePage(std::string path, Settings *settings);
 	void			upload();
-	int 			uploadFile(std::stringstream& raw, Settings* settings);
+	int 			uploadFile(std::stringstream& raw, Settings* settings, const std::string &contentType);
 	bool			checkMethod(std::string &str);
 	bool			isUpload(std::string path);
 	bool 			hasAccess(const std::string& filepath, std::fstream &filestr);
-	void			MakeFiles(std::stringstream& raw, std::string path);
+	void			MakeFiles(std::stringstream& raw, std::string path, Settings &settings, const std::string &contentType);
 	
 
 private:

@@ -1,7 +1,5 @@
 David
-- upload 	Settings
-- delete 	Settings
-- errorpages Settings
+- delete 	knop?
 - redirect settings
 - alias settings
 - chunked requests

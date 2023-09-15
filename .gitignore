@@ -12,3 +12,7 @@
 .vscode
 !.vscode/launch.json
 .vscode/*
+
+#clion
+.idea/*
+.idea

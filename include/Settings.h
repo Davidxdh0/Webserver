@@ -36,6 +36,7 @@ public:
 	void setReturn(const std::string &reroute) { _return = reroute; };
 
     //Getters
+
     const std::string 	&getHost() const { return _host; };
     const std::string 	&getRoot() const { return _root; };
     const std::string 	&getIndex() const { return _index; };
@@ -44,14 +45,15 @@ public:
     const std::string 	&getCgiPath() const { return _cgi_path; };
     const std::string 	&getCgiExtension() const { return _cgi_extension; };
     const std::string 	&getUploadPath() const { return _upload_path; };
-    std::vector<std::pair<int, std::string> > &getErrorPages(){ return _error_pages; };
 	int					getErrorPageInt() { int p = _error_pages.back().first; return p; };
 	const std::string 	getErrorPageString() { std::string p = _error_pages.back().second; return p; };
-    std::vector<std::pair<std::string, Settings*> > &getLocations() { return _locations; };
 	std::string			getLocationsString() { std::string p = _locations.back().first; _locations.pop_back(); return p; };
 	const size_t		&getClientMaxBodySize() const { return _client_max_body_size; };
 	const int			&getUploadEnable() const { return _upload_enable; };
 	const std::string	&getReturn() const { return _return; };
+
+    std::vector<std::pair<int, std::string> >       &getErrorPages(){ return _error_pages; };
+    std::vector<std::pair<std::string, Settings*> > &getLocations() { return _locations; };
 
 	// poppers
 	int			countSlash(std::string location);
