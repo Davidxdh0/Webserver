@@ -37,7 +37,7 @@ private:
     int                 _socket;
     clientState         _state;
     std::stringstream   _requestRaw;
-	// size_t				_total_read;
+	std::string         _chunked;
     Settings            _settings;
     Settings*           _vhosts;
 
@@ -45,6 +45,7 @@ private:
     int                 readRequest(long data);
     void                configure();
     void                redirect();
+    int                 readChunked(std::string bufferstr, int chunkedrequest);
     void                setResponse();
     void                checkMethod();
     void                index();

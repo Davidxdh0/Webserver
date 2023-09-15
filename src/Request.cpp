@@ -21,7 +21,6 @@ void Request::parseRequest(std::stringstream &requestRaw) {
         getline(requestRaw, line, '\r');
         if (line.empty())
             break;
-//        std::cout << line << std::endl;
         std::string::size_type pos = line.find(": ");
         if (pos != std::string::npos) {
             std::string key = line.substr(1, pos);
@@ -35,6 +34,22 @@ void Request::parseRequest(std::stringstream &requestRaw) {
             }
         }
     }
+//    if (line == "\n"){
+//        getline(requestRaw, line, '\r');
+//        std::stringstream ss;
+//        std::cout << "line2: " << line.substr(1) << std::endl;
+//        char* endPtr;
+//        long int result = strtol(line.substr(1).c_str(), &endPtr, 16);
+//        while (line !=)
+//
+//
+//    }
+//    while (line != "0\r\n") {
+//        getline(requestRaw, line, '\r');
+//        if (line.empty())
+//            break;
+//        std::cout << line << std::endl;
+//    }
 }
 
 Request::~Request() {}

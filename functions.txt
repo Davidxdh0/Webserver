@@ -135,4 +135,12 @@ config file
 
 siege:
     codam_rheuts - 7 months ago - https://42born2code.slack.com/archives/CMX2R5JSW/p1677058550803019?thread_ts=1677018182.191889&cid=CMX2R5JSW
-        I recall MacOS holding onto sockets for a small time, even when you specify to reuse them. Therefor at some point, when siege has send lots of requests, you run out of available sockets and it takes a couple of seconds to free up old ones. *(I'm nowhere an expert, but this was the reasoning I came up with :clown_face: )
+        I recall MacOS holding onto sockets for a small time, even when you specify to reuse them. , when siege has send lotTherefor at some points of requests, you run out of available sockets and it takes a couple of seconds to free up old ones. *(I'm nowhere an expert, but this was the reasoning I came up with :clown_face: )
+    HTTP/1.1 200     0.06 secs:      14 bytes ==> GET  /empty.html
+    [alert] socket: select and discovered it's not ready sock.c:384: Operation timed out
+    [alert] socket: read check timed out(30) sock.c:273: Operation timed out
+    HTTP/1.1 200    30.06 secs:      14 bytes ==> GET  /empty.html
+    HTTP/1.1 200    30.06 secs:      14 bytes ==> GET  /empty.html
+
+cgi:
+    python sleep 10 server blocking, cgi- waitpid- na sick child signal da waitpid  als child geexit.

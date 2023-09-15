@@ -19,10 +19,14 @@
 
 using namespace std;
 
+void leaks(void){
+    system("leaks -q webser_dev");
+}
+
 int main(int argc, char* argv[])
 {
     std::vector<pair<int, Settings* > > Config_Vect;
-
+    atexit(leaks);
 	if (argc == 2){
 		ParseConfig config(argv[1]);
 		Config_Vect = config.ParseConfigFile();

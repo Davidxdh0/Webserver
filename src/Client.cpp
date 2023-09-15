@@ -28,20 +28,33 @@ void Client::handleRequest(long data) {
     this->readRequest(data);
     if (_state != RESPONDING)
         return;
+//    std::cout << _requestRaw.str() << std::endl;
     _request.parseRequest(_requestRaw);
     this->configure();
     this->redirect();
-    std::cout << "code: " << _response.getStatusCode()  << std::endl;
     this->setResponse();
+}
+
+int Client::readChunked(std::string bufferstring, int chunkedrequest){
+    std::string::size_type head = bufferstring.find("\r\n\r\n");
+    std::string::size_type headchunked = bufferstring.find("Transfer-Encoding: chunked");
+    if (headchunked < head) {
+        chunkedrequest = 1;
+        _chunked = "on";
+    }
+    else
+        chunkedrequest = 2;
+    if (bufferstring.find("\r\n0\r\n\r\n") != std::string::npos)
+        chunkedrequest = 2;
+    return chunkedrequest;
 }
 
 int Client::readRequest(long data) {
     char buffer[1024];
     size_t bytes_read;
     size_t t = -1;
-//	std::string bufferstring;
-//	static size_t content_length = 0;
-//    static int chunkedrequest = 0;
+    std::string bufferstring;
+    static int chunkedrequest = 0;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
     if (bytes_read == t)
@@ -49,48 +62,11 @@ int Client::readRequest(long data) {
 	else {
         buffer[bytes_read] = '\0';
 
-//        bufferstring = buffer;
-//        if (bufferstring.find("\n") != std::string::npos)
-//            if (chunkedrequest == 0)
-//                chunkedrequest == 2;
-//        if (chunkedrequest == 0){
-//		 	if (bufferstring.find("Transfer-Encoding: chunked") != std::string::npos)
-//                 chunkedrequest == 1;
-//        if (chunkedrequest == 1){
-//		 	std::string body;
-		// 	size_t bodychunked = bufferstring.find("\r\n\r\n");
-		// 	if (bodychunked != std::string::npos)
-		// 		std::string body = bufferstring.substr(bodychunked + 4);
-		// 	else
-		// 		body = bufferstring;
-		// 	std::istringstream iss(body);
-		// 	// std::cout << iss.str() << std::endl;
-		// 	std::string chunksizestr;
-		// 	std::string chunkstring;
-		// 	int chunksize = -1;
-		// 	while(true){
-		// 		if (!std::getline(iss, chunksizestr))
-		// 			break;//exitWithError("Error istringstream getline");
-		// 		std::cout << chunksizestr << std::endl;
-		// 		chunksize = std::stoi(chunksizestr, nullptr, 16);
-		// 		//  std::cout << "Chunksize: " <<chunksize << std::endl;
-		// 		if (chunksize == 0)
-		// 			chunkedrequest = 0;
-		// 		chunkstring.resize(chunksize);
-		// 		if (!iss.read(&chunkstring[0], chunksize))
-		// 			exitWithError("Error reading istringstream");
-		// 		iss.ignore(2);
-		// 	}
-		// 	if (chunksize == 0)
-		// 		chunkstring += "\r\nEOF";
-		// 	// std::cout << "Chunk Size: " << chunksize << std::endl;
-		// 	// std::cout << "Chunk Data: " << chunkstring << std::endl;
-		// }
-        if (bytes_read < sizeof buffer - 1 || bytes_read == static_cast<size_t>(data))
+        bufferstring = buffer;
+        chunkedrequest = readChunked(bufferstring, chunkedrequest);
+        if ((bytes_read < sizeof buffer - 1 || bytes_read == static_cast<size_t>(data)) && chunkedrequest != 1)
             _state = RESPONDING;
         _requestRaw.write(buffer, bytes_read);
-		// std::cout << _requestRaw.str() << std::endl;
-        // _requestRaw << buffer;
     }
     return 1;
 }
@@ -108,7 +84,6 @@ void Client::setResponse() {
     } else {
         _response.loadBody(_path);
     }
-    std::cout << "code: " << _response.getStatusCode()  << std::endl;
     if (_request.getisUpload())
 	 	_response.uploadFile(_requestRaw, _vhosts, _request.getContentType());
     if (_request.getMethod() == "DELETE")
@@ -136,7 +111,7 @@ void Client::writeResponse() {
 				std::cout << "Write function failed" << std::endl;
 			if (i == 0)
 				std::cout << "Wrote chunk" << std::endl;
-			dataSent += 4096;
+			dataSent += i;
 		}
 	}
 	else{
