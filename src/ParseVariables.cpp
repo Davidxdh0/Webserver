@@ -450,43 +450,6 @@ void	ParseConfig::ParseLocation(std::string &line)
 	line = str;
 }
 
-/*
-	return 301 /index.html;
-	return 301 
-	return /index.html;
-*/
-void	ParseConfig::ParseReturn(std::string line)
-{
-	std::istringstream iss(line);
-	std::string word;
-	std::string str;
-	int mistake = 0;
-	int words = 0;
-	int errorpage = 0;
-	while(iss >> word){
-		if (word == " ")
-			continue;
-		words++;
-		if (word == "return")
-			continue;
-		else if (words == 1)
-			try {
-				errorpage = std::stoi(word);
-				line = to_string(errorpage);
-				} catch (const std::exception& e){
-					mistake = 1;
-				}
-		else if (words == 2){
-			if (mistake == 1)
-				ExitString("ParseReturn 3 words, but 2nd isn't an int.");
-			if (word[0] == '/')
-				ExitString("ParseReturn last word is not a path");
-		}
-	}
-	if (words != 2 && words != 3)
-		ExitString("ParseReturn != 2 or 3");
-}
-
 void	ParseConfig::ParseAlias(std::string &line){
 	std::istringstream iss(line);
 	std::string word;
@@ -498,6 +461,9 @@ void	ParseConfig::ParseAlias(std::string &line){
 		words++;
 		if (word == "alias")
 			continue;
+        else
+            if (word[0] != '/')
+                ExitString("ParseAlias");
 	}
 	if (words != 2)
 		ExitString("ParseAlias != 2");

@@ -30,6 +30,7 @@ void Client::handleRequest(long data) {
         return;
     _request.parseRequest(_requestRaw);
     this->configure();
+    this->redirect();
     this->setResponse();
 }
 
@@ -37,26 +38,25 @@ int Client::readRequest(long data) {
     char buffer[1024];
     size_t bytes_read;
     size_t t = -1;
-	std::string bufferstring;
+//	std::string bufferstring;
 //	static size_t content_length = 0;
-	// static int chunkedrequest = 0;
+//    static int chunkedrequest = 0;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
     if (bytes_read == t)
         exitWithError("Error reading from socket");
 	else {
         buffer[bytes_read] = '\0';
-		// bufferstring = buffer;
-		// if (chunkedrequest == -1){
-		// 	if (bufferstring.find("\r\n\r\n") != std::string::npos)
-		// 		chunkedrequest = 1;
-		// }
-		// if (chunkedrequest == 0){
-		// 	if (bufferstring.find("Transfer-Encoding: chunked") != std::string::npos)
-		// 		chunkedrequest = 1;
-		// }
-		// if (chunkedrequest == 1){
-		// 	std::string body;
+
+//        bufferstring = buffer;
+//        if (bufferstring.find("\n") != std::string::npos)
+//            if (chunkedrequest == 0)
+//                chunkedrequest == 2;
+//        if (chunkedrequest == 0){
+//		 	if (bufferstring.find("Transfer-Encoding: chunked") != std::string::npos)
+//                 chunkedrequest == 1;
+//        if (chunkedrequest == 1){
+//		 	std::string body;
 		// 	size_t bodychunked = bufferstring.find("\r\n\r\n");
 		// 	if (bodychunked != std::string::npos)
 		// 		std::string body = bufferstring.substr(bodychunked + 4);
@@ -166,6 +166,15 @@ void Client::configure() {
     }
     _settings = ret;
     _path = _settings.getRoot() + _request.getUri();
+}
+
+//std::cout << "redir      path: " << _path << std::endl;
+//std::cout << "redir      path: " << _path.getFullPath() << std::endl;
+//std::cout << "new redire path: " << _settings.getRoot() + _settings.getAlias() + "/" + _path.getFilename() << std::endl;
+void Client::redirect(){
+    if (_settings.getAlias() == "")
+        return ;
+    _path.setFullPath(_settings.getRoot() + _settings.getAlias() + "/" + _path.getFilename());
 }
 
 void Client::checkMethod() {

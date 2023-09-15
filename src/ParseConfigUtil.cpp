@@ -44,7 +44,7 @@ void	ParseConfig::PrintSettings(Settings *items)
 	for (itLocation = locationsCopy.begin(); itLocation != locationsCopy.end(); itLocation++) {
 		std::cout << "Location:\t\t" << itLocation->first << "\n";
 	}
-	std::cout << "return:\t\t\t" << items->getReturn() << "\n";
+    std::cout << "alias:\t\t\t" << items->getAlias() << "\n";
 	std::cout << "----------------------" << std::endl;
 
 }
@@ -83,8 +83,8 @@ void ParseConfig::fillLocations(){
 				it_location->second->setUploadPath(it_server->second->getUploadPath());
 			if (it_location->second->getUploadEnable() == -1)
 				it_location->second->setUploadEnable(it_server->second->getUploadEnable());
-			if (it_location->second->getReturn() == "")
-				it_location->second->setReturn(it_server->second->getReturn());
+			if (it_location->second->getAlias() == "")
+				it_location->second->setAlias(it_server->second->getAlias());
 			it_location->second->getErrorPages() = it_server->second->getErrorPages();
 		
     	}
@@ -260,18 +260,13 @@ void	ParseConfig::VariableToMap(Settings &config, std::string variable, std::str
 		ParseCgiExtension(line);
 		config.setCgiExtension(line);
 	}
-	else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "return")
-	{
-		if (semicolons != 1)
-			ExitString("Semicolon");
-		ParseReturn(line);
-		std::string three = split(line, 3);
-		if (three != "")
-			line = split(line, 2) + " " + split(line, 3);
-		else
-			line = split(line, 2);
-		config.setReturn(line);
-	}
+    else if ((_serverBracket == 1 || _locationBracket == 1) && variable == "alias")
+    {
+        if (semicolons != 1)
+            ExitString("Semicolon");
+        ParseAlias(line);
+        config.setAlias(line);
+    }
 	else {
 		ExitString("Error: VariableToMap line: " + line );
 	}

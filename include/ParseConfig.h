@@ -52,7 +52,6 @@ public:
     void ParseErrorPages(std::string &line);
     void ParseClientMaxBody(std::string &line);
     void ParseLocation(std::string &line);
-    void ParseReturn(std::string line);
 	void ParseAlias(std::string &line);
 
 	void	PrintVector(std::vector<pair<int, Settings* > > Config_Vector);

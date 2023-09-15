@@ -44,6 +44,7 @@ private:
 
     int                 readRequest(long data);
     void                configure();
+    void                redirect();
     void                setResponse();
     void                checkMethod();
     void                index();

@@ -1,23 +1,17 @@
 David
-- delete 	knop?
-- redirect settings
-- alias settings
 - chunked requests
-
+- siege blijft soms hangen
+- css wordt soms niet goed geladen
 
 Alle
 - CGI 
 - Set POST data in the env of cgi
 - cgi chunked terugsturen?
 
-Na configfile
--methods delete/upload
--uploadplek (access?)
--errorpages
--paths
--auto indexpaginas index.html - indexon?
-
 to want:
 - chunked transfer encoding en tot content length lezen.
 	-https://en.wikipedia.org/wiki/Chunked_transfer_encoding
 	-https://bunny.net/academy/http/what-is-chunked-encoding/
+
+siege:
+    siege -b -c 1 http://localhost:8080/empty.html

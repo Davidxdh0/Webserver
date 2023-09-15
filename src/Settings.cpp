@@ -39,6 +39,9 @@ void    Settings::removeDir(std::string &search){
         search = "";
 }
 
+//   std::cout << "search: " << search << std::endl;
+//     std::cout << "search: " << search  << " : " << fullpath << std::endl;
+//std::cout << "found: " << fullpath << std::endl;
 Settings Settings::getRightSettings(Path &uri) {
     std::vector<std::pair<std::string, Settings* > >::iterator it;
     std::string search;
@@ -51,9 +54,10 @@ Settings Settings::getRightSettings(Path &uri) {
         search = uri.getFullPath().substr(0, uri.getFullPath().size());
     if (!_locations.empty() != 0){
         while (search.length()) {
+
             for (it = _locations.begin(); it != _locations.end(); it++){
                 fullpath = getRoot() + it->first;
-                if (fullpath.find(search, _root.length())) {
+                if (fullpath.find(search, _root.length()) != std::string::npos) {
                     if (fullpath.length() == (getRoot() + search).length()) {
                         ret = *it->second;
                         return ret;
