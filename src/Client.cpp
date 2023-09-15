@@ -31,6 +31,7 @@ void Client::handleRequest(long data) {
     _request.parseRequest(_requestRaw);
     this->configure();
     this->redirect();
+    std::cout << "code: " << _response.getStatusCode()  << std::endl;
     this->setResponse();
 }
 
@@ -94,7 +95,8 @@ int Client::readRequest(long data) {
     return 1;
 }
 //    std::cout << "body" << _response.getBody().size() << std::endl;
-// std::cout << "code: " << _response.getStatusCode() << " autoindex: " << _settings.getAutoindex() << std::endl;
+// std::cout << "code: " << _response.getStatusCode()  << std::endl;
+// std::cou << " autoindex: " << _settings.getAutoindex() << std::endl;
 void Client::setResponse() {
 
     this->checkMethod();
@@ -106,6 +108,7 @@ void Client::setResponse() {
     } else {
         _response.loadBody(_path);
     }
+    std::cout << "code: " << _response.getStatusCode()  << std::endl;
     if (_request.getisUpload())
 	 	_response.uploadFile(_requestRaw, _vhosts, _request.getContentType());
     if (_request.getMethod() == "DELETE")

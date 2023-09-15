@@ -120,7 +120,7 @@ status Codes
 
 redirect
 	https://blog.hubspot.com/website/html-redirect
-	https://www.redirect-checker.org/
+	https://css-tricks.com/redirect-web-page/
 
 chunked requests
 	https://everything.curl.dev/http/post/chunked
@@ -132,3 +132,7 @@ config file
 	https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts
 	https://www.solo.io/topics/nginx/nginx-configuration/
 	https://www.nginx.com/resources/wiki/start/topics/examples/full/
+
+siege:
+    codam_rheuts - 7 months ago - https://42born2code.slack.com/archives/CMX2R5JSW/p1677058550803019?thread_ts=1677018182.191889&cid=CMX2R5JSW
+        I recall MacOS holding onto sockets for a small time, even when you specify to reuse them. Therefor at some point, when siege has send lots of requests, you run out of available sockets and it takes a couple of seconds to free up old ones. *(I'm nowhere an expert, but this was the reasoning I came up with :clown_face: )

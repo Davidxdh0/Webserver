@@ -45,7 +45,7 @@ void Server::closeServer() const
 
 void Server::startListen(int kqueuFd) const
 {
-    if (listen(_socket, 20) < 0)
+    if (listen(_socket, 128) < 0)
         exitWithError("Socket listen failed");
 
     std::ostringstream ss;
