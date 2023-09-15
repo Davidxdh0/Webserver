@@ -105,10 +105,10 @@ void	Response::directoryListing(std::string dirpath, std::string setting_index){
 			char time[100];
 			std::strftime(time, sizeof(time), "%Y-%m-%d %H:%M:%S", std::localtime(&modified));
 			off_t filesize = file_info.st_size;
-
             file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
 			file << "<td>" << time << "</td>\n";
 			file << "<td>" << filesize << "</td>\n";
+            file << "<td><button onclick=\"deleteButton('" << ent->d_name << "')\">Delete</button></td>\n";
 		}
 		else{
 			file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
@@ -118,8 +118,21 @@ void	Response::directoryListing(std::string dirpath, std::string setting_index){
 		file << "</tr>\n";
 	}
 	closedir(dir);
-	file << "</table>\n</body>\n"
-			"</html>\n";
+    file << "</table>\n"
+            "<script>\n"
+            "function deleteButton(id) {\n"
+            "  fetch(id,  {\n"
+            "    method: 'DELETE'\n"
+            "  })\n"
+            "  .then(response => {\n"
+            "    if (response.ok) {\n"
+            "      location.reload();\n"
+            "    }\n"
+            "  })\n"
+            "}\n"
+            "</script>\n"
+            "</body>\n"
+            "</html>\n";
 	_body = file.str();
 	setContentLength();
 	setStatusCode("200");
