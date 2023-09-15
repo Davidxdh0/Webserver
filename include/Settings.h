@@ -55,6 +55,7 @@ public:
 
 	// poppers
 	int			countSlash(std::string location);
+    void        removeDir(std::string &search);
 	Settings	getRightSettings(Path& uri);
 
 private:

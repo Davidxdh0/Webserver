@@ -1,6 +1,4 @@
 David
-- Location	Settings
-- AutoIndex settings
 - upload 	Settings
 - delete 	Settings
 - errorpages Settings

@@ -16,6 +16,7 @@ Settings::Settings(const Settings &src) : _allow_methods(), _autoindex(), _clien
 Settings::~Settings()
 {
 }
+
 int	Settings::countSlash(std::string location){
 	int count = 0;
 	for(size_t i = 0; i < location.length(); i++){
@@ -28,28 +29,41 @@ int	Settings::countSlash(std::string location){
 	return count;
 }
 
+void    Settings::removeDir(std::string &search){
+    int slashCount = countSlash(search);
+    if (slashCount > 1)
+        search = search.substr(0, search.find_last_of("/"));
+    else if (search.length() > 1)
+        search = search.substr(0, search.find_last_of("/") + 1);
+    else
+        search = "";
+}
+
 Settings Settings::getRightSettings(Path &uri) {
-	// int urislash = countSlash(uri.getFullPath());
-	// int locationslash = 0;
+    std::vector<std::pair<std::string, Settings* > >::iterator it;
+    std::string search;
+    std::string fullpath;
     Settings ret(*this);
-    std::cout << "getRightSettings:" << uri.getFullPath() << std::endl;
-    std::cout << "getRightSettings:" << uri.getExtension() << std::endl;
-    std::cout << "getRightSettings:" << uri.getFilename() << std::endl;
-//    std::cout << "getRightSettings:" << std::endl;
+
+    if (uri.getFullPath()[uri.getFilename().length()] == '/')
+        search = uri.getFullPath().substr(0, uri.getFullPath().length() - 1);
+    else
+        search = uri.getFullPath().substr(0, uri.getFullPath().size() - uri.getFilename().size());
     if (!_locations.empty() != 0){
-        std::vector<std::pair<std::string, Settings* > >::iterator it = _locations.begin();
-        while (it != _locations.end()) {
-            std::cout << "Location: " << getRoot() + uri.getFullPath() << " : " << it->first << std::endl;
-            if (uri.getFullPath().find(it->first) != std::string::npos) {
-				std::cout << "Found settings" << std::endl;
-                ret = *it->second;
-                return ret;
-                break;
+        while (search.length()) {
+            for (it = _locations.begin(); it != _locations.end(); it++){
+                fullpath = getRoot() + it->first;
+                size_t pos = fullpath.find(search, _root.length()) != std::string::npos;
+                if (pos != 0) {
+                    if (fullpath.length() == (getRoot() + search).length()) {
+                        ret = *it->second;
+                        return ret;
+                    }
+                }
             }
-            it++;
+            removeDir(search);
         }
     }
-    exit(1);
     return ret;
 }
 

@@ -94,7 +94,9 @@ int Client::readRequest(long data) {
     return 1;
 }
 
+// std::cout << "code: " << _response.getStatusCode() << " autoindex: " << _settings.getAutoindex() << std::endl;
 void Client::setResponse() {
+
     this->checkMethod();
     if (_path.isDirectory()) {
         this->index();
@@ -106,7 +108,12 @@ void Client::setResponse() {
     }
 	// if (_request.getisUpload())
 	// 	_response.uploadFile(_requestRaw, _vhosts);
-
+//    std::cout << "body" << _response.getBody().size() << std::endl;
+    if (_response.getStatusCode() != "200") {
+        _response.errorCodeMessage();
+        _response.setErrorCodeMessage(_response.getStatusCode());
+        _response.setErrorPage(_settings.getRoot(), getErrorPath());
+    }
     _response.setHeaders(_path);
     _response.setResponseString();
 }
@@ -136,30 +143,23 @@ void Client::writeResponse() {
 			std::cout << "Wrote response" << std::endl;
 	}
 }
-//    std::cout << "port == "<< port << std::endl;
-//	std::cout << "uri: " << _request.getUri() << std::endl;
-//	std::cout << "hostname request: " << _request.getHostname() << std::endl;
-//	std::cout << "hostname config: " << host << std::endl;
-//std::cout << "_vhost " << _vhosts[i].getHost() + port  << "==" << host  << std::endl;
+
 void Client::configure() {
 
     Settings ret;
-    int foundHostname = 0;
-    std::string host = _request.getHostname();
     Path uri(_request.getUri());
-    std::string port = host.substr(host.find(":"));
-    std::cout << "hostname: " << _vhosts->getHost() << std::endl;
-    if (host == "localhost" + port && _vhosts->getHost() == "127.0.0.1")
-        _vhosts->setHost("localhost");
-    if (host == "127.0.0.1" + port && _vhosts->getHost() == "localhost")
-        _vhosts->setHost("127.0.0.1");
+    bool foundHostname  = 0;
+    std::string host    = _request.getHostname();
+    std::string port    = host.substr(host.find(":"));
+
+    setLocal(port);
     if (!_vhosts->getHost().empty()) {
         if (_vhosts->getHost() + port == host) {
             ret = _vhosts->getRightSettings(uri);
             foundHostname = 1;
         }
     }
-    if (foundHostname == 0) {
+    if (!foundHostname) {
         std::cout << "Error hostname request != config host"  << std::endl;
         exit(1);
     }
@@ -184,16 +184,37 @@ void Client::checkMethod() {
 }
 
 void Client::index() {
-    std::string index_path = _path.getFullPath() + _settings.getIndex();
 
+    std::string index_path;
+    if (_settings.getIndex() != "")
+        index_path = _path.getFullPath() + _settings.getIndex();
     if (access(index_path.c_str(), F_OK) == -1) {
         if (_settings.getAutoindex() == "on") {
-            _response.directoryListing(_path.getFullPath());
+            _response.directoryListing(_path.getFullPath(), _settings.getIndex());
         } else {
             _response.setStatusCode("403");
         }
     } else {
+        Path indexHtml(index_path);
         _path = index_path;
+
     }
 }
 
+void Client::setLocal(std::string &port) {
+
+    if (_request.getHostname() == "localhost" + port && _vhosts->getHost() == "127.0.0.1")
+        _vhosts->setHost("localhost");
+    if (_request.getHostname() == "127.0.0.1" + port && _vhosts->getHost() == "localhost")
+        _vhosts->setHost("127.0.0.1");
+}
+
+//std::cout << "code: " << _response.getStatusCode() << std::endl;
+std::string Client::getErrorPath() {
+    int code = std::stoi(_response.getStatusCode());
+    for (size_t i = 0; i < _settings.getErrorPages().size(); i++){
+        if (code == _settings.getErrorPages()[i].first)
+            return _settings.getErrorPages()[i].second;
+    }
+    return "Not found in ErrorPages -> check config";
+}

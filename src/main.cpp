@@ -19,53 +19,16 @@
 
 using namespace std;
 
-Config* dummy_configs()
-{
-    Config*  port_configs = new Config[3];
-    Settings* settings = new Settings[3];
-
-    port_configs[0].setPort(8080);
-    port_configs[1].setPort(8081);
-    port_configs[2].setPort(0);
-
-    settings[0].setHost("localhost:8080");
-    settings[0].setRoot("/Users/dyeboa/Documents/Webserv/public");
-    settings[0].setIndex("index.html");
-    settings[0].setAllowMethods(3);
-    settings[0].setAutoindex("true");
-    settings[0].setCgiPath("/cgi-bin");
-    settings[0].setCgiExtension(".php");
-    settings[0].setUploadPath("/uploads");
-    settings[0].setClientMaxBodySize(1000000);
-
-    settings[1].setHost("localhost");
-    settings[1].setRoot("/public");
-    settings[1].setIndex("index1.html");
-    settings[1].setAllowMethods(3);
-    settings[1].setAutoindex("true");
-    settings[1].setCgiPath("/cgi-bin");
-    settings[1].setCgiExtension(".php");
-    settings[1].setUploadPath("/uploads");
-    settings[1].setClientMaxBodySize(1000000);
-
-    settings[2].setHost("");
-
-    port_configs[0].setHosts(settings);
-    return port_configs;
-}
-
 int main(int argc, char* argv[])
 {
-    Config*  port_configs;
     std::vector<pair<int, Settings* > > Config_Vect;
-    port_configs = dummy_configs();
 
 	if (argc == 2){
 		ParseConfig config(argv[1]);
 		Config_Vect = config.ParseConfigFile();
-//		 config.PrintVector(Config_Vect);
+        //config.PrintVector(Config_Vect);
 	}
     ServerControl   serverControl(Config_Vect);
-//
+
     return 0;
 }

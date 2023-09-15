@@ -2,8 +2,12 @@
 
 #include "iostream"
 
+//std::cout << "path: " << path << " : " <<  path[path.length() - 1] << std::endl;
 bool Response::hasAccess(const std::string& filepath, std::fstream& filestr){
 	const std::string& path = filepath;
+    bool directory = 0;
+    if (path[path.length() - 1] == '/')
+        directory = 1;
 	if (access (path.c_str(), F_OK) != 0){
 		setStatusCode("404");
 		std::cout << "doesn't exist" << std::endl;
@@ -20,12 +24,12 @@ bool Response::hasAccess(const std::string& filepath, std::fstream& filestr){
 		return false; // no read access
 	}
 	filestr.open(path);
-	if (!filestr.is_open()){
+	if (!filestr.is_open() && directory == 0){
 		setStatusCode("404");
 		std::cout << "not opened or directory?" << std::endl;
 		return false; //not opened
 	}
-	if (filestr.peek() == std::ifstream::traits_type::eof()) {
+	if (filestr.peek() == std::ifstream::traits_type::eof() && directory == 0) {
 		setStatusCode("404");
 		std::cout << "empty file" << std::endl;
 		return false; // empty file

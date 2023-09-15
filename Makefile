@@ -28,8 +28,6 @@ INC			=	-I $(INCLUDE_DIR)
 
 SRCS		=	Client.cpp \
 				Config.cpp \
-				FileHandling.cpp \
-				ListDirectories.cpp \
 				main.cpp \
 				MimeTypes.cpp \
 				ParseConfig.cpp \
@@ -38,6 +36,8 @@ SRCS		=	Client.cpp \
 				Path.cpp \
 				Request.cpp \
 				Response.cpp \
+				ResponseDirectory.cpp \
+				ResponseUploadDelete.cpp \
 				Server.cpp \
 				ServerControl.cpp \
 				Settings.cpp \

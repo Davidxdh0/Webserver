@@ -17,7 +17,7 @@
 #include <vector>
 #include "MimeTypes.h"
 
-Response::Response() {}
+Response::Response() : _statusCode("200") {}
 
 Response::~Response() {}
 
@@ -44,7 +44,7 @@ void Response::loadBody(const Path& path) {
 		setStatusCode("403");
 		std::cout << "hieropenwtf open" << std::endl;
 	}
-	if (hasAccess(path.c_str(), file)){
+	if (hasAccess(path.c_str(), file) && path.getFullPath()[path.getFullPath().length() - 1] != '/'){
 		buffer << file.rdbuf();
 		_body = buffer.str();
     	file.close();
@@ -84,18 +84,17 @@ void Response::loadCgi(const Path& path) {
         fclose(temp);
     }
 }
-
-void Response::setErrorPage(Path &obj){
-	_path = obj;
-	//root
-	std::string errorpage = "/Users/dyeboa/Documents/Webserv/public/error/" + _statusCode + ".html";
-	std::cout << "errorpage = " << errorpage << std::endl;
-	std::fstream filestream(errorpage.c_str());
+//	std::cout << "errorpage = " << errorpage << std::endl;
+//  std::cout << "Error: setErrorPage can't open"  << std::endl;
+//  std::cout << "error page to _body"  << std::endl;
+void Response::setErrorPage(std::string root, std::string errorpage){
+    std::cout << "errorpage = " << errorpage << std::endl;
+    std::string path = root + "/" + errorpage;
+	std::fstream filestream(path.c_str());
 	std::stringstream temp;
   	if (!filestream.is_open() && _statusCode != "404"){
-		std::cout << "Error: setErrorPage can't open"  << std::endl;
-        _statusCode = "404";
-		setErrorPage(_path);
+        setStatusCode("404");
+		setErrorPage(root, errorpage);
 	} else if (!filestream.is_open() && _statusCode == "404"){
 		std::cout << "Error: setErrorPage 404 no permission"  << std::endl;
 		temp << "<!DOCTYPE html>\n"
@@ -109,7 +108,7 @@ void Response::setErrorPage(Path &obj){
 		_body = temp.str();
 	}
 	else{
-		std::cout << "error page to _body"  << std::endl;
+
 		temp << filestream.rdbuf();
 		_body = temp.str();
 		filestream.close();
@@ -125,13 +124,14 @@ void Response::setErrorPage(Path &obj){
 void Response::setResponseString() {
     std::ostringstream ss;
 	setContentLength();
-	errorCodeMessage();
-	setErrorCodeMessage(_statusCode);
+//	errorCodeMessage();
+//	setErrorCodeMessage(_statusCode);
 	std::cout << "statuscode: " << _statusCode << " statusmessage: " <<  _statusMessage << " content: " << _contentType << " length: " << _contentLength << std::endl;
     ss << _version << " " << _statusCode << " " << _statusMessage << "\r\n" << _contentType << "\r\n" << _contentLength << "\r\n\r\n" << _body;
     _responseString = ss.str();
 }
 
+// std::cout << "found statusmessage: " << _errorMessage[i].second << std::endl;
 void Response::setErrorCodeMessage(std::string code){
 	for (size_t i = 0; i < _errorMessage.size(); i++) {
 		if (_errorMessage[i].first == code) {
@@ -139,7 +139,7 @@ void Response::setErrorCodeMessage(std::string code){
 			return ;
 		}
 	}
-	std::cout << "not found statusmessage" << std::endl;
+	std::cout << "ErrorMessage not in errorCodeMessage()" << std::endl;
 }
 
 //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
@@ -164,7 +164,7 @@ void Response::errorCodeMessage() {
 void Response::setHeaders(const Path &path) {
     std::string type = MimeTypes::getType(path.c_str());
 
-    this->setStatusCode("200");
+//    this->setStatusCode("200");
     this->setVersion("HTTP/1.1");
     this->setContentType(type);
     this->setContentLength();

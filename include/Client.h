@@ -21,11 +21,14 @@ public:
 
     void                handleRequest(long data);
     void                writeResponse();
+    void                setLocal(std::string &port);
+
     int                 getState() { return _state; };
 	std::stringstream   &getRequestRaw();
 	const Request		&getRequest() const;
 	const Response		&getResponse() const;
 	const Path			&getPath() const;
+    std::string         getErrorPath();
 private:
 
     Request             _request;

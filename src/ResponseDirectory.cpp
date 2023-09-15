@@ -32,22 +32,28 @@ todo:
 // dirpath = "/Users/dyeboa/Documents/Webserv/public" + dirpath;
 // std::cout << "character: " << dirpath[strlen(dirpath.c_str()-1)] << std::endl;
 // std::cout << "directoryListing url: "<< dirpath << std::endl;
-void	Response::directoryListing(std::string dirpath){
+void	Response::directoryListing(std::string dirpath, std::string setting_index){
 	DIR *dir;
 	struct dirent *ent;
 
 	if (dirpath[dirpath.length() - 1] != '/')
 		dirpath = dirpath + '/';
 	std::string temp = dirpath;
-	if (findFile("index.html", dirpath)) {
-		std::ifstream t(dirpath + "index.html");
-		std::stringstream buffer;
-		buffer << t.rdbuf();
-		_body = buffer.str();
-		setStatusCode("200");
-		setContentLength();
-		return ;
-	}
+    if (setting_index.length() > 0) {
+        if (findFile(setting_index, dirpath)) {
+            std::ifstream t(dirpath + setting_index);
+            std::stringstream buffer;
+            buffer << t.rdbuf();
+            _body = buffer.str();
+            setStatusCode("200");
+            setContentLength();
+            return;
+        }
+        else {
+            setStatusCode("403");
+            return ;
+        }
+    }
 	std::stringstream file;
 	file << "<!DOCTYPE html>\n"
 			"<html>\n"
@@ -73,7 +79,7 @@ void	Response::directoryListing(std::string dirpath){
         	"</tr>\n";
 	if ((dir = opendir(dirpath.c_str())) == NULL){
 		std::cout << "Error: Can't open directory - directoryListing()" << std::endl;
-		_statusCode = "403";
+        setStatusCode("403");
 		return ;
 	}
 	while ((ent = readdir (dir)) != NULL) {	
@@ -89,10 +95,9 @@ void	Response::directoryListing(std::string dirpath){
 		std::string filepath = dirpath + ent->d_name;
 		size_t found = filepath.find("public");
 		if (found == std::string::npos){
-			_statusCode = "403";
+            setStatusCode("403");
 			return ;
 		}
-		std::string filepathconfig = filepath.substr(found + 7);
 		struct stat file_info;
 		file << "<tr>\n";
 		if (stat(filepath.c_str(), &file_info) == 0) {
@@ -100,7 +105,10 @@ void	Response::directoryListing(std::string dirpath){
 			char time[100];
 			std::strftime(time, sizeof(time), "%Y-%m-%d %H:%M:%S", std::localtime(&modified));
 			off_t filesize = file_info.st_size;
-			file << "<td><a href=" << filepathconfig << ">" << ent->d_name << "</a></td>\n";
+            if (std::string(ent->d_name) == "..")
+			    file << "<td><a href=" << filepath.substr(0, filepath.length() - 2) << ">" << ent->d_name << "</a></td>\n";
+            else
+                file << "<td><a href=" << ent->d_name << ">" << ent->d_name << "</a></td>\n";
 			file << "<td>" << time << "</td>\n";
 			file << "<td>" << filesize << "</td>\n";
 		}
@@ -144,7 +152,7 @@ bool	Response::findFile(std::string file, std::string path)
 			if (stat(path.c_str(), &regularFile) == 0){
 				std::fstream filestream((path + file).c_str());
   				if (!filestream.is_open()){
-					_statusCode = "403";
+                    setStatusCode("403");
 					return 0;
 				}
 				filestream.close();

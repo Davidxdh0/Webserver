@@ -35,6 +35,7 @@ public:
 	void            setHeaders(const Path& path);
     void            setContentLength();
 	void            setContentType(const std::string &headers);
+
 	std::string		getStatusCode(void);
 	std::string		getStatusMessage(void);
 	std::string		getBody();
@@ -47,12 +48,12 @@ public:
     std::string     getResponseString() { return _responseString; };
 
 	bool 			RequestDirectory(void);
-	void			directoryListing(std::string dirpath);
+	void			directoryListing(std::string dirpath, std::string indexSettings);
 	void			showDir(void);
 	void			createIndex(void);
 	bool 			isDirectory(std::string path);
 	bool			findFile(std::string file, std::string path);
-	void 			setErrorPage(Path &obj);
+	void 			setErrorPage(std::string root, std::string errorPage);
 	void			errorCodeMessage();
 	void			setErrorCodeMessage(std::string code);
 	void			deletePage(std::string path);
