@@ -45,7 +45,7 @@ void Server::closeServer() const
 
 void Server::startListen(int kqueuFd) const
 {
-    if (listen(_socket, 1024) < 0)
+    if (listen(_socket, 128) < 0)
         exitWithError("Socket listen failed");
 
     std::ostringstream ss;
@@ -70,7 +70,7 @@ void Server::acceptConnection(int kqueu_fd)
         ss << "Server failed to accept incoming connection from ADDRESS: " << inet_ntoa(_socketAddress.sin_addr) << "; PORT: " << ntohs(_socketAddress.sin_port);
         exitWithError(ss.str());
     }
-    if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(int)) < 0)
+    if (setsockopt(client_socket, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(int)) < 0)
         exitWithError("Error setting socket options");
     if (fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0)
         exitWithError("Cannot set socket to non-blocking");
