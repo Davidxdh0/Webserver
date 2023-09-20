@@ -20,7 +20,7 @@ public:
 
 	void   			setFullPath(std::string newPath) { _full_path = newPath; };
     std::string     getFullPath() const { return _full_path; };
-    std::string     getExtension() { return _extension; };
+    std::string     getExtension() const { return _extension; };
     std::string     getFilename() { return _filename; };
     const char*     c_str() const { return _full_path.c_str(); };
 

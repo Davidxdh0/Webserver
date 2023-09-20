@@ -75,8 +75,8 @@ void Client::setResponse() {
     if (_path.isDirectory()) {
         this->index();
     }
-    if (_path.getExtension() == "php") {
-        _response.loadCgi(_path, _request);
+    if (_path.getExtension() == _settings.getCgiExtension()) {
+        _response.loadCgi(_path, _request, _settings.getCgiPath());
     } else {
         _response.loadBody(_path);
     }

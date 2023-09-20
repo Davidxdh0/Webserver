@@ -8,15 +8,15 @@ void    createPipe(int p[2]) {
         exitWithError("Error creating pipe");
 }
 
-void    createEnv(char** env, const Path &path, const Request &request) {
+char**    createEnv(const Path &path, const Request &request) {
     std::string tmp;
-    env = (char**)malloc(sizeof(char*) * 12);
+    char **env = (char**)malloc(sizeof(char*) * 12);
 
     tmp = "REDIRECT_STATUS=200";
     env[0] = strdup(tmp.c_str());
-    tmp = "SCRIPT_FILENAME=/usr/bin/php";
+    tmp = "SCRIPT_FILENAME=" + path;
     env[1] = strdup(tmp.c_str());
-    tmp = "Content-Length=" + std::to_string(request.getContentLength());
+    tmp = "CONTENT_LENGTH=" + std::to_string(request.getContentLength());
     env[2] = strdup(tmp.c_str());
     tmp = "GATEWAY_INTERFACE=CGI/1.1";
     env[3] = strdup(tmp.c_str());
@@ -32,30 +32,60 @@ void    createEnv(char** env, const Path &path, const Request &request) {
     env[8] = strdup(tmp.c_str());
     tmp = "SERVER_PORT=8080";
     env[9] = strdup(tmp.c_str());
-    tmp = "Content-Type=" + request.getContentType();
+    tmp = "CONTENT_TYPE=" + request.getContentType();
     env[10] = strdup(tmp.c_str());
     env[11] = NULL;
+    return env;
 }
 
+void    Response::parseCgiResponse() {
+    std::string::size_type pos = _body.find("\r\n\r\n");
+    std::string             cgiHeaders;
+    std::string             line;
+
+    if (pos != std::string::npos) {
+        cgiHeaders = _body.substr(0, pos + 2);
+        _body = _body.substr(pos + 4);
+    }
+    while (cgiHeaders.find("\r\n") != std::string::npos) {
+        pos = cgiHeaders.find("\r\n");
+        line = cgiHeaders.substr(0, pos);
+        cgiHeaders = cgiHeaders.substr(pos + 2);
+        pos = line.find(": ");
+        if (pos != std::string::npos) {
+            std::string key = line.substr(0, pos);
+            if (key == "Status") {
+                std::string value = line.substr(pos + 2);
+                pos = value.find(" ");
+                _statusCode = value.substr(0, pos);
+                _statusMessage = value.substr(pos + 1);
+            } else if (key == "Content-type") {
+                this->setContentType(line.substr(pos + 2));
+            }
+        }
+    }
+}
 void    free_all(char** env) {
     if (!env)
         return;
-    for (int i = 0; env[i]; i++)
+    for (int i = 0; env[i]; i++) {
+        std::cout << env[i] << std::endl;
         free(env[i]);
+    }
     free(env);
 }
 
-void    Response::loadCgi(const Path &path, const Request &request) {
+void    Response::loadCgi(const Path &path, const Request &request, const std::string& cgiPath) {
     int        pid;
     int        pipeIn[2];
     int        pipeOut[2];
-    char       **env = NULL;
-    char*       argv[] = {"/usr/bin/php", "-f", const_cast<char *>(path.c_str()), nullptr};
+    char       **env = nullptr;
+//    char*       argv[] = {"/usr/bin/php", "-f", const_cast<char *>(path.c_str()), nullptr};
 
 
     createPipe(pipeIn);
     createPipe(pipeOut);
-    createEnv(env, path, request);
+    env = createEnv(path, request);
     write(pipeIn[1], request.getBody().c_str(), request.getBody().length());
     close(pipeIn[1]);
 
@@ -68,7 +98,7 @@ void    Response::loadCgi(const Path &path, const Request &request) {
         close(pipeIn[0]);
         close(pipeOut[0]);
         close(pipeOut[1]);
-        execve("/usr/bin/php", nullptr, env);
+        execve(cgiPath.c_str(), nullptr, env);
     } else {
         waitpid(-1, nullptr, 0);
         close(pipeIn[0]);
@@ -80,6 +110,7 @@ void    Response::loadCgi(const Path &path, const Request &request) {
             ret = read(pipeOut[0], buffer, 1024);
             _body += buffer;
         }
+        parseCgiResponse();
         free_all(env);
     }
 }

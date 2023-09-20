@@ -134,6 +134,7 @@ void Response::setHeaders(const Path &path) {
 
     this->setStatusCode("200");
     this->setVersion("HTTP/1.1");
-    this->setContentType(type);
+    if (path.getExtension() != "php")
+        this->setContentType(type);
     this->setContentLength();
 }
