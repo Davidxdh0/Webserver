@@ -1,0 +1,18 @@
+Check the code and ask questions
+- Seems fine
+
+Configuration
+- HasAccess gives errors, which are ignored. Is it neccessary?
+- client_max_body_size only available with m. NGINXdocs: Sizes can be specified in bytes, kilobytes (suffixes k and K) or megabytes (suffixes m and M), for example, “1024”, “8k”, “1m”.
+- error_page working? Can't get it to work.
+
+Basic checks
+- Errorcodes not always right. Get a 404 when trying a forbidden method.
+
+Check CGI
+
+Check with a browser
+
+Port issues
+
+Siege & stress test

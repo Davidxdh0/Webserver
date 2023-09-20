@@ -26,7 +26,7 @@ void leaks(void){
 int main(int argc, char* argv[])
 {
     std::vector<pair<int, Settings* > > Config_Vect;
-    atexit(leaks);
+//    atexit(leaks);
 	if (argc == 2){
 		ParseConfig config(argv[1]);
 		Config_Vect = config.ParseConfigFile();

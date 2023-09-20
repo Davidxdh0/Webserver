@@ -6,7 +6,7 @@
 #include "iostream"
 #include <stdlib.h>
 
-Request::Request() : _contentlength(0),_isUpload(0){}
+Request::Request() : _isUpload(0), _contentlength(0){}
 
 Request::Request(const Request &src) {
     *this = src;

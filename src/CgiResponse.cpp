@@ -10,30 +10,41 @@ void    createPipe(int p[2]) {
 
 char**    createEnv(const Path &path, const Request &request) {
     std::string tmp;
-    char **env = (char**)malloc(sizeof(char*) * 12);
+    char **env = new char*[12];
 
     tmp = "REDIRECT_STATUS=200";
-    env[0] = strdup(tmp.c_str());
+    env[0] = new char[tmp.length() + 1];
+    strcpy(env[0], tmp.c_str());
     tmp = "SCRIPT_FILENAME=" + path;
-    env[1] = strdup(tmp.c_str());
+    env[1] = new char[tmp.length() + 1];
+    strcpy(env[1], tmp.c_str());
     tmp = "CONTENT_LENGTH=" + std::to_string(request.getContentLength());
-    env[2] = strdup(tmp.c_str());
+    env[2] = new char[tmp.length() + 1];
+    strcpy(env[2], tmp.c_str());
     tmp = "GATEWAY_INTERFACE=CGI/1.1";
-    env[3] = strdup(tmp.c_str());
+    env[3] = new char[tmp.length() + 1];
+    strcpy(env[3], tmp.c_str());
     tmp = "REQUEST_METHOD=" + request.getMethod();
-    env[4] = strdup(tmp.c_str());
+    env[4] = new char[tmp.length() + 1];
+    strcpy(env[4], tmp.c_str());
     tmp = "REQUEST_URI=" + request.getUri();
-    env[5] = strdup(tmp.c_str());
+    env[5] = new char[tmp.length() + 1];
+    strcpy(env[5], tmp.c_str());
     tmp = "SERVER_PROTOCOL=" + request.getVersion();
-    env[6] = strdup(tmp.c_str());
+    env[6] = new char[tmp.length() + 1];
+    strcpy(env[6], tmp.c_str());
     tmp = "SERVER_SOFTWARE=Webserv/1.0";
-    env[7] = strdup(tmp.c_str());
+    env[7] = new char[tmp.length() + 1];
+    strcpy(env[7], tmp.c_str());
     tmp = "SERVER_NAME=" + request.getHostname();
-    env[8] = strdup(tmp.c_str());
+    env[8] = new char[tmp.length() + 1];
+    strcpy(env[8], tmp.c_str());
     tmp = "SERVER_PORT=8080";
-    env[9] = strdup(tmp.c_str());
+    env[9] = new char[tmp.length() + 1];
+    strcpy(env[9], tmp.c_str());
     tmp = "CONTENT_TYPE=" + request.getContentType();
-    env[10] = strdup(tmp.c_str());
+    env[10] = new char[tmp.length() + 1];
+    strcpy(env[10], tmp.c_str());
     env[11] = NULL;
     return env;
 }
@@ -69,10 +80,10 @@ void    free_all(char** env) {
     if (!env)
         return;
     for (int i = 0; env[i]; i++) {
-        std::cout << env[i] << std::endl;
-        free(env[i]);
+//        std::cout << env[i] << std::endl;
+        delete env[i];
     }
-    free(env);
+    delete env;
 }
 
 void    Response::loadCgi(const Path &path, const Request &request, const std::string& cgiPath) {
@@ -114,39 +125,3 @@ void    Response::loadCgi(const Path &path, const Request &request, const std::s
         free_all(env);
     }
 }
-
-
-//void Response::loadCgi(const Path& path, const Request& request) {
-//    int         og_StdOut;
-//    int         pid;
-//    const char* exc = "/usr/bin/php";
-//    std::FILE*  temp = std::tmpfile();
-//    int         fd_temp = fileno(temp);
-//    std::string flag = "-f";
-//    char*       argv[] = {const_cast<char *>(exc), const_cast<char *>(flag.c_str()), const_cast<char *>(path.c_str()), nullptr};
-//
-//    og_StdOut = dup(STDOUT_FILENO);
-//    pid = fork();
-//    if (pid == -1)
-//        exitWithError("Error forking");
-//    if (pid == 0) {
-//        std::cout << "Loading CGI from: " << path << std::endl;
-//        write(STDIN_FILENO, request.getBody().c_str(), request.getBody().length());
-//        dup2(fd_temp, STDOUT_FILENO);
-//        execve(exc, argv , nullptr);
-//    } else {
-//        waitpid(-1, nullptr, 0);
-//        dup2(og_StdOut, STDOUT_FILENO);
-//        lseek(fd_temp, 0, SEEK_SET);
-//        char buffer[1024];
-//        long ret = 1;
-//        while (ret > 0) {
-//            memset(buffer, 0, 1024);
-//            ret = read(fd_temp, buffer, 1024);
-//            _body += buffer;
-//            std::cout << "Read: " << _body << std::endl;
-//        }
-//        setContentLength();
-//        fclose(temp);
-//    }
-//}

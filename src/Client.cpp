@@ -79,7 +79,7 @@ void Client::setResponse() {
     if (_path.isDirectory()) {
         this->index();
     }
-    if (_path.getExtension() == _settings.getCgiExtension()) {
+    if (!_path.getExtension().empty()&& _path.getExtension() == _settings.getCgiExtension()) {
         _response.loadCgi(_path, _request, _settings.getCgiPath());
     } else {
         _response.loadBody(_path);
@@ -129,11 +129,11 @@ void Client::configure() {
     Path uri(_request.getUri());
     bool foundHostname  = 0;
     std::string host    = _request.getHostname();
-    std::string port    = host.substr(host.find(":"));
+//    std::string port    = host.substr(host.find(":"));
 
-    setLocal(port);
+//    setLocal(port);
     if (!_vhosts->getHost().empty()) {
-        if (_vhosts->getHost() + port == host) {
+        if (_vhosts->getHost()/* + port */== host) {
             ret = _vhosts->getRightSettings(uri);
             foundHostname = 1;
         }

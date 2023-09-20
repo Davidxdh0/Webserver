@@ -14,13 +14,25 @@ add_executable(Webserv_dev
         include/Request.h
         include/Response.h
         include/Path.h
+        include/Settings.h
+        include/MimeTypes.h
+        include/ParseConfig.h
+
+        src/CgiResponse.cpp
+        src/Client.cpp
         src/Config.cpp
         src/main.cpp
-        src/Server.cpp
-        src/ServerControl.cpp
-        src/Client.cpp
+        src/MimeTypes.cpp
+        src/ParseConfig.cpp
+        src/ParseConfigUtil.cpp
+        src/ParseVariables.cpp
+        src/Path.cpp
         src/Request.cpp
         src/Response.cpp
+        src/ResponseDirectory.cpp
+        src/ResponseUploadDelete.cpp
+        src/Server.cpp
+        src/ServerControl.cpp
+        src/Settings.cpp
         src/utils.cpp
-        src/Path.cpp src/Settings.cpp src/ResponseUploadDelete.cpp src/ResponseDirectory.cpp src/ParseConfig.cpp src/MimeTypes.cpp)
-        src/Path.cpp src/Settings.cpp src/FileHandling.cpp src/ListDirectories.cpp src/ParseConfig.cpp src/MimeTypes.cpp src/ParseConfigUtil.cpp src/ParseVariables.cpp src/CgiResponse.cpp)
+        )

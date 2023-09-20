@@ -18,7 +18,7 @@ OBJS_DIR	=	objs
 BIN_DIR		=	bin
 INCLUDE_DIR	=	include
 EXEC_NAME	=	Webserv_dev
-ASSET		= 	/config/test.conf 
+ASSET		= 	/config/test.conf
 NAME		=	$(BIN_DIR)/$(EXEC_NAME)
 OUTPUT		=	$(BIN_DIR)/$(EXEC_NAME)
 
@@ -26,7 +26,8 @@ OUTPUT		=	$(BIN_DIR)/$(EXEC_NAME)
 
 INC			=	-I $(INCLUDE_DIR)
 
-SRCS		=	Client.cpp \
+SRCS		=	CgiResponse.cpp \
+				Client.cpp \
 				Config.cpp \
 				main.cpp \
 				MimeTypes.cpp \
