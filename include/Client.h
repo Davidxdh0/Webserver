@@ -21,11 +21,14 @@ public:
 
     void                handleRequest(long data);
     void                writeResponse();
+    void                setLocal(std::string &port);
+
     int                 getState() { return _state; };
 	std::stringstream   &getRequestRaw();
 	const Request		&getRequest() const;
 	const Response		&getResponse() const;
 	const Path			&getPath() const;
+    std::string         getErrorPath();
 private:
 
     Request             _request;
@@ -34,13 +37,15 @@ private:
     int                 _socket;
     clientState         _state;
     std::stringstream   _requestRaw;
-	// size_t				_total_read;
+	std::string         _chunked;
     Settings            _settings;
     Settings*           _vhosts;
 
 
     int                 readRequest(long data);
     void                configure();
+    void                redirect();
+    int                 readChunked(std::string bufferstr, int chunkedrequest);
     void                setResponse();
     void                checkMethod();
     void                index();

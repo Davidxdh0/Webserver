@@ -16,7 +16,7 @@ ServerControl::ServerControl() : _kq_fd(kqueue()), _servers()
         exitWithError("Failed to create kqueue");
 }
 
-ServerControl::ServerControl(Config*  port_configs) : _kq_fd(kqueue()), _servers()
+ServerControl::ServerControl(std::vector<pair<int, Settings* > >  port_configs) : _kq_fd(kqueue()), _servers()
 {
     if (_kq_fd == -1)
         exitWithError("Failed to create kqueue");
@@ -25,11 +25,13 @@ ServerControl::ServerControl(Config*  port_configs) : _kq_fd(kqueue()), _servers
     webservLoop();
 }
 
-void ServerControl::loadServers(Config* port_configs) {
-    for (size_t i = 0; port_configs[i].getPort() != 0; i++)
+void ServerControl::loadServers(std::vector<pair<int, Settings* > > port_configs) {
+    for (size_t i = 0; i < port_configs.size() != 0; i++)
     {
-        Server  tmp(port_configs[i]);
-        log("Starting server on port: " + to_string(port_configs[i].getPort()));
+        Config config_vec(port_configs[i].first);
+        config_vec.setHosts(port_configs[i].second);
+        Server  tmp(config_vec);
+        log("Starting server on port: " + to_string(port_configs[i].first));
         tmp.startListen(_kq_fd);
         _servers.push_back(tmp);
     }

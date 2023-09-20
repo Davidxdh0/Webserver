@@ -39,7 +39,6 @@ class Config
 
         int         getPort() const { return this->_port; };
         Settings*   getHosts() const { return this->_hosts; };
-        // std::vector<Settings*> getHosts() const { return this->_hosts; };
         Settings    getRightSettings(const std::string& host,Path uri);
         // ------------------- Config member functions ------------------------
 		// void	openConfig(ifstream& config_file, int argc, char *argv[]);

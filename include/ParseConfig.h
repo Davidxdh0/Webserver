@@ -52,15 +52,16 @@ public:
     void ParseErrorPages(std::string &line);
     void ParseClientMaxBody(std::string &line);
     void ParseLocation(std::string &line);
-    void ParseReturn(std::string line);
 	void ParseAlias(std::string &line);
 
 	void	PrintVector(std::vector<pair<int, Settings* > > Config_Vector);
 	void	setBrackets(char c, int block);
 	void	substrSemicolon(std::string &line);
 	int		countCharacter(char c, std::string line);
+	void	fillLocations();
 	void	duplicatePort();
 	std::string	split(std::string line, int wordpos);
+	void	ExitString(std::string msg);
 private:
 	std::string		_filename;
 	Config			_config;

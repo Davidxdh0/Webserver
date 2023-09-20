@@ -28,7 +28,8 @@ ParseConfig &ParseConfig::operator=(const ParseConfig &other)
 }
 
 int ParseConfig::hasAccess(std::string filepath, std::fstream& filestr){
-	std::string path = /* "./" + */filepath;
+	std::string path = "./" + filepath;
+	std::cout << path << std::endl;
 	if (access (path.c_str(), F_OK) != 0){
 		std::cout << "ParseConfig doesn't exist" << std::endl;
 		return 404; // doesnt exist
@@ -149,12 +150,13 @@ std::vector<pair<int, Settings* > > ParseConfig::ParseConfigFile() {
 	std::fstream filestream(_filename);
 				// std::cout << "ParseConfigFile" << std::endl;
 				// std::cout << "HasAccess" << std::endl;
-//	hasAccess(_filename, filestream);
+	hasAccess(_filename, filestream);
 				// std::cout << "InitMap" << std::endl;
 	map	= initMap();
 				// std::cout << "Readconfig" << std::endl;
 				// std::cout << "----------------------" << std::endl;
 	readconfig(map, filestream);
-	duplicatePort();	
+	fillLocations();
+	duplicatePort();
 	return _Config_Vector;
 }

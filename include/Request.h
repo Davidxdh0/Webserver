@@ -17,14 +17,14 @@ public:
 
     void            parseRequest(std::stringstream &requestRaw);
 	
-    std::string     getMethod() const { return _method; };
-    std::string     getUri() const { return _uri; };
-    std::string     getVersion() const { return _version; };
-    std::string     getHostname() const { return _hostname; };
+    std::string     getMethod() { return _method; };
+    std::string     getUri() { return _uri; };
+    std::string     getVersion() { return _version; };
+    std::string     getHostname() { return _hostname; };
+	const bool		&getisUpload() const { return _isUpload;};
+    const std::string &getContentType() const { return _contenttype;}
     std::string     getBody() const { return _body; };
     long            getContentLength() const { return _contentlength; };
-    std::string     getContentType() const { return _contenttype; };
-
 private:
 
 //    std::map<std::string, std::string>  _headers;
@@ -34,6 +34,7 @@ private:
     std::string                         _hostname;
     std::string                         _contenttype;
     std::string                         _body;
+	bool								_isUpload;
     long                                _contentlength;
 
 };

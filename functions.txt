@@ -120,12 +120,27 @@ status Codes
 
 redirect
 	https://blog.hubspot.com/website/html-redirect
-	https://www.redirect-checker.org/
+	https://css-tricks.com/redirect-web-page/
 
 chunked requests
-	curl -X POST -H "Transfer-Encoding: chunked" -d @test.pdf 127.0.0.1:8080
+	https://everything.curl.dev/http/post/chunked
+Chunked encoded POSTs: This assumes that you know you do this against an HTTP/1.1 server. Before 1.1, there was no chunked encoding, and after version 1.1 chunked encoding has been deprecated.
+	curl -X POST -H "Transfer-Encoding: chunked" -d @steps.txt 127.0.0.1:8080
+	https://stackoverflow.com/questions/5590791/http-chunked-encoding-need-an-example-of-trailer-mentioned-in-spec
 
-	config file
+config file
 	https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts
 	https://www.solo.io/topics/nginx/nginx-configuration/
 	https://www.nginx.com/resources/wiki/start/topics/examples/full/
+
+siege:
+    codam_rheuts - 7 months ago - https://42born2code.slack.com/archives/CMX2R5JSW/p1677058550803019?thread_ts=1677018182.191889&cid=CMX2R5JSW
+        I recall MacOS holding onto sockets for a small time, even when you specify to reuse them. , when siege has send lotTherefor at some points of requests, you run out of available sockets and it takes a couple of seconds to free up old ones. *(I'm nowhere an expert, but this was the reasoning I came up with :clown_face: )
+    HTTP/1.1 200     0.06 secs:      14 bytes ==> GET  /empty.html
+    [alert] socket: select and discovered it's not ready sock.c:384: Operation timed out
+    [alert] socket: read check timed out(30) sock.c:273: Operation timed out
+    HTTP/1.1 200    30.06 secs:      14 bytes ==> GET  /empty.html
+    HTTP/1.1 200    30.06 secs:      14 bytes ==> GET  /empty.html
+
+cgi:
+    python sleep 10 server blocking, cgi- waitpid- na sick child signal da waitpid  als child geexit.

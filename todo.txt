@@ -1,19 +1,21 @@
 David
--configfile FOUT: "server{" werkt: "server {"
+- chunked requests
+- siege blijft soms hangen
+- css wordt soms niet goed geladen
+
 
 Alle
 - CGI 
 - Set POST data in the env of cgi
-- Flow mooier maken
-
-Na configfile
--methods delete/upload
--uploadplek (access?)
--errorpages
--paths
--auto indexpaginas index.html - indexon?
+- cgi chunked terugsturen?
 
 to want:
 - chunked transfer encoding en tot content length lezen.
 	-https://en.wikipedia.org/wiki/Chunked_transfer_encoding
 	-https://bunny.net/academy/http/what-is-chunked-encoding/
+
+siege:
+    siege -b -c 10 http://localhost:8080/empty.html
+    siege -b http://localhost:8080/empty.html
+    [error] socket: read error Connection reset by peer sock.c:635: Connection reset by peer
+    [error] socket: unable to connect sock.c:282: Connection refused

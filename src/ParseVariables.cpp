@@ -37,15 +37,14 @@ std::string	ParseConfig::ParseLine(std::string line){
 			ss << line[i];
 	}	
 	line = ss.str();
-	size_t spaces = 0;
-	size_t i = 0;
-	for (; i < line.size(); ++i) {
-		if (line[i] == ' ')
-			spaces++;
-	}
-	if (spaces == i)
-		line = "";
-	// std::cout << "line:" << line  << " end" << std::endl;
+	// size_t spaces = 0;
+	// size_t i = 0;
+	// for (; i < line.size(); ++i) {
+	// 	if (line[i] == ' ')
+	// 		spaces++;
+	// }
+	// if (spaces == i)
+	// 	line = "";
 	return ss.str();
 }
 
@@ -84,7 +83,7 @@ void	ParseConfig::ParseServer(std::string &line)
 		str = word;
 	}
 	if (words != 2)
-		exit(1);
+		ExitString("ParseServer words != 2");
 	line = str;
 }
 
@@ -110,16 +109,15 @@ void	ParseConfig::ParseListen(std::string &line)
 			try {
 				port = std::stoi(word);
 				if (port < 1 || port > 65000){
-					exit(1);
+					ExitString("ParseListen port out of range < 1 || > 65000");
 				}
 				} catch (const std::invalid_argument& e) {
-					std::cout << "3: " << word << std::endl;
-					exit(1);
+					ExitString("ParseListen port is not an int");
 				}
 		}
 	}
 	if (words > 2)
-		exit(1);
+		ExitString("ParseListen words > 2");
 	line = to_string(port);
 	if (words == 1)
 		line = "80";
@@ -143,7 +141,7 @@ void	ParseConfig::ParseHost(std::string &line)
 		str = word;
 	}
 	if (words != 2)
-		exit(1);
+		ExitString("ParseHost words != 2");
 	line = str;
 }
 
@@ -176,8 +174,8 @@ void	ParseConfig::ParseRoot(std::string &line)
 		if (word.size() < 3)
 			exit(1);
 		if (!isRootDirectory(word)){
-			std::cout << "BAD root: " << word << std::endl;
-			exit(1);
+			str = "ParseRoot: " + word;
+			ExitString(str);
 		}
 		str = word;
 	}
@@ -206,12 +204,12 @@ void	ParseConfig::ParseIndex(std::string &line)
 		if (pos != std::string::npos && pos != 0){
 			str = word.substr(pos + 1, word.size());
 			if (str != "html" && str != "php"){
-				exit(1);
+				ExitString("Index not .html or .php");
 			}
 		}	
 	}
 	if (words != 2)
-		exit(1);
+		ExitString("ParseIndex words != 2");
 	line = word;
 }
 /*
@@ -239,12 +237,12 @@ void	ParseConfig::ParseMethods(std::string &line)
 		else if (word == "DELETE" && del == 0)
 			del = 4;
 		else{
-			std::cout << "BAD: " << word << std::endl;
-			exit(1);
+			str = "ParseMethods " + word;
+			ExitString(str);;
 		}
 	}
 	if (words < 1 || words > 4)
-		exit(1);
+		ExitString("ParseMethods words > 4");
 	line = to_string(get + post + del);
 }
 /*
@@ -263,10 +261,10 @@ void	ParseConfig::ParseAutoIndex(std::string &line)
 		if (word == "autoindex")
 			continue;
 		if (word != "on" && word != "off")
-			exit(1);
+			ExitString("ParseIndex != on/off");
 	}
 	if (words != 2)
-		exit(1);
+		ExitString("ParseAutoindex words != 2");
 	line = word;
 }
 /*
@@ -286,7 +284,7 @@ void	ParseConfig::ParseCgiPath(std::string &line)
 			continue;
 	}
 	if (words != 2)
-		exit(1);
+		ExitString("ParseCgiPath != 2");
 	line = word;
 }
 
@@ -310,7 +308,7 @@ void	ParseConfig::ParseCgiExtension(std::string &line)
 		str = word;
 	}
 	if (words != 2)
-		exit(1);
+		ExitString("ParseCgiExt != 2");
 	line = str;
 }
 
@@ -330,11 +328,11 @@ void	ParseConfig::ParseUploadPath(std::string &line)
 		if (word == "upload_store")
 			continue;
 		else if (word.size() < 2 && word[0] != '/')
-			exit(1);
+			ExitString("ParseUploadPath");
 		str = word;
 	}
 	if (words != 2)
-		exit(1);
+		ExitString("ParseUploadPath != 2");
 	line = str;
 }
 
@@ -354,10 +352,10 @@ void	ParseConfig::ParseUploadEnable(std::string &line)
 		if (word == "upload_enable")
 			continue;
 		if (word != "on" && word != "off")
-			exit(1);
+			ExitString("ParseUploadEnable != on/off");
 	}
 	if (words != 2)
-		exit(1);
+		ExitString("ParseUploadEnable != 2");
 	line = word;
 }
 
@@ -378,7 +376,7 @@ void	ParseConfig::ParseErrorPages(std::string &line)
 			continue;
 	}
 	if (words != 3)
-		exit(1);
+		ExitString("ParseErrorPages != 3");
 }
 
 /*
@@ -410,12 +408,12 @@ void	ParseConfig::ParseClientMaxBody(std::string &line)
 				bytes *= 1000000;
 				line = to_string(static_cast<size_t>(bytes));
 			} catch (const std::exception& e){
-				exit(1);
+				ExitString("ParseClientMaxBody stod");
 			}
 		}
 	}
 	if (words != 1 && words != 2)
-		exit(1);
+		ExitString("ParseClientMaxBody not 1 or 2");
 	if (words == 1)
 		line = "1000000";
 }
@@ -443,60 +441,13 @@ void	ParseConfig::ParseLocation(std::string &line)
 		words++;
 		if (word == "location")
 			continue;
-		if (words == 1 && !std::isalpha(word[0]) && word[0] != '/'){
-			std::cout << "ParseLocation Fails" << std::endl;
-			exit(1);
-		}
+		if (words == 1 && !std::isalpha(word[0]) && word[0] != '/')
+			ExitString("ParseLocation Fails");
 		str = word;
 	}
-	if (words != 2){
-		std::cout << "ParseLocation Fails" << std::endl;
-		exit(1);
-	}
+	if (words != 2)
+		ExitString("ParseLocation != 2");
 	line = str;
-}
-
-/*
-	return 301 /index.html;
-	return 301 
-	return /index.html;
-*/
-void	ParseConfig::ParseReturn(std::string line)
-{
-	std::istringstream iss(line);
-	std::string word;
-	std::string str;
-	int mistake = 0;
-	int words = 0;
-	int errorpage = 0;
-	while(iss >> word){
-		if (word == " ")
-			continue;
-		words++;
-		if (word == "return")
-			continue;
-		else if (words == 1)
-			try {
-				errorpage = std::stoi(word);
-				line = to_string(errorpage);
-				} catch (const std::exception& e){
-					mistake = 1;
-				}
-		else if (words == 2){
-			if (mistake == 1){
-				std::cout << "mistake 1 Fails" << std::endl;
-				exit(1);
-			}
-			if (word[0] == '/'){
-				std::cout << "return[0] /" << std::endl;
-				exit(1);
-			}
-		}
-	}
-	if (words != 2 && words != 3){
-		std::cout << "words: "<< words << std::endl;
-		exit(1);
-	}
 }
 
 void	ParseConfig::ParseAlias(std::string &line){
@@ -510,8 +461,11 @@ void	ParseConfig::ParseAlias(std::string &line){
 		words++;
 		if (word == "alias")
 			continue;
+        else
+            if (word[0] != '/')
+                ExitString("ParseAlias");
 	}
 	if (words != 2)
-		exit(1);
+		ExitString("ParseAlias != 2");
 	line = word;
 }
