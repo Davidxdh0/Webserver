@@ -11,28 +11,23 @@ bool Response::hasAccess(const std::string& filepath, std::fstream& filestr){
         directory = 1;
 	if (access (path.c_str(), F_OK) != 0){
 		setStatusCode("404");
-		std::cout << "doesn't exist" << std::endl;
 		return false; // doesnt exist
 	}
 	if (filestr.is_open()){
 		setStatusCode("403");
-		std::cout << "already open" << std::endl;
 		return false; //already open
 	}
 	if (access (path.c_str(), R_OK) != 0){
 		setStatusCode("403");
-		std::cout << "no read access" << std::endl;
 		return false; // no read access
 	}
 	filestr.open(path);
 	if (!filestr.is_open() && directory == 0){
 		setStatusCode("404");
-		std::cout << "not opened or directory?" << std::endl;
 		return false; //not opened
 	}
 	if (filestr.peek() == std::ifstream::traits_type::eof() && directory == 0) {
 		setStatusCode("404");
-		std::cout << "empty file" << std::endl;
 		return false; // empty file
 	}
 	return true;

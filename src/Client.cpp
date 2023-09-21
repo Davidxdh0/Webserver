@@ -28,7 +28,6 @@ void Client::handleRequest(long data) {
     this->readRequest(data);
     if (_state != RESPONDING)
         return;
-//    std::cout << _requestRaw.str() << std::endl;
     _request.parseRequest(_requestRaw);
     this->configure();
     this->redirect();
@@ -70,7 +69,7 @@ int Client::readRequest(long data) {
     }
     return 1;
 }
-//    std::cout << "body" << _response.getBody().size() << std::endl;
+// std::cout << "body" << _response.getBody().size() << std::endl;
 // std::cout << "code: " << _response.getStatusCode()  << std::endl;
 // std::cou << " autoindex: " << _settings.getAutoindex() << std::endl;
 void Client::setResponse() {
@@ -99,49 +98,34 @@ void Client::setResponse() {
 
 void Client::writeResponse() {
 	int i = 1;
-	if (_response.getResponseString().size() > 64000){
+    size_t packetsize = 10000;
+    static size_t dataSent = 0;
+	if (_response.getResponseString().size() - dataSent > packetsize){
 		const char* data = _response.getResponseString().c_str();
-		size_t packetsize = 4096;
-		size_t dataSent = 0;
-		while (dataSent < _response.getResponseString().size()){
-			size_t remaining = _response.getResponseString().size() - dataSent;
-			size_t currentpacket = std::min(remaining, packetsize);
-			i = write(_socket, data + dataSent, currentpacket);
-			if (i == -1)
-				std::cout << "Write function failed" << std::endl;
-			if (i == 0)
-				std::cout << "Wrote chunk" << std::endl;
-			dataSent += i;
-		}
+        size_t remaining = _response.getResponseString().size() - dataSent;
+        size_t currentpacket = std::min(remaining, packetsize);
+        i = write(_socket, data + dataSent, currentpacket);
+        dataSent += i;
 	}
 	else{
     	i = write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
-		if (i == -1)
-			std::cout << "Write function failed" << std::endl;
-		if (i == 0)
-			std::cout << "Wrote response" << std::endl;
 	}
+    if (i == -1)
+        exitWithError("writing Response failed");
+    if (i == 0)
+        exitWithError("writing Response failed = 0");
 }
 
 void Client::configure() {
 
     Settings ret;
     Path uri(_request.getUri());
-    bool foundHostname  = 0;
     std::string host    = _request.getHostname();
-//    std::string port    = host.substr(host.find(":"));
-
+    std::string port    = host.substr(host.find(":"));
+//    std::cout << _vhosts->getHost() + port << " Host:" << host << std::endl;
+    std::cout << "Host: " << host << std::endl;
 //    setLocal(port);
-    if (!_vhosts->getHost().empty()) {
-        if (_vhosts->getHost()/* + port */== host) {
-            ret = _vhosts->getRightSettings(uri);
-            foundHostname = 1;
-        }
-    }
-    if (!foundHostname) {
-        std::cout << "Error hostname request != config host"  << std::endl;
-        exit(1);
-    }
+    ret = _vhosts->getRightSettings(uri);
     _settings = ret;
     _path = _settings.getRoot() + _request.getUri();
 }

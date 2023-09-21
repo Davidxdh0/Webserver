@@ -69,16 +69,20 @@ void   ServerControl::webservLoop() {
             Server *tmp = checkIdentIsServer(events->ident);
             if (tmp != nullptr) {
                 tmp->acceptConnection(_kq_fd);
-            } else {
+            }else {
                 Client *client = static_cast<Client *>(events->udata);
                 if (events->flags & EV_EOF) {
+                    std::cout << "EV_EOF" << std::endl;
                     delete client;
-                } else if (events->filter == EVFILT_READ && client->getState() == READING) {
-                    client->handleRequest(events->data);
-                    kevent(_kq_fd, events, 1, nullptr, 0, nullptr);
-                } else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
-                    client->writeResponse();
-                    delete client;
+                } else {
+                    if (events->filter == EVFILT_READ && client->getState() == READING) {
+                        client->handleRequest(events->data);
+                        kevent(_kq_fd, events, 1, nullptr, 0, &timeout);
+                    }
+                    if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
+                        client->writeResponse();
+                        delete client;;
+                    }
                 }
             }
         }

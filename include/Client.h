@@ -29,6 +29,7 @@ public:
 	const Response		&getResponse() const;
 	const Path			&getPath() const;
     std::string         getErrorPath();
+    const int           &getSocket() const {return _socket; };
 private:
 
     Request             _request;

@@ -1,5 +1,14 @@
+Bij css laden, roept ie de css bij firefox 2 keer aan.
+vaak refreshen soms error.
+
+Mandatory Part
+elke read/write call door kqueue
+    -cgi
+
 Check the code and ask questions
 - Seems fine
+
+
 
 Configuration
 - HasAccess gives errors, which are ignored. Is it neccessary?
@@ -16,3 +25,5 @@ Check with a browser
 Port issues
 
 Siege & stress test
+
+

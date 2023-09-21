@@ -42,7 +42,7 @@ void Response::loadBody(const Path& path) {
     //     exitWithError("Could not open file: " + path);
 	if (file.is_open()){
 		setStatusCode("403");
-		std::cout << "hieropenwtf open" << std::endl;
+		return ;
 	}
 	if (hasAccess(path.c_str(), file) && path.getFullPath()[path.getFullPath().length() - 1] != '/'){
 		buffer << file.rdbuf();
@@ -55,7 +55,6 @@ void Response::loadBody(const Path& path) {
 ////  std::cout << "Error: setErrorPage can't open"  << std::endl;
 ////  std::cout << "error page to _body"  << std::endl;
 void Response::setErrorPage(std::string root, std::string errorpage){
-    std::cout << "errorpage = " << errorpage << std::endl;
     std::string path = root + "/" + errorpage;
 	std::fstream filestream(path.c_str());
 	std::stringstream temp;

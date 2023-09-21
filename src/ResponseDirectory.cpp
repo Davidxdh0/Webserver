@@ -31,10 +31,12 @@ todo:
 // std::cout << "_body\n\n" << _body << std::endl;
 // std::cout << "character: " << dirpath[strlen(dirpath.c_str()-1)] << std::endl;
 // std::cout << "directoryListing url: "<< dirpath << std::endl;
-void	Response::directoryListing(std::string dirpath, std::string setting_index){
+//std::cout << "path : " << path << std::endl;
+//std::cout << "dirlisting 1"<< std::endl;
+void	Response::directoryListing(std::string path, std::string setting_index){
 	DIR *dir;
 	struct dirent *ent;
-
+    std::string dirpath = path;
 	if (dirpath[dirpath.length() - 1] != '/')
 		dirpath = dirpath + '/';
 	std::string temp = dirpath;
@@ -93,11 +95,11 @@ void	Response::directoryListing(std::string dirpath, std::string setting_index){
 		else
 			dirpath = temp;
 		std::string filepath = dirpath + ent->d_name;
-		size_t found = filepath.find("public");
-		if (found == std::string::npos){
-            setStatusCode("403");
-			return ;
-		}
+//		size_t found = filepath.find("public");
+//		if (found == std::string::npos){
+//            setStatusCode("403");
+//			return ;
+//		}
 		struct stat file_info;
 		file << "<tr>\n";
 		if (stat(filepath.c_str(), &file_info) == 0) {
