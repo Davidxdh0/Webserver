@@ -388,9 +388,10 @@ void	ParseConfig::ParseClientMaxBody(std::string &line)
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
-	char size;
+	std::string size;
 	int words = 0;
 	double bytes = 0;
+    double type;
 	while(iss >> word){
 		if (word == " ")
 			continue;
@@ -399,13 +400,22 @@ void	ParseConfig::ParseClientMaxBody(std::string &line)
 			continue;
 		else{
 			size = word[word.size() - 1];
-			if (size != 'm')
-				exit(1);
+            size = toupper(size);
+			if (size == "M")
+				type = 100000;
+            else if (size == "K")
+                type = 1000;
+            else if (size == "G")
+                type = 100000000;
+            else if (isdigit(size))
+                str += "X";
+            else
+                ExitString("ParseClientMaxBody size");
 			str = word.substr(0, word.size() - 1);
 			try {
 				// std::cout << str << std::endl;
 				bytes = std::stod(str);
-				bytes *= 1000000;
+				bytes *= type;
 				line = to_string(static_cast<size_t>(bytes));
 			} catch (const std::exception& e){
 				ExitString("ParseClientMaxBody stod");
