@@ -59,7 +59,8 @@ Server* ServerControl::checkIdentIsServer(int ident)
 void   ServerControl::webservLoop() {
     struct timespec timeout = {};
     struct kevent events[1];
-
+	timeout.tv_sec = 0;      
+	timeout.tv_nsec = 0;  
     while (1){
         EV_SET(&events[0], 0, 0, 0, 0, 0, 0);
         kevent(_kq_fd, nullptr, 0, events, 1, &timeout);
@@ -71,7 +72,8 @@ void   ServerControl::webservLoop() {
                 tmp->acceptConnection(_kq_fd);
             } else {
                 Client *client = static_cast<Client *>(events->udata);
-                if (events->flags & EV_EOF && client->getSocket() == events->ident){
+				std::cout << "temp == NULL -> events filter: " << events->filter << " state:" << client->getState() << std::endl;
+                if (events->flags & EV_EOF && events->data == 0 && static_cast<uintptr_t>(client->getSocket()) == events->ident){
                     delete client;
                 } else if (events->filter == EVFILT_READ && client->getState() == READING) {
                     client->handleRequest(events->data);

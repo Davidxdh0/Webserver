@@ -13,7 +13,7 @@
 
 Client::Client() : _socket(), _state(READING), _vhosts() {}
 
-Client::Client(int socket, Settings* vhosts, int kq_fd) : _socket(socket), _state(READING), _vhosts(vhosts), _kq_fd(kq_fd) {
+Client::Client(int socket, Settings* vhosts, int kq_fd) :  _kq_fd(kq_fd), _socket(socket), _state(READING), _vhosts(vhosts) {
 }
 
 Client::~Client() {
