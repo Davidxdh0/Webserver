@@ -10,9 +10,10 @@
 #include "utils.h"
 #include <algorithm>
 
+
 Client::Client() : _socket(), _state(READING), _vhosts() {}
 
-Client::Client(int socket, Settings* vhosts) : _socket(socket), _state(READING), _vhosts(vhosts) {
+Client::Client(int socket, Settings* vhosts, int kq_fd) :  _kq_fd(kq_fd), _socket(socket), _state(READING), _vhosts(vhosts) {
 }
 
 Client::~Client() {
@@ -73,13 +74,16 @@ int Client::readRequest(long data) {
 // std::cout << "code: " << _response.getStatusCode()  << std::endl;
 // std::cou << " autoindex: " << _settings.getAutoindex() << std::endl;
 void Client::setResponse() {
+    int cgi_out;
 
     this->checkMethod();
     if (_path.isDirectory()) {
         this->index();
     }
     if (!_path.getExtension().empty()&& _path.getExtension() == _settings.getCgiExtension()) {
-        _response.loadCgi(_path, _request, _settings.getCgiPath());
+        cgi_out = _response.loadCgi(_path, _request, _settings.getCgiPath());
+        register_cgi(cgi_out);
+        return;
     } else {
         _response.loadBody(_path);
     }
@@ -189,4 +193,20 @@ std::string Client::getErrorPath() {
             return _settings.getErrorPages()[i].second;
     }
     return "Not found in ErrorPages -> check config";
+}
+
+void Client::register_cgi(int cgi_fd) {
+    struct kevent evSet[1];
+
+    EV_SET(evSet, cgi_fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, this);
+    kevent(_kq_fd, evSet, 1, nullptr, 0, nullptr);
+    this->_state = CGIWAIT;
+}
+
+void Client::handleCgi(int cgi_fd) {
+    this->_response.readCgi(cgi_fd);
+    close(cgi_fd);
+    this->_state = RESPONDING;
+    _response.setHeaders(_path);
+    _response.setResponseString();
 }

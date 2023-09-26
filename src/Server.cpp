@@ -10,6 +10,7 @@
 #include <sys/fcntl.h>
 #include "utils.h"
 #include "Client.h"
+#include <sys/event.h>
 
 Server::Server(Config& conf) :
 _port(conf.getPort()), _socket(), _socketAddress(), _socketAddress_len(sizeof(_socketAddress)), _virtualhosts(conf.getHosts())
@@ -79,7 +80,7 @@ void Server::acceptConnection(int kqueu_fd)
 
 void Server::createClient(int kqueu_fd, int client_socket) const
 {
-    Client* client = new Client(client_socket, _virtualhosts);
+    Client* client = new Client(client_socket, _virtualhosts, kqueu_fd);
     struct kevent event[2];
 
     EV_SET(&event[0], client_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, client);
