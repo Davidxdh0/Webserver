@@ -2,6 +2,7 @@
 // Created by Alle Janse on 9/13/23.
 //
 #include "Response.h"
+#include <sys/event.h>
 
 void    createPipe(int p[2]) {
     if (pipe(p) < 0)
@@ -86,7 +87,7 @@ void    free_all(char** env) {
     delete env;
 }
 
-void    Response::loadCgi(const Path &path, const Request &request, const std::string& cgiPath) {
+int    Response::loadCgi(const Path &path, const Request &request, const std::string& cgiPath) {
     int        pid;
     int        pipeIn[2];
     int        pipeOut[2];
@@ -110,18 +111,21 @@ void    Response::loadCgi(const Path &path, const Request &request, const std::s
         close(pipeOut[0]);
         close(pipeOut[1]);
         execve(cgiPath.c_str(), nullptr, env);
-    } else {
-        waitpid(-1, nullptr, 0);
-        close(pipeIn[0]);
-        close(pipeOut[1]);
-        char buffer[1024];
-        long ret = 1;
-        while (ret > 0) {
-            memset(buffer, 0, 1024);
-            ret = read(pipeOut[0], buffer, 1024);
-            _body += buffer;
-        }
-        parseCgiResponse();
-        free_all(env);
     }
+    close(pipeIn[0]);
+    close(pipeOut[1]);
+    free_all(env);
+    return (pipeOut[0]);
+}
+
+void    Response::readCgi(int cgi_fd) {
+    char buffer[1024];
+    long ret = 1;
+
+    while (ret > 0) {
+        memset(buffer, 0, 1024);
+        ret = read(cgi_fd, buffer, 1024);
+        _body += buffer;
+    }
+    this->parseCgiResponse();
 }

@@ -11,7 +11,8 @@
 typedef enum e_clientState {
     READING,
     RESPONDING,
-    DISCONNECT
+    DISCONNECT,
+    CGIWAIT
 } 			clientState;
 
 typedef enum e_requestMethod {
