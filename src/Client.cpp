@@ -33,6 +33,7 @@ void Client::handleRequest(long data) {
     this->configure();
     this->redirect();
     this->setResponse();
+
 }
 
 int Client::readChunked(std::string bufferstring, int chunkedrequest){
@@ -52,13 +53,14 @@ int Client::readChunked(std::string bufferstring, int chunkedrequest){
 int Client::readRequest(long data) {
     char buffer[1024];
     size_t bytes_read;
-    size_t t = -1;
     std::string bufferstring;
     static int chunkedrequest = 0;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
-    if (bytes_read == t)
+    if (bytes_read < 0)
         exitWithError("Error reading from socket");
+	else if (bytes_read == 0)
+		exitWithError("Error 0 bytes read from socket");
 	else {
         buffer[bytes_read] = '\0';
 
@@ -73,9 +75,10 @@ int Client::readRequest(long data) {
 // std::cout << "body" << _response.getBody().size() << std::endl;
 // std::cout << "code: " << _response.getStatusCode()  << std::endl;
 // std::cou << " autoindex: " << _settings.getAutoindex() << std::endl;
+// std::cout << "size: " << _requestRaw.str().size() << " smaller: " << _settings.getClientMaxBodySize() << std::endl;
 void Client::setResponse() {
     int cgi_out;
-
+	
     this->checkMethod();
     if (_path.isDirectory()) {
         this->index();
@@ -91,7 +94,9 @@ void Client::setResponse() {
 	 	_response.uploadFile(_requestRaw, _vhosts, _request.getContentType());
     if (_request.getMethod() == "DELETE")
         _response.deletePage(_path.getFullPath(), &_settings);
-    if (_response.getStatusCode() != "200") {
+	if (_requestRaw.str().size() > _settings.getClientMaxBodySize())
+        _response.setStatusCode("413");
+    if (_response.getStatusCode() != "200" && _response.getStatusCode() != "303") {
         _response.errorCodeMessage();
         _response.setErrorCodeMessage(_response.getStatusCode());
         _response.setErrorPage(_settings.getRoot(), getErrorPath());
@@ -119,16 +124,15 @@ void Client::writeResponse() {
     if (i == 0)
         exitWithError("writing Response failed = 0");
 }
-
+// std::string port    = host.substr(host.find(":"));
+//    std::cout << _vhosts->getHost() + port << " Host:" << host << std::endl;
+//    setLocal(port);
 void Client::configure() {
 
     Settings ret;
     Path uri(_request.getUri());
-    std::string host    = _request.getHostname();
-    std::string port    = host.substr(host.find(":"));
-//    std::cout << _vhosts->getHost() + port << " Host:" << host << std::endl;
-    std::cout << "Host: " << host << std::endl;
-//    setLocal(port);
+    std::string host = _request.getHostname();
+
     ret = _vhosts->getRightSettings(uri);
     _settings = ret;
     _path = _settings.getRoot() + _request.getUri();
@@ -137,10 +141,19 @@ void Client::configure() {
 //std::cout << "redir      path: " << _path << std::endl;
 //std::cout << "redir      path: " << _path.getFullPath() << std::endl;
 //std::cout << "new redire path: " << _settings.getRoot() + _settings.getAlias() + "/" + _path.getFilename() << std::endl;
+//std::cout << "Location: " << _settings.getAlias() + "/" + _path.getFilename() << std::endl;
+//std::cout << "is " <<_request.getUri() << std::endl;
+//// _path = _settings.getRoot() + _request.getUri();
 void Client::redirect(){
     if (_settings.getAlias() == "")
         return ;
+	_request.setUri(_settings.getAlias());
+	_response.setHeader("Location: " + _settings.getAlias() + "/" + _path.getFilename() + "\r\n");
+	Path uri(_request.getUri());
+	_settings = _vhosts->getRightSettings(uri);
     _path.setFullPath(_settings.getRoot() + _settings.getAlias() + "/" + _path.getFilename());
+	_response.setStatusCode("303");
+	_response.setStatusMessage("See Other");
 }
 
 void Client::checkMethod() {

@@ -16,7 +16,9 @@ public:
     ~Request();
 
     void            parseRequest(std::stringstream &requestRaw);
-	
+	void		    setMethod(const std::string &method){ _method = method; };
+    void		    setUri(const std::string &uri){ _uri = uri; };
+
     std::string     getMethod() const { return _method; };
     std::string     getUri() const { return _uri; };
     std::string     getVersion() const { return _version; };

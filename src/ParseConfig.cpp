@@ -28,28 +28,15 @@ ParseConfig &ParseConfig::operator=(const ParseConfig &other)
 }
 
 int ParseConfig::hasAccess(std::string filepath, std::fstream& filestr){
-	std::string path = "./" + filepath;
-	std::cout << path << std::endl;
+	std::string path = filepath;
 	if (access(path.c_str(), F_OK) != 0){
-		std::cout << "ParseConfig doesn't exist" << std::endl;
-		return 404; // doesnt exist
-	}
-	if (filestr.is_open()){
-		std::cout << "ParseConfig already open" << std::endl;
-		return 403; //already open
+		ExitString("file doesn't exist");
 	}
 	if (access (path.c_str(), R_OK) != 0){
-		std::cout << "ParseConfig no read access" << std::endl;
-		return 403; // no read access
-	}
-	filestr.open(path);
-	if (!filestr.is_open()){
-		std::cout << "ParseConfig not opened" << std::endl;
-		return 404; //not opened
+		ExitString("no read access");
 	}
 	if (filestr.peek() == std::ifstream::traits_type::eof()) {
-		std::cout << "ParseConfig empty file" << std::endl;
-		return 404; // empty file
+		ExitString("empty file");
 	}
 	return 200;
 }
@@ -89,6 +76,8 @@ void	ParseConfig::parseLineConfig(std::map<string, string>& map, std::string lin
 		if (variable == "")
 			variable = findMapInLine(map, word);
 		if (variable != ""){
+			if (_serverBracket == 1 && _locationBracket == 0)
+				block = SERVER;
 			if (block == SERVER)
 				VariableToMap(*config.back().second, variable, line);
 			else
@@ -141,6 +130,7 @@ void	ParseConfig::readconfig(std::map<string, string>& map, std::fstream &filest
 			Settings* temp = new Settings;
 			_Config_Vector.back().second->addLocations(std::make_pair(line, temp));
 		}
+		// check fi open
 		parseLineConfig(map, line.substr(0, endline), _Config_Vector, block);
 	}
 }
@@ -148,8 +138,7 @@ void	ParseConfig::readconfig(std::map<string, string>& map, std::fstream &filest
 std::vector<pair<int, Settings* > > ParseConfig::ParseConfigFile() {
 	std::map<string, string> map;
 	std::fstream filestream(_filename);
-				// std::cout << "ParseConfigFile" << std::endl;
-				// std::cout << "HasAccess" << std::endl;
+				// std::cout << "file " << _filename << std::endl;
 	hasAccess(_filename, filestream);
 				// std::cout << "InitMap" << std::endl;
 	map	= initMap();

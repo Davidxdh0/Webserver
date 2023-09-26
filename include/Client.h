@@ -12,6 +12,7 @@
 #include "Settings.h"
 #include "utils.h"
 #include <sys/event.h>
+#include <sys/time.h>
 
 class Client {
 public:
@@ -31,7 +32,7 @@ public:
 	const Path			&getPath() const;
     const int           &getSocket() const { return _socket; };
     std::string         getErrorPath();
-    const int           &getSocket() const {return _socket; };
+
 private:
 
     int                 _kq_fd;
@@ -44,7 +45,6 @@ private:
 	std::string         _chunked;
     Settings            _settings;
     Settings*           _vhosts;
-
 
     int                 readRequest(long data);
     void                configure();

@@ -22,7 +22,6 @@ public:
 private:
     int             _kq_fd;
     vector<Server>  _servers;
-
     Server*     checkIdentIsServer(int ident);
     void        loadServers(std::vector<pair<int, Settings* > > port_configs);
     void        webservLoop();

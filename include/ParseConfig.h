@@ -54,6 +54,8 @@ public:
     void ParseLocation(std::string &line);
 	void ParseAlias(std::string &line);
 
+	int	isInt(const std::string& input);
+
 	void	PrintVector(std::vector<pair<int, Settings* > > Config_Vector);
 	void	setBrackets(char c, int block);
 	void	substrSemicolon(std::string &line);

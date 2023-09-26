@@ -1,6 +1,16 @@
 #include "ParseConfig.h"
 #include "Settings.h"
 
+int	ParseConfig::isInt(const std::string& input){
+	int i = 0;
+
+	while (input[i] != '\0' && std::isdigit(input[i]))
+		i++;
+	if (input[i] == '\0')
+		return 0;
+	return i;
+}
+
 std::string	ParseConfig::ParseLine(std::string line){
 	std::string::iterator it;
 	std::string::iterator it_rhs;
@@ -37,14 +47,6 @@ std::string	ParseConfig::ParseLine(std::string line){
 			ss << line[i];
 	}	
 	line = ss.str();
-	// size_t spaces = 0;
-	// size_t i = 0;
-	// for (; i < line.size(); ++i) {
-	// 	if (line[i] == ' ')
-	// 		spaces++;
-	// }
-	// if (spaces == i)
-	// 	line = "";
 	return ss.str();
 }
 
@@ -381,17 +383,20 @@ void	ParseConfig::ParseErrorPages(std::string &line)
 
 /*
 	client_max_body_size 100m;
+	client_max_body_size 100k;
+	client_max_body_size 100g;
 	default file upload size 1m
+	
 */
 void	ParseConfig::ParseClientMaxBody(std::string &line)
 {
 	std::istringstream iss(line);
 	std::string word;
 	std::string str;
-	std::string size;
+	int firstChar = 0;
 	int words = 0;
 	double bytes = 0;
-    double type;
+    double type = 1;
 	while(iss >> word){
 		if (word == " ")
 			continue;
@@ -399,26 +404,26 @@ void	ParseConfig::ParseClientMaxBody(std::string &line)
 		if (word == "client_max_body_size")
 			continue;
 		else{
-			size = word[word.size() - 1];
-            // size = toupper(size);
-			if (size == "M")
-				type = 100000;
-            // else if (size == "K")
-            //     type = 1000;
-            // else if (size == "G")
-            //     type = 100000000;
-            // else if (isdigit(size))
-            //     str += "X";
-            else
-                ExitString("ParseClientMaxBody size");
-			str = word.substr(0, word.size() - 1);
+			firstChar = isInt(word);
+			if (firstChar > 0 && (word.size() == static_cast<size_t>(firstChar) + 1)){
+				if (toupper(word[firstChar]) == 'M')
+				type = 1000000;
+				else if (toupper(word[firstChar]) == 'K')
+					type = 1000;
+				else if (toupper(word[firstChar]) == 'G')
+					type = 100000000;
+				else if (isdigit(word[firstChar]))
+					word += "X";
+				else
+					ExitString("ParseClientMaxBody size");
+				word = word.substr(0, word.size() - 1);
+			}
 			try {
-				// std::cout << str << std::endl;
-				bytes = std::stod(str);
+				bytes = std::stoi(word);
 				bytes *= type;
 				line = to_string(static_cast<size_t>(bytes));
 			} catch (const std::exception& e){
-				ExitString("ParseClientMaxBody stod");
+				ExitString("ParseClientMaxBody stoi");
 			}
 		}
 	}

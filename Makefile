@@ -6,7 +6,7 @@
 #    By: rubennijhuis <rubennijhuis@student.coda      +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/02/02 20:54:00 by rubennijhui   #+#    #+#                  #
-#    Updated: 2023/09/13 16:51:19 by dyeboa        ########   odam.nl          #
+#    Updated: 2023/09/26 21:57:51 by dyeboa        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ OBJS_DIR	=	objs
 BIN_DIR		=	bin
 INCLUDE_DIR	=	include
 EXEC_NAME	=	Webserv_dev
-ASSET		= 	/config/test.conf
+ASSET		= 	config/test.conf
 NAME		=	$(BIN_DIR)/$(EXEC_NAME)
 OUTPUT		=	$(BIN_DIR)/$(EXEC_NAME)
 

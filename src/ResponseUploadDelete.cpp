@@ -44,7 +44,7 @@ bool	Response::checkMethod(std::string &str)
 	return false;
 }
 
-std::string uniqueFileName(std::string path, std::string file)
+std::string Response::uniqueFileName(std::string path, std::string file)
 {
 	int i = 1;
 	std::string extension = "";
@@ -107,6 +107,7 @@ void	Response::MakeFiles(std::stringstream &raw, std::string path, Settings &set
 		std::ofstream file(uniqueName, std::ios::binary);
 		file << bodystr;
 		file.close();
+	
 	}
 }
 

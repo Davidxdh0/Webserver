@@ -6,7 +6,7 @@
 /*   By: rubennijhuis <rubennijhuis@student.coda      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/13 16:38:00 by rubennijhui   #+#    #+#                 */
-/*   Updated: 2023/09/14 13:22:30 by dyeboa        ########   odam.nl         */
+/*   Updated: 2023/09/26 21:57:18 by dyeboa        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,12 @@ void leaks(void){
 int main(int argc, char* argv[])
 {
     std::vector<pair<int, Settings* > > Config_Vect;
-//    atexit(leaks);
+   	// atexit(leaks);
 	if (argc == 2){
 		ParseConfig config(argv[1]);
 		Config_Vect = config.ParseConfigFile();
-//        config.PrintVector(Config_Vect);
+       	// config.PrintVector(Config_Vect);
+		ServerControl   serverControl(Config_Vect);
 	}
-    ServerControl   serverControl(Config_Vect);
-
     return 0;
 }

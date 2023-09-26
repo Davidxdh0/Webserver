@@ -36,6 +36,7 @@ public:
 	void            setHeaders(const Path& path);
     void            setContentLength();
 	void            setContentType(const std::string &headers);
+	void			setHeader(const std::string &header){ _headers = header; };
 
 	std::string		getStatusCode(void);
 	std::string		getStatusMessage(void);
@@ -51,7 +52,6 @@ public:
 
 	bool 			RequestDirectory(void);
 	void			directoryListing(std::string dirpath, std::string indexSettings);
-	void			showDir(std::string &path);
 	void			createIndex(void);
 	bool 			isDirectory(std::string path);
 	bool			findFile(std::string file, std::string path);
@@ -61,6 +61,7 @@ public:
 	void			deletePage(std::string path, Settings *settings);
 	void			upload();
 	int 			uploadFile(std::stringstream& raw, Settings* settings, const std::string &contentType);
+	std::string		uniqueFileName(std::string path, std::string file);
 	bool			checkMethod(std::string &str);
 	bool			isUpload(std::string path);
 	bool 			hasAccess(const std::string& filepath, std::fstream &filestr);

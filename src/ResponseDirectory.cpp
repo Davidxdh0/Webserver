@@ -10,18 +10,6 @@
 #include <sys/stat.h>
 #include <ctime>
 
-void	Response::showDir(std::string &path){
-	DIR *dir;
-	struct dirent *ent;
-	if ((dir = opendir(path.c_str())) == NULL){
-		std::cout << "Error: Can't open showDir" << std::endl;
-	}
-	while ((ent = readdir (dir)) != NULL) {
-    	std::cout << "Directory: " << ent->d_name << std::endl;
-  	}
-  	closedir (dir);
-}
-
 /*
 todo: 	
 	Error catching - can't open file?
@@ -46,7 +34,6 @@ void	Response::directoryListing(std::string path, std::string setting_index){
             std::stringstream buffer;
             buffer << t.rdbuf();
             _body = buffer.str();
-            setStatusCode("200");
             setContentLength();
             return;
         }
@@ -80,7 +67,7 @@ void	Response::directoryListing(std::string path, std::string setting_index){
             "<th>DELETE</th>\n"
         	"</tr>\n";
 	if ((dir = opendir(dirpath.c_str())) == NULL){
-		std::cout << "Error: Can't open directory - directoryListing()" << std::endl;
+		// std::cout << "Error: Can't open directory - directoryListing()" << std::endl;
         setStatusCode("403");
 		return ;
 	}
@@ -137,7 +124,6 @@ void	Response::directoryListing(std::string path, std::string setting_index){
             "</html>\n";
 	_body = file.str();
 	setContentLength();
-	setStatusCode("200");
 }
 
 //returns 1 if path is directory 

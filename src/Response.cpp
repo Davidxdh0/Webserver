@@ -38,8 +38,6 @@ void Response::loadBody(const Path& path) {
     std::stringstream buffer;
 
     std::cout << "Loading body from: " << path << std::endl;
-    // if (!file.is_open())
-    //     exitWithError("Could not open file: " + path);
 	if (file.is_open()){
 		setStatusCode("403");
 		return ;
@@ -62,7 +60,7 @@ void Response::setErrorPage(std::string root, std::string errorpage){
         setStatusCode("404");
 		setErrorPage(root, errorpage);
 	} else if (!filestream.is_open() && _statusCode == "404"){
-		std::cout << "Error: setErrorPage 404 no permission"  << std::endl;
+		// std::cout << "Error: setErrorPage 404 no permission"  << std::endl;
 		temp << "<!DOCTYPE html>\n"
 				"<html>\n"
 				"<div id=main>\n"
@@ -85,15 +83,13 @@ void Response::setErrorPage(std::string root, std::string errorpage){
 //std::cout << "statuscode: " << _statusCode << "\n" << _contentType << "\r\n" << _contentLength << std::endl;
 // std::cout << "content: " << std::string("Content-Length: " + std::to_string(_body.length())) << std::endl;
 // std::cout << "content: " << _contentLength << std::endl;
-
 // std::cout << _body << std::endl;
 void Response::setResponseString() {
     std::ostringstream ss;
 	setContentLength();
-//	errorCodeMessage();
-//	setErrorCodeMessage(_statusCode);
-	std::cout << "statuscode: " << _statusCode << " statusmessage: " <<  _statusMessage << " content: " << _contentType << " length: " << _contentLength << std::endl;
-    ss << _version << " " << _statusCode << " " << _statusMessage << "\r\n" << _contentType << "\r\n" << _contentLength << "\r\n\r\n" << _body;
+	
+	// std::cout << "statuscode: " << _statusCode << " headers: " << _headers  << " statusmessage: " <<  _statusMessage << " content: " << _contentType << " length: " << _contentLength << std::endl;
+    ss << _version << " " << _statusCode << " "  << _statusMessage << "\r\n" << _contentType << "\r\n"  << _headers << _contentLength << "\r\n\r\n" << _body;
     _responseString = ss.str();
 }
 

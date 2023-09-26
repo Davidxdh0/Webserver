@@ -1,5 +1,6 @@
 #include "ParseConfig.h"
 #include "Settings.h"
+
 void	ParseConfig::PrintVector(std::vector<pair<int, Settings* > > Config_Vector )
 {	
 	int		amountLocation = 0;
@@ -60,7 +61,7 @@ void ParseConfig::fillLocations(){
 			it_server->second->setAllowMethods(0);
 		if (it_server->second->getUploadEnable() == -1)
 			it_server->second->setUploadEnable(0);
-		if (it_server->second->getClientMaxBodySize() == 1)
+		if (it_server->second->getClientMaxBodySize() == 1000000)
 			it_server->second->setClientMaxBodySize(1000000);	
 		if (it_server->second->getAutoindex() == "")
 			it_server->second->setAutoindex("off");	

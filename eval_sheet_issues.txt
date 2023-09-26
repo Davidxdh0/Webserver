@@ -1,3 +1,23 @@
+26/09
+Mandatory:
+
+Writing or reading ANY file descriptor without going through the select() (or equivalent) is strictly FORBIDDEN.
+	- void	Response::readCgi(int cgi_fd)
+	- int Client::readRequest(long data) 
+	- void Request::parseRequest(std::stringstream &requestRaw) 
+	- void Client::writeResponse() 
+
+Search for all read/recv/write/send and check if the returned value is correctly checked 
+	(checking only -1 or 0 values is not enough, both should be checked).
+	
+	- int Client::readRequest(long data) 
+	- int Response::loadCgi(const Path &path, const Request &request, const std::string& cgiPath) 
+	- void Client::writeResponse() 
+
+?? Setup multiple servers with different hostnames 
+	(use something like: curl --resolve example.com:80:127.0.0.1 http://example.com/). 
+
+
 Bij css laden, roept ie de css bij firefox 2 keer aan.
 vaak refreshen soms error.
 

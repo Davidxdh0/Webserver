@@ -1,0 +1,6 @@
+
+Config:
+	curl -X POST -H "Content-Type: text/plain" --data "BODY IS HERE" http://localhost:8080
+
+basic checks:
+	curl -X CUSTOM -H "Content-Type: application/json" -d '{"key": "value"}' http://localhost:8080
