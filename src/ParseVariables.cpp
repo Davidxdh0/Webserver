@@ -400,15 +400,15 @@ void	ParseConfig::ParseClientMaxBody(std::string &line)
 			continue;
 		else{
 			size = word[word.size() - 1];
-            size = toupper(size);
+            // size = toupper(size);
 			if (size == "M")
 				type = 100000;
-            else if (size == "K")
-                type = 1000;
-            else if (size == "G")
-                type = 100000000;
-            else if (isdigit(size))
-                str += "X";
+            // else if (size == "K")
+            //     type = 1000;
+            // else if (size == "G")
+            //     type = 100000000;
+            // else if (isdigit(size))
+            //     str += "X";
             else
                 ExitString("ParseClientMaxBody size");
 			str = word.substr(0, word.size() - 1);
