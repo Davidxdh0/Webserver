@@ -10,6 +10,8 @@ Writing or reading ANY file descriptor without going through the select() (or eq
 Search for all read/recv/write/send and check if the returned value is correctly checked 
 	(checking only -1 or 0 values is not enough, both should be checked).
 	
+Wat doen bij -1 en 0? 
+
 	- int Client::readRequest(long data) 
 	- int Response::loadCgi(const Path &path, const Request &request, const std::string& cgiPath) 
 	- void Client::writeResponse() 
