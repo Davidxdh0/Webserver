@@ -146,7 +146,7 @@ void Client::configure() {
 //std::cout << "new redire path: " << _settings.getRoot() + _settings.getAlias() + "/" + _path.getFilename() << std::endl;
 //std::cout << "Location: " << _settings.getAlias() + "/" + _path.getFilename() << std::endl;
 //std::cout << "is " <<_request.getUri() << std::endl;
-//// _path = _settings.getRoot() + _request.getUri();
+//_path = _settings.getRoot() + _request.getUri();
 void Client::redirect(){
     if (_settings.getAlias() == "")
         return ;

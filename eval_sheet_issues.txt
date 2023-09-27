@@ -1,8 +1,9 @@
+alle:
 Writing or reading ANY file descriptor without going through the select() (or equivalent) is strictly FORBIDDEN.
 	void	Response::readCgi(int cgi_fd)
 
-defineer error page: error_page working? Can't get it to work.
-Errorcodes not always right. Get a 404 when trying a forbidden method.
-als je get stuurt, maar alleen post
-
-
+David:
+	defineer error page: error_page working? Can't get it to work.
+	Errorcodes not always right. Get a 404 when trying a forbidden method.
+		als je get stuurt, maar alleen post
+	error 403 - maar niet de errorpage
