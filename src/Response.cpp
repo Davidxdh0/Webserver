@@ -53,26 +53,22 @@ void Response::loadBody(const Path& path) {
 ////  std::cout << "Error: setErrorPage can't open"  << std::endl;
 ////  std::cout << "error page to _body"  << std::endl;
 void Response::setErrorPage(std::string root, std::string errorpage){
+	std::cout << "errorpage = " << errorpage << std::endl;
     std::string path = root + "/" + errorpage;
 	std::fstream filestream(path.c_str());
 	std::stringstream temp;
-  	if (!filestream.is_open() && _statusCode != "404"){
-        setStatusCode("404");
-		setErrorPage(root, errorpage);
-	} else if (!filestream.is_open() && _statusCode == "404"){
-		// std::cout << "Error: setErrorPage 404 no permission"  << std::endl;
+  	if (!filestream.is_open()){
 		temp << "<!DOCTYPE html>\n"
 				"<html>\n"
 				"<div id=main>\n"
 				"<div class=fof>\n"
-				"<h1>Error 404</h1>\n"
+				"<h1>Error " + getStatusCode() + " </h1>\n"
 				"</div>\n"
 				"</div>\n"
 				"</html>\n";
 		_body = temp.str();
 	}
 	else{
-
 		temp << filestream.rdbuf();
 		_body = temp.str();
 		filestream.close();
