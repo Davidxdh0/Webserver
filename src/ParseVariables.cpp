@@ -243,7 +243,7 @@ void	ParseConfig::ParseMethods(std::string &line)
 			ExitString(str);;
 		}
 	}
-	if (words < 1 || words > 4)
+	if (words < 2 || words > 4)
 		ExitString("ParseMethods words > 4");
 	line = to_string(get + post + del);
 }

@@ -50,8 +50,8 @@ void Response::loadBody(const Path& path) {
 }
 
 //	std::cout << "errorpage = " << errorpage << std::endl;
-////  std::cout << "Error: setErrorPage can't open"  << std::endl;
-////  std::cout << "error page to _body"  << std::endl;
+//	std::cout << "Error: setErrorPage can't open"  << std::endl;
+//	std::cout << "error page to _body"  << std::endl;
 void Response::setErrorPage(std::string root, std::string errorpage){
 	std::cout << "errorpage = " << errorpage << std::endl;
     std::string path = root + "/" + errorpage;
@@ -122,7 +122,6 @@ void Response::errorCodeMessage() {
 void Response::setHeaders(const Path &path) {
     std::string type = MimeTypes::getType(path.c_str());
 
-//    this->setStatusCode("200");
     this->setVersion("HTTP/1.1");
     if (path.getExtension() != "php")
         this->setContentType(type);
