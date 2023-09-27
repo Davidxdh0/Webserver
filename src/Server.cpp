@@ -73,8 +73,6 @@ void Server::acceptConnection(int kqueu_fd)
     }
     if (setsockopt(client_socket, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value)) < 0)
         exitWithError("Error setting socket options");
-	if (setsockopt(client_socket, SOL_SOCKET, SO_REUSEPORT, &opt_value, sizeof(opt_value)) < 0) 
-		exitWithError("Error setting socket options");
     if (fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0)
         exitWithError("Cannot set socket to non-blocking");
 	

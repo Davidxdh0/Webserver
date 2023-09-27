@@ -83,7 +83,8 @@ void   ServerControl::webservLoop() {
                     client->handleCgi(events->ident);
                 } else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
                     client->writeResponse();
-                    delete client;
+					if (client->getState() == DISCONNECT)
+                    	delete client;
                 }
             }
         }

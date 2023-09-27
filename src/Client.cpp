@@ -109,9 +109,10 @@ void Client::writeResponse() {
 	int i = 1;
     size_t packetsize = 10000;
     static size_t dataSent = 0;
+	size_t remaining = 0
 	if (_response.getResponseString().size() - dataSent > packetsize){
 		const char* data = _response.getResponseString().c_str();
-        size_t remaining = _response.getResponseString().size() - dataSent;
+        remaining = _response.getResponseString().size() - dataSent;
         size_t currentpacket = std::min(remaining, packetsize);
         i = write(_socket, data + dataSent, currentpacket);
         dataSent += i;
@@ -123,6 +124,8 @@ void Client::writeResponse() {
         exitWithError("writing Response failed");
     if (i == 0)
         exitWithError("writing Response failed = 0");
+	if (remaining == 0)
+		_start = DISCONNECT;
 }
 // std::string port    = host.substr(host.find(":"));
 //    std::cout << _vhosts->getHost() + port << " Host:" << host << std::endl;

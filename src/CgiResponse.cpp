@@ -77,11 +77,12 @@ void    Response::parseCgiResponse() {
         }
     }
 }
+
+//        std::cout << env[i] << std::endl;
 void    free_all(char** env) {
     if (!env)
         return;
     for (int i = 0; env[i]; i++) {
-//        std::cout << env[i] << std::endl;
         delete env[i];
     }
     delete env;
@@ -98,7 +99,11 @@ int    Response::loadCgi(const Path &path, const Request &request, const std::st
     createPipe(pipeIn);
     createPipe(pipeOut);
     env = createEnv(path, request);
-    write(pipeIn[1], request.getBody().c_str(), request.getBody().length());
+    int i = write(pipeIn[1], request.getBody().c_str(), request.getBody().length());
+	if (i == -1)
+        exitWithError("write cgi failed");
+    if (i == 0)
+        exitWithError("write cgi failed = 0");
     close(pipeIn[1]);
 
     pid = fork();
@@ -125,6 +130,10 @@ void    Response::readCgi(int cgi_fd) {
     while (ret > 0) {
         memset(buffer, 0, 1024);
         ret = read(cgi_fd, buffer, 1024);
+		if (ret == -1)
+        	exitWithError("readcgi failed");
+    	if (ret == 0)
+        	exitWithError("readcgi failed = 0");
         _body += buffer;
     }
     this->parseCgiResponse();
