@@ -24,7 +24,8 @@ public:
     void                writeResponse();
     void                setLocal(std::string &port);
     void                handleCgi(int cgi_fd);
-
+	
+	
     int                 getState() { return _state; };
 	std::stringstream   &getRequestRaw();
 	const Request		&getRequest() const;
@@ -32,6 +33,7 @@ public:
 	const Path			&getPath() const;
     const int           &getSocket() const { return _socket; };
     std::string         getErrorPath();
+	int					getChunked() {return _chunked;}
 
 private:
 
@@ -42,9 +44,10 @@ private:
     int                 _socket;
     clientState         _state;
     std::stringstream   _requestRaw;
-	std::string         _chunked;
     Settings            _settings;
     Settings*           _vhosts;
+	int					_dataSent;
+	int					_chunked;
 
     int                 readRequest(long data);
     void                configure();

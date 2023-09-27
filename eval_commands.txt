@@ -4,3 +4,6 @@ Config:
 
 basic checks:
 	curl -X CUSTOM -H "Content-Type: application/json" -d '{"key": "value"}' http://localhost:8080
+
+Siege:
+	siege -b http://localhost:8080/empty.html

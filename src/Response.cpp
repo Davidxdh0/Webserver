@@ -17,7 +17,7 @@
 #include <vector>
 #include "MimeTypes.h"
 
-Response::Response() : _statusCode("200") {}
+Response::Response() : _statusCode("200"), _responseString("") {}
 
 Response::~Response() {}
 
@@ -53,7 +53,6 @@ void Response::loadBody(const Path& path) {
 //	std::cout << "Error: setErrorPage can't open"  << std::endl;
 //	std::cout << "error page to _body"  << std::endl;
 void Response::setErrorPage(std::string root, std::string errorpage){
-	std::cout << "errorpage = " << errorpage << std::endl;
     std::string path = root + "/" + errorpage;
 	std::fstream filestream(path.c_str());
 	std::stringstream temp;

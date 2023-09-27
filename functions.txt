@@ -1,9 +1,7 @@
 Functions and information:
 
-Main:
-https://42seoul-gitbook-io.translate.goog/webserv/or-cgi?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=nl&_x_tr_hist=true
-
-
+Big information bomb:
+	https://42seoul-gitbook-io.translate.goog/webserv/or-cgi?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=nl&_x_tr_hist=true
 
 int socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	https://www.geeksforgeeks.org/socket-programming-cc/
@@ -58,21 +56,6 @@ EV_SET(events, 0, 0, 0, 0, 0, 0);
         kevent(_kq_fd, nullptr, 0, events, 1, &timeout);
 		
 ServerBlock *tmp = checkIdentIsServer(events->ident);
-
-
-
-if (tmp != nullptr) {
-    tmp->acceptConnection(_kq_fd);
-    }
-else {
-	Client *client = static_cast<Client *>(events->udata);
-	if (events->filter == EVFILT_READ && client->getState() == READING) {
-		client->handleRequest();
-	} else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
-		client->writeResponse();
-		delete client;
-	}
-}
 
 nginx
 list directories
@@ -134,13 +117,10 @@ config file
 	https://www.nginx.com/resources/wiki/start/topics/examples/full/
 
 siege:
-    codam_rheuts - 7 months ago - https://42born2code.slack.com/archives/CMX2R5JSW/p1677058550803019?thread_ts=1677018182.191889&cid=CMX2R5JSW
+    codam_rhe*** - 7 months ago - https://42born2code.slack.com/archives/CMX2R5JSW/p1677058550803019?thread_ts=1677018182.191889&cid=CMX2R5JSW
         I recall MacOS holding onto sockets for a small time, even when you specify to reuse them. , when siege has send lotTherefor at some points of requests, you run out of available sockets and it takes a couple of seconds to free up old ones. *(I'm nowhere an expert, but this was the reasoning I came up with :clown_face: )
     HTTP/1.1 200     0.06 secs:      14 bytes ==> GET  /empty.html
     [alert] socket: select and discovered it's not ready sock.c:384: Operation timed out
     [alert] socket: read check timed out(30) sock.c:273: Operation timed out
     HTTP/1.1 200    30.06 secs:      14 bytes ==> GET  /empty.html
     HTTP/1.1 200    30.06 secs:      14 bytes ==> GET  /empty.html
-
-cgi:
-    python sleep 10 server blocking, cgi- waitpid- na sick child signal da waitpid  als child geexit.

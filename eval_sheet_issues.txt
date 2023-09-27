@@ -1,6 +1,0 @@
-alle:
-Writing or reading ANY file descriptor without going through the select() (or equivalent) is strictly FORBIDDEN.
-	void	Response::readCgi(int cgi_fd)
-
-David:
-

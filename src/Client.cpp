@@ -13,7 +13,7 @@
 
 Client::Client() : _socket(), _state(READING), _vhosts() {}
 
-Client::Client(int socket, Settings* vhosts, int kq_fd) :  _kq_fd(kq_fd), _socket(socket), _state(READING), _vhosts(vhosts) {
+Client::Client(int socket, Settings* vhosts, int kq_fd) :  _kq_fd(kq_fd), _socket(socket), _state(READING), _vhosts(vhosts), _dataSent(0), _chunked(0) {
 }
 
 Client::~Client() {
@@ -41,7 +41,6 @@ int Client::readChunked(std::string bufferstring, int chunkedrequest){
     std::string::size_type headchunked = bufferstring.find("Transfer-Encoding: chunked");
     if (headchunked < head) {
         chunkedrequest = 1;
-        _chunked = "on";
     }
     else
         chunkedrequest = 2;
@@ -54,7 +53,7 @@ int Client::readRequest(long data) {
     char buffer[1024];
     size_t bytes_read;
     std::string bufferstring;
-    static int chunkedrequest = 0;
+    int chunkedrequest = _chunked;
 
     bytes_read = read(_socket, buffer, sizeof buffer - 1);
     if (bytes_read < 0)
@@ -108,14 +107,13 @@ void Client::setResponse() {
 void Client::writeResponse() {
 	int i = 1;
     size_t packetsize = 10000;
-    static size_t dataSent = 0;
 	size_t remaining = 0;
-	if (_response.getResponseString().size() - dataSent > packetsize){
+	if (_response.getResponseString().size() - _dataSent > packetsize){
 		const char* data = _response.getResponseString().c_str();
-        remaining = _response.getResponseString().size() - dataSent;
+        remaining = _response.getResponseString().size() - _dataSent;
         size_t currentpacket = std::min(remaining, packetsize);
-        i = write(_socket, data + dataSent, currentpacket);
-        dataSent += i;
+        i = write(_socket, data + _dataSent, currentpacket);
+        _dataSent += i;
 	}
 	else{
     	i = write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
@@ -124,8 +122,9 @@ void Client::writeResponse() {
         exitWithError("writing Response failed");
     if (i == 0)
         exitWithError("writing Response failed = 0");
-	if (remaining == 0)
+	if (remaining == 0){
 		_state = DISCONNECT;
+	}
 }
 // std::string port    = host.substr(host.find(":"));
 //    std::cout << _vhosts->getHost() + port << " Host:" << host << std::endl;
@@ -154,6 +153,8 @@ void Client::redirect(){
 	_response.setHeader("Location: " + _settings.getAlias() + "/" + _path.getFilename() + "\r\n");
 	Path uri(_request.getUri());
 	_settings = _vhosts->getRightSettings(uri);
+	// _path = _settings.getRoot() + _request.getUri();
+	// std::cout << "Location: " << _settings.getAlias() + "/" + _path.getFilename() << std::endl;
     _path.setFullPath(_settings.getRoot() + _settings.getAlias() + "/" + _path.getFilename());
 	_response.setStatusCode("303");
 	_response.setStatusMessage("See Other");
