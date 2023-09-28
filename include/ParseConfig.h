@@ -13,9 +13,6 @@
 #include <string>
 #include <map>
 
-#include <iostream>
-#include <map>
-
 class ParseConfig{
 
 public:

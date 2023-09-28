@@ -76,8 +76,6 @@ int Client::readRequest(long data) {
 // std::cou << " autoindex: " << _settings.getAutoindex() << std::endl;
 // std::cout << "size: " << _requestRaw.str().size() << " smaller: " << _settings.getClientMaxBodySize() << std::endl;
 void Client::setResponse() {
-    int cgi_out;
-	
     this->checkMethod();
     if (_path.isDirectory()) {
         this->index();
