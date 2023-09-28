@@ -285,7 +285,10 @@ void	ParseConfig::ParseCgiPath(std::string &line)
 		if (word == "cgi_pass")
 			continue;
 	}
-	if (words != 2)
+	std::fstream filestream(word);
+	hasAccess(word, filestream)
+	filestream.close();
+	if (words != 2 )
 		ExitString("ParseCgiPath != 2");
 	line = word;
 }
