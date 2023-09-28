@@ -53,8 +53,6 @@ void ParseConfig::fillLocations(){
 	std::vector<std::pair<int, Settings* > >::iterator it_server;
 	std::vector<std::pair<std::string, Settings* > >::iterator it_location;
 	for (it_server = _Config_Vector.begin(); it_server != _Config_Vector.end(); it_server++){
-		// std::cout << "Printing Config_vector: " << std::endl;
-		// std::cout << "port:\t\t\t" << it_server->first << std::endl;
 		if (it_server->first == -1)
 			it_server->first = 80;
 		if (it_server->second->getAllowMethods() == -1)
@@ -87,7 +85,6 @@ void ParseConfig::fillLocations(){
 			if (it_location->second->getAlias() == "")
 				it_location->second->setAlias(it_server->second->getAlias());
 			it_location->second->getErrorPages() = it_server->second->getErrorPages();
-		
     	}
 	}
 }

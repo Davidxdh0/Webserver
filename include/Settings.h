@@ -54,6 +54,7 @@ public:
 
     std::vector<std::pair<int, std::string> >       &getErrorPages(){ return _error_pages; };
     std::vector<std::pair<std::string, Settings*> > &getLocations() { return _locations; };
+	static void				freeSettings(std::vector<std::pair<int, Settings* > >& Config_Vector);
 
 	// poppers
 	int			countSlash(std::string location);
