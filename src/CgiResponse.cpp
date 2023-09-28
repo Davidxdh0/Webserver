@@ -102,8 +102,6 @@ int    Response::loadCgi(const Path &path, const Request &request, const std::st
     int i = write(pipeIn[1], request.getBody().c_str(), request.getBody().length());
 	if (i == -1)
         exitWithError("write cgi failed");
-    if (i == 0)
-        exitWithError("write cgi failed = 0");
     close(pipeIn[1]);
 
     pid = fork();
@@ -117,6 +115,7 @@ int    Response::loadCgi(const Path &path, const Request &request, const std::st
         close(pipeOut[1]);
         execve(cgiPath.c_str(), nullptr, env);
     }
+    _cgi_pid = pid;
     close(pipeIn[0]);
     close(pipeOut[1]);
     free_all(env);

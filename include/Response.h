@@ -43,6 +43,7 @@ public:
 	std::string		getBody();
 	std::string		getContentType(void);
 	std::string		GetFilename(std::string line);
+    int             getCGIpid() { return _cgi_pid; };
 	
     void            loadBody(const Path& path);
     int             loadCgi(const Path& path, const Request& request, const std::string& cgiPath);
@@ -81,6 +82,7 @@ private:
     std::string     _responseString;
 	std::string     _boundary;
 	std::vector<std::string> _raw;
+    int             _cgi_pid;
 
     void    parseCgiResponse();
 };

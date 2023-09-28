@@ -34,9 +34,9 @@ public:
     const int           &getSocket() const { return _socket; };
     std::string         getErrorPath();
 	int					getChunked() {return _chunked;}
+    void                register_cgi_pipe();
 
 private:
-
     int                 _kq_fd;
     Request             _request;
     Response            _response;
@@ -46,9 +46,10 @@ private:
     std::stringstream   _requestRaw;
     Settings            _settings;
     Settings*           _vhosts;
-	int					_dataSent;
-	int					_chunked;
+    int					_dataSent;
+    int					_chunked;
 
+    int                 _cgi_pipe;
     int                 readRequest(long data);
     void                configure();
     void                redirect();
@@ -56,7 +57,7 @@ private:
     void                setResponse();
     void                checkMethod();
     void                index();
-    void                register_cgi(int cgi_fd);
+    void                register_cgi_pid();
 };
 
 

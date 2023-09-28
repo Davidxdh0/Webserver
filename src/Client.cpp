@@ -83,8 +83,8 @@ void Client::setResponse() {
         this->index();
     }
     if (!_path.getExtension().empty()&& _path.getExtension() == _settings.getCgiExtension()) {
-        cgi_out = _response.loadCgi(_path, _request, _settings.getCgiPath());
-        register_cgi(cgi_out);
+        _cgi_pipe = _response.loadCgi(_path, _request, _settings.getCgiPath());
+        register_cgi_pid();
         return;
     } else {
         _response.loadBody(_path);
@@ -212,12 +212,19 @@ std::string Client::getErrorPath() {
     return "Not found in ErrorPages -> check config";
 }
 
-void Client::register_cgi(int cgi_fd) {
+void Client::register_cgi_pid() {
     struct kevent evSet[1];
 
-    EV_SET(evSet, cgi_fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, this);
+    EV_SET(evSet, _response.getCGIpid(), EVFILT_PROC, EV_ADD | EV_ENABLE, NOTE_EXIT, 0, this);
     kevent(_kq_fd, evSet, 1, nullptr, 0, nullptr);
     this->_state = CGIWAIT;
+}
+
+void Client::register_cgi_pipe() {
+    struct kevent evSet[1];
+
+    EV_SET(evSet, _cgi_pipe, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, this);
+    kevent(_kq_fd, evSet, 1, nullptr, 0, nullptr);
 }
 
 void Client::handleCgi(int cgi_fd) {

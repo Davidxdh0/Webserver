@@ -79,6 +79,8 @@ void   ServerControl::webservLoop() {
                 } else if (events->filter == EVFILT_READ && client->getState() == READING) {
                     client->handleRequest(events->data);
 //                    kevent(_kq_fd, events, 1, nullptr, 0, nullptr);
+                } else if (events->filter == EVFILT_PROC) {
+                    client->register_cgi_pipe();
                 } else if (events->filter == EVFILT_READ && client->getState() == CGIWAIT) {
                     client->handleCgi(events->ident);
                 } else if (events->filter == EVFILT_WRITE && client->getState() == RESPONDING) {
