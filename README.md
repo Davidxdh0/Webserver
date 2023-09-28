@@ -1,7 +1,4 @@
-TODO
-File parsing
-- In een config class
-kQue
+kQueue
 - Best voor mac
 
 ## Resources

@@ -46,7 +46,7 @@ private:
     std::stringstream   _requestRaw;
     Settings            _settings;
     Settings*           _vhosts;
-    int					_dataSent;
+    size_t				_dataSent;
     int					_chunked;
 
     int                 _cgi_pipe;

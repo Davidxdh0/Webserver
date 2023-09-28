@@ -85,10 +85,12 @@ void Client::setResponse() {
         register_cgi_pid();
         return;
     } else {
+		// std::cout << "body" << _response.getBody().size() << std::endl;
         _response.loadBody(_path);
     }
     if (_request.getisUpload())
 	 	_response.uploadFile(_requestRaw, _vhosts, _request.getContentType());
+	
     if (_request.getMethod() == "DELETE")
         _response.deletePage(_path.getFullPath(), &_settings);
 	if (_requestRaw.str().size() > _settings.getClientMaxBodySize())
@@ -104,19 +106,21 @@ void Client::setResponse() {
 
 void Client::writeResponse() {
 	int i = 1;
-    size_t packetsize = 10000;
 	size_t remaining = 0;
-	if (_response.getResponseString().size() - _dataSent > packetsize){
+	if (_response.getResponseString().size() > 64000){
 		const char* data = _response.getResponseString().c_str();
-        remaining = _response.getResponseString().size() - _dataSent;
-        size_t currentpacket = std::min(remaining, packetsize);
-        i = write(_socket, data + _dataSent, currentpacket);
-        _dataSent += i;
+		size_t packetsize = 64000;
+		if (_dataSent < _response.getResponseString().size()){
+			remaining = _response.getResponseString().size() - _dataSent;
+			size_t currentpacket = std::min(remaining, packetsize);
+			i = write(_socket, data + _dataSent, currentpacket);
+			_dataSent += i;
+		}
 	}
 	else{
     	i = write(_socket, _response.getResponseString().c_str(), _response.getResponseString().size());
 	}
-    if (i == -1)
+	if (i == -1)
         exitWithError("writing Response failed");
     if (i == 0)
         exitWithError("writing Response failed = 0");

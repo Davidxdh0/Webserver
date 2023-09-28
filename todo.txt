@@ -1,3 +1,0 @@
-test path naar cgi.
-werkt het goed?
--void	ParseConfig::ParseCgiPath(std::string &line)
