@@ -221,7 +221,8 @@ void Client::register_cgi(int cgi_fd) {
 }
 
 void Client::handleCgi(int cgi_fd) {
-    this->_response.readCgi(cgi_fd);
+    if (this->_response.readCgi(cgi_fd))
+        return;
     close(cgi_fd);
     this->_state = RESPONDING;
     _response.setHeaders(_path);

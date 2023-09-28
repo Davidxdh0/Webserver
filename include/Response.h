@@ -48,7 +48,7 @@ public:
     int             loadCgi(const Path& path, const Request& request, const std::string& cgiPath);
     void            setResponseString();
     std::string     getResponseString() { return _responseString; };
-    void            readCgi(int cgi_fd);
+    int             readCgi(int cgi_fd);
 
 	bool 			RequestDirectory(void);
 	void			directoryListing(std::string dirpath, std::string indexSettings);

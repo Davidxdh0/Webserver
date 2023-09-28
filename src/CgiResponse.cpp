@@ -123,18 +123,19 @@ int    Response::loadCgi(const Path &path, const Request &request, const std::st
     return (pipeOut[0]);
 }
 
-void    Response::readCgi(int cgi_fd) {
+int    Response::readCgi(int cgi_fd) {
     char buffer[1024];
     long ret = 1;
 
-    while (ret > 0) {
-        memset(buffer, 0, 1024);
-        ret = read(cgi_fd, buffer, 1024);
-		if (ret == -1)
+    memset(buffer, 0, 1024);
+    ret = read(cgi_fd, buffer, 1024);
+    if (ret == 1024)
+        return 1;
+    if (ret == -1)
         	exitWithError("readcgi failed");
-    	if (ret == 0)
+    if (ret == 0)
         	exitWithError("readcgi failed = 0");
-        _body += buffer;
-    }
+    _body += buffer;
     this->parseCgiResponse();
-}
+    return 0;
+    }

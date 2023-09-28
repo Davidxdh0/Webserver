@@ -55,7 +55,7 @@ void Server::startListen(int kqueuFd) const
 
     struct kevent event = {};
 
-    EV_SET(&event, _socket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, nullptr);
+    EV_SET(&event, _socket, EVFILT_READ, EV_ADD, 0, 0, nullptr);
     kevent(kqueuFd, &event, 1, nullptr, 0, nullptr);
     log("------ Server event registered in kqueu ------\n\n");
 }
